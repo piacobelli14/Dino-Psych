@@ -9,7 +9,7 @@
     color: white;
     display: flex;
     justify-content: center;
-    align-items: center; 
+    align-items: flex-start; 
     margin-left: 0;
     overflow-y: scroll;
     overflow-x: hidden;
