@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faX } from '@fortawesome/free-solid-svg-icons';
@@ -20,7 +19,6 @@ const Login = () => {
   const [isEmail, setIsEmail] = useState(false); 
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [loginError, setLoginError] = useState("");
-
 
   useEffect(() => {
     localStorage.removeItem("token");
@@ -145,23 +143,7 @@ const Login = () => {
             Return to Main
           </button>
         )}
-
       </div>
-
-
-
-
-
-     
-
-        
-
-       
-       
-        
-        
-
-       
     </div>
   );
 };

@@ -1,0 +1,192 @@
+.registerHeaderContainer { 
+    z-index: 1001; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: space-between;
+    width: 100vw; 
+    top: 0; 
+    left: 0; 
+    margin-top: 1rem; 
+    position: absolute; 
+}
+
+.registerTopNavBarContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.registerBackButton {
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    margin-left: 2rem; 
+    background-color: rgba(255,255,255,0.0); 
+    border: none; 
+    outline: none;
+    cursor: pointer; 
+}
+
+.registerBackArrowIcon {
+    height: 0.8rem;  
+    color: white; 
+    margin-right: 0.4rem;
+    margin-top: 0.1rem; 
+}
+
+.registerHeader {
+    font-size: 0.8rem;
+    font-weight: 600; 
+    color: white; 
+    cursor: pointer; 
+}
+
+.registerHeader {
+    text-shadow: 0 0 2.5px rgba(255, 255, 255, 0.8);
+}
+
+.registerHeader, 
+.registerBackArrowIcon, 
+.profilePictureUpload, 
+.profileImageText, 
+.registerInput, 
+.registerInputFlex {
+    transition: opacity 0.3s ease;
+}
+
+.registerInput:hover, 
+.registerInputFlex:hover, 
+.passwordInput:hover {
+    opacity: 0.8;
+}
+
+.registerBackButton:hover .registerHeader,
+.registerBackButton:hover .registerBackArrowIcon {
+    opacity: 0.5;
+}
+
+.headerDivider {
+    width: 100vw;
+    height: 0.05vw;  
+    background-color: white; 
+    opacity: 0.2; 
+    border: none; 
+    margin-top: 1.2rem; 
+}
+
+.registerBlock {
+    width: 26rem;
+    display: flex;
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center;
+}
+
+.registerNameFlex {
+    width: 100%;
+    display: flex; 
+    justify-content: space-between; 
+}
+
+.registerInput, 
+.registerInputFlex, 
+.passwordInput {
+    margin-top: 2rem; 
+    padding: 0.8rem 0; 
+    font-weight: 400; 
+    background: #f5f5f8; 
+    border: 2px solid grey; 
+    outline: black; 
+    text-indent: 0.8rem;
+    border-radius: 0.4rem; 
+    font-size: 1rem; 
+    font-weight: 500; box-shadow: 0 0 3px rgba(255, 255, 255, 0.8);
+}
+
+.passwordInput {
+    position: relative; 
+}
+
+.registerInput, 
+.passwordInput {
+    width: 100%; 
+}
+
+.registerInputFlex {
+    width: 47%; 
+}
+
+.registerContinueButton {
+    width: 100%; 
+    padding: 0.8rem 0; 
+    font-size: 1rem;
+    font-weight: 600; 
+    display: flex; 
+    align-items: center;
+    justify-content: center; 
+    background-color: #2D3436;
+    border: 2px solid #2D3436; 
+    outline: black;
+    cursor: pointer;  
+    margin-top: 0.8rem; 
+    color: white; 
+}
+
+.registerNextArrowIcon {
+    margin-top: 0.2rem; 
+    margin-left: 0.5rem; 
+}
+
+.registerPersonIcon {
+    margin-right: 0.5rem;
+}
+
+.registerContinueButton:hover .registerNextArrowIcon,
+.registerContinueButton:hover .registerPersonIcon,
+.registerContinueButton:hover {
+    opacity: 0.7;
+}
+
+.registerTitle {
+    font-size: 1.4rem;
+    font-weight: 600;  
+    color: white;
+    margin-bottom: 1rem; 
+    text-align: center; 
+}
+
+.registerError {
+    font-size: 0.8rem; 
+    font-weight: 400; 
+    text-align: center; 
+    color: #E54B4B;
+    margin-top: 0.8rem;  
+}
+
+.profilePictureUpload {
+    display: flex;
+    justify-content: center; 
+    width: 100%; 
+    padding: 1rem 0; 
+    margin-top: 1rem; 
+    overflow: hidden;
+    background: rgba(255,255,255,0.0);
+    border: 1px solid white; 
+    border-radius: 0.4rem;
+    font-size: 0.8rem;
+    font-weight: 600;  
+    cursor: pointer; 
+}
+
+.profilePictureUpload input {
+    display: none; 
+}
+
+.profileImageText {
+    cursor: pointer; 
+}
+
+.profilePictureUpload:hover .profileImageText, 
+.profilePictureUpload:hover {
+    opacity: 0.6; 
+}

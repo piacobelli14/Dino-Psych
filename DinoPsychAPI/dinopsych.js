@@ -99,6 +99,45 @@ app.post('/login', async (req, res) => {
     }
 });  
 
+app.post('/validate-new-user-info', async (req, res) => {
+    const {email, username} = req.body; 
+    console.log(email, username); 
+
+    try {
+        const infoVerificationQuery = 'SELECT username, email FROM dinolabsusers;';
+        const infoVerificationResult = await pool.query(infoVerificationQuery);
+    
+        if (infoVerificationResult.error) {
+            return res.status(500).json({ message: 'Unable to validate user info. Please try again.' });
+        }
+    
+        const rows = infoVerificationResult.rows;
+        if (!rows || !Array.isArray(rows)) {
+            return res.status(200).json({ message: 'success' });
+        }
+    
+        let emailInUse = false;
+        let usernameInUse = false;
+    
+        for (const row of rows) {
+            if (row.email === email) {
+            emailInUse = true;
+            }
+            if (row.username === username) {
+            usernameInUse = true;
+            }
+        }
+        if (emailInUse) {
+            return res.status(401).json({ message: 'That email is already in use. Please select another.' });
+        } else if (usernameInUse) {
+            return res.status(401).json({ message: 'That username is taken. Please select another.' });
+        }
+        return res.status(200).json({ message: 'success' });
+    } catch (error) {
+      return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+}); 
+
 function hashPassword(enteredPassword, storedSalt) {
     if (!enteredPassword || !storedSalt) {
         return null;

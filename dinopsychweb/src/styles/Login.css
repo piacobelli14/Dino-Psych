@@ -34,7 +34,7 @@
 
 .loginHeader {
     font-size: 1.5rem;
-    font-weight: 600; 
+    font-weight: 600;  
     color: white; 
     cursor: pointer; 
 }
@@ -201,9 +201,9 @@
 
 .passwordToggleIcon {
     position: absolute;
-    right: 1rem; /* Places the icon towards the right inside the input */
-    top: 50%; /* Vertically centers the icon */
-    transform: translateY(-50%); /* Ensures exact vertical centering */
+    right: 1rem; 
+    top: 50%; 
+    transform: translateY(-50%); 
     cursor: pointer;
     color: black; 
 }
