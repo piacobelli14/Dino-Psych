@@ -113,7 +113,7 @@ const Login = () => {
         )}
 
         {!isEmail && (
-          <button className="loginSupplementalButton" onClick={()=> navigate("/reset")}>Forgot password? Click here to reset.</button>
+          <button className="loginSupplementalButton" onClick={()=> navigate("/reset")}>Forgot password? <span style={{"opacity": "0.9"}}>Click here to reset.</span></button>
         )}
 
         {isEmail && (
