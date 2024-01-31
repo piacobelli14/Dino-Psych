@@ -86,19 +86,20 @@
     width: 100%;
     display: flex; 
     justify-content: space-between; 
+    margin-bottom: 1.5rem; 
 }
 
 
 .registerPasswordInputWrapper {
     position: relative; 
     width: 100%; 
+    margin-bottom: 1.5rem; 
 }
 
 
 .registerInput, 
 .registerInputFlex, 
 .passwordInput {
-    margin-top: 2rem; 
     padding: 0.8rem 0; 
     font-weight: 400; 
     background: #f5f5f8; 
@@ -121,6 +122,10 @@
 
 .registerInputFlex {
     width: 47%; 
+}
+
+.registerInput {
+    margin-bottom: 1.5rem; 
 }
 
 .registerContinueButton {
@@ -201,7 +206,7 @@
 .registerToggleIcon {
     position: absolute;
     right: 1rem; 
-    top: 70%; 
+    top: 50%; 
     transform: translateY(-50%); 
     cursor: pointer;
     color: black; 

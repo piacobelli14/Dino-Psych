@@ -7,16 +7,17 @@ import "../styles/Register.css";
 
 const Register = () => {
 
-    const [isPersonal, setIsPersonal] = useState(false); 
-    const [isPassword, setIsPassword] = useState(true); 
+    const [isPersonal, setIsPersonal] = useState(true); 
+    const [isPassword, setIsPassword] = useState(false); 
 
     const [firstName, setFirstName] = useState(""); 
     const [lastName, setLastName] = useState(""); 
     const [email, setEmail] = useState(""); 
     const [username, setUsername] = useState(""); 
     const [phone, setPhone] = useState("");
+    const [profileImage, setProfileImage] = useState(null); 
     const [newPassword, setNewPassword] = useState(""); 
-    const [confirmPassword, setConfirmPassword] = useState(""); 
+    const [confirmPassword, setConfImageirmPassword] = useState(""); 
     const [newPasswordVisible, setNewPasswordVisible] = useState(false); 
     const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false); 
 
@@ -88,7 +89,7 @@ const Register = () => {
 
             <div className="registerHeaderContainer"> 
                 <div className="registerTopNavBarContainer">
-                    <a className="registerBackButton"> 
+                    <a className="registerBackButton" href={"/login"}> 
                         <FontAwesomeIcon icon={faArrowLeft} className="registerBackArrowIcon"/>
                         <label className="registerHeader">
                             Back to Login

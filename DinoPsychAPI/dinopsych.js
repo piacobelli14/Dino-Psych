@@ -101,7 +101,6 @@ app.post('/login', async (req, res) => {
 
 app.post('/validate-new-user-info', async (req, res) => {
     const {email, username} = req.body; 
-    console.log(email, username); 
 
     try {
         const infoVerificationQuery = 'SELECT username, email FROM dinolabsusers;';
@@ -138,6 +137,46 @@ app.post('/validate-new-user-info', async (req, res) => {
     }
 }); 
 
+app.post('/create-user', async (req, res) => {
+    const { firstName, lastName, username, email, password, phone, organizationID, image } = req.body;
+    console.log(req.body); 
+    try {
+      if (!firstName || !lastName || !username || !email || !password || !phone) {
+        return res.status(401).json({ message: 'Unable to verify registration info. Please try again later.' });
+      }
+  
+      const capitalizedFirstName = capitalizeFirstLetter(firstName);
+      const capitalizedLastName = capitalizeFirstLetter(lastName);
+      const { salt, hashedPassword } = generateSaltedPassword(password);
+  
+      const userCreationQuery = `
+        INSERT INTO dinolabsusers (
+            firstname, lastname, username, email, phone, password, hashedpassword, salt, image
+        ) 
+        VALUES (
+            $1, $2, $3, $4, $5, $6, $7, $8, $9
+        )
+        RETURNING *; 
+      `;
+      
+      const userCreationValues = [
+        capitalizedFirstName, capitalizedLastName, username.toString(), email.toString(), phone.toString(), password.toString(), hashedPassword.toString(), salt.toString(), image
+      ];
+
+      const userCreationResult = await pool.query(userCreationQuery, userCreationValues);
+      if (userCreationResult.error) {
+        return res.status(500).json({ message: 'Unable to create new user. Please try again later.' });
+      }
+      return res.status(200).json({ message: 'success' });
+    } catch (error) {
+      return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+});
+
+function capitalizeFirstLetter(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
 function hashPassword(enteredPassword, storedSalt) {
     if (!enteredPassword || !storedSalt) {
         return null;
@@ -147,6 +186,14 @@ function hashPassword(enteredPassword, storedSalt) {
     const hash = crypto.createHash('sha256');   
     const hashedPassword = hash.update(saltedPasswordToCheck).digest('hex'); 
     return hashedPassword;
+}
+
+function generateSaltedPassword(password) {
+    const salt = crypto.randomBytes(16).toString('hex'); 
+    const saltedPassword = salt + password; 
+    const hash = crypto.createHash('sha256');
+    const hashedPassword = hash.update(saltedPassword).digest('hex'); 
+    return { salt, hashedPassword };
 }
 
 app.listen(port, () => {
