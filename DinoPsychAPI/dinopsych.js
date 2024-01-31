@@ -53,7 +53,7 @@ app.post('/login', async (req, res) => {
     const { email, password } = req.body;
     try {
   
-      const passwordVerificationQuery = 'SELECT username, salt, hashedpassword, organizationid FROM dinolabsusers WHERE email = $1;';
+      const passwordVerificationQuery = 'SELECT username, salt, hashedpassword FROM dinolabsusers WHERE email = $1;';
       const passwordVerificationResult = await pool.query(passwordVerificationQuery, [email]);
   
       if (passwordVerificationResult.error) {
@@ -71,8 +71,8 @@ app.post('/login', async (req, res) => {
       const hashedPasswordToCheck = hashPassword(password, storedSalt);
   
       if (hashedPasswordToCheck === storedHashedPassword) {
-        const createLoginTokenQuery = 'INSERT INTO dinolabs_signintokens (username, signintimestamp, organizationid) VALUES ($1, NOW(), $2);';
-        const createLoginTokenResult = await pool.query(createLoginTokenQuery, [username, row.organizationid]);
+        const createLoginTokenQuery = 'INSERT INTO dinolabs_signintokens (username, signintimestamp) VALUES ($1, NOW(), $2);';
+        const createLoginTokenResult = await pool.query(createLoginTokenQuery, [username]);
   
         if (createLoginTokenResult.error) {
             return res.status(401).json({ message: 'Unable to verify login innfo at this time. Please try again.' });
@@ -87,8 +87,6 @@ app.post('/login', async (req, res) => {
             expiresIn: '1h',
           }
         );
-
-        console.log(token, username); 
   
         return res.status(200).json({ token, username });
       } else {
@@ -131,23 +129,27 @@ app.post('/validate-new-user-info', async (req, res) => {
         } else if (usernameInUse) {
             return res.status(401).json({ message: 'That username is taken. Please select another.' });
         }
-        return res.status(200).json({ message: 'success' });
+        return res.status(200).json({});
     } catch (error) {
       return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
     }
 }); 
 
 app.post('/create-user', async (req, res) => {
-    const { firstName, lastName, username, email, password, phone, organizationID, image } = req.body;
+    const { firstName, lastName, username, email, password, phone, image } = req.body;
     console.log(req.body); 
     try {
       if (!firstName || !lastName || !username || !email || !password || !phone) {
         return res.status(401).json({ message: 'Unable to verify registration info. Please try again later.' });
       }
+
+
   
       const capitalizedFirstName = capitalizeFirstLetter(firstName);
       const capitalizedLastName = capitalizeFirstLetter(lastName);
       const { salt, hashedPassword } = generateSaltedPassword(password);
+
+      console.log(salt); 
   
       const userCreationQuery = `
         INSERT INTO dinolabsusers (
@@ -164,10 +166,14 @@ app.post('/create-user', async (req, res) => {
       ];
 
       const userCreationResult = await pool.query(userCreationQuery, userCreationValues);
+
+      console.log(userCreationResult); 
       if (userCreationResult.error) {
         return res.status(500).json({ message: 'Unable to create new user. Please try again later.' });
+      } else {
+        return res.status(200).json({});
       }
-      return res.status(200).json({ message: 'success' });
+        
     } catch (error) {
       return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
     }

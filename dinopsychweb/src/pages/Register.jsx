@@ -6,6 +6,7 @@ import { faArrowLeft, faArrowRight, faPerson, faEyeSlash, faEye } from "@fortawe
 import "../styles/Register.css";
 
 const Register = () => {
+    const navigate = useNavigate(); 
 
     const [isPersonal, setIsPersonal] = useState(true); 
     const [isPassword, setIsPassword] = useState(false); 
@@ -17,7 +18,7 @@ const Register = () => {
     const [phone, setPhone] = useState("");
     const [profileImage, setProfileImage] = useState(null); 
     const [newPassword, setNewPassword] = useState(""); 
-    const [confirmPassword, setConfImageirmPassword] = useState(""); 
+    const [confirmPassword, setConfirmPassword] = useState(""); 
     const [newPasswordVisible, setNewPasswordVisible] = useState(false); 
     const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false); 
 
@@ -46,7 +47,7 @@ const Register = () => {
             }
 
             try {
-                const response = await fetch("http://172.20.10.3:3001/validate-new-user-info", {
+                const response = await fetch("http://10.111.26.70:3001/validate-new-user-info", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -81,6 +82,57 @@ const Register = () => {
             setProfileImage(base64Data);
           };
           reader.readAsDataURL(file);
+        }
+    };
+
+    const handlePassword = async () => {
+  
+        const hasUpperCase = /[A-Z]/.test(newPassword);
+        const hasLowerCase = /[a-z]/.test(newPassword);
+        const hasNumber = /\d/.test(newPassword);
+        const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>\-]/.test(newPassword);
+        const isLengthValid = newPassword.length >= 8;
+  
+        if (!isLengthValid) {
+            setRegisterError("Password must be at least 8 characters long.");
+        } else if (!hasUpperCase) {
+            setRegisterError("Password must contain at least 1 uppercase letter.");
+        } else if (!hasLowerCase) {
+            setRegisterError("Password must contain at least 1 lowercase letter.");
+        } else if (!hasNumber) {
+            setRegisterError("Password must contain at least 1 number.");
+        } else if (!hasSpecialChar) {
+            setRegisterError("Password must contain at least 1 special character.");
+        } else if (newPassword !== confirmPassword) {
+            setRegisterError("Passwords do not match.");
+        } else {
+            const userData = {
+                firstName: firstName,
+                lastName: lastName,
+                username: username,
+                email: email,
+                password: newPassword,
+                phone: phone,
+                image: String(profileImage),
+            };
+  
+            try {
+                const response = await fetch("http://10.111.26.70:3001/create-user", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(userData),
+                });
+  
+                if (response.status === 200) {
+                    navigate("/login");
+                } else {
+                    setRegisterError(response); 
+                }
+            } catch (error) {
+                return; 
+            }
         }
     };
 
@@ -146,8 +198,6 @@ const Register = () => {
                         />
                     </div>
                     
-
-
                     <div className="registerPasswordInputWrapper"> 
                         <input className="passwordInput" type={confirmPasswordVisible ? "text" : "password"} placeholder={"Confirm Password"} onChange={(e) => setConfirmPassword(e.target.value)}/>
                         <FontAwesomeIcon
@@ -157,7 +207,7 @@ const Register = () => {
                         />
                     </div>
                 
-                    <button className="registerContinueButton" onClick={handleRegister}>
+                    <button className="registerContinueButton" onClick={handlePassword}>
                         <FontAwesomeIcon icon={faPerson} className="registerPersonIcon"/>
                         Create Account
                     </button>
