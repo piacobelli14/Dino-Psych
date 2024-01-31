@@ -88,6 +88,13 @@
     justify-content: space-between; 
 }
 
+
+.registerPasswordInputWrapper {
+    position: relative; 
+    width: 100%; 
+}
+
+
 .registerInput, 
 .registerInputFlex, 
 .passwordInput {
@@ -103,13 +110,13 @@
     font-weight: 500; box-shadow: 0 0 3px rgba(255, 255, 255, 0.8);
 }
 
-.passwordInput {
-    position: relative; 
-}
-
 .registerInput, 
 .passwordInput {
     width: 100%; 
+}
+
+.passwordInput {
+    height: 100%; 
 }
 
 .registerInputFlex {
@@ -189,4 +196,13 @@
 .profilePictureUpload:hover .profileImageText, 
 .profilePictureUpload:hover {
     opacity: 0.6; 
+}
+
+.registerToggleIcon {
+    position: absolute;
+    right: 1rem; 
+    top: 70%; 
+    transform: translateY(-50%); 
+    cursor: pointer;
+    color: black; 
 }

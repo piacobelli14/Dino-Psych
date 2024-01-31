@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"; 
 import { useNavigate } from "react-router-dom"; 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faArrowRight, faPerson } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faArrowRight, faPerson, faEyeSlash, faEye } from "@fortawesome/free-solid-svg-icons";
 
 import "../styles/Register.css";
 
@@ -17,6 +17,8 @@ const Register = () => {
     const [phone, setPhone] = useState("");
     const [newPassword, setNewPassword] = useState(""); 
     const [confirmPassword, setConfirmPassword] = useState(""); 
+    const [newPasswordVisible, setNewPasswordVisible] = useState(false); 
+    const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false); 
 
     const [registerError, setRegisterError] = useState(""); 
 
@@ -134,9 +136,25 @@ const Register = () => {
                 <div className="registerBlock">
                     <label className="registerTitle">Set A Password</label>
 
-                    <input className="passwordInput" placeholder={"New Password"} />
+                    <div className="registerPasswordInputWrapper"> 
+                        <input className="passwordInput" type={newPasswordVisible ? "text" : "password"} placeholder={"New Password"} onChange={(e) => setNewPassword(e.target.value)}/>
+                        <FontAwesomeIcon
+                            icon={newPasswordVisible ? faEyeSlash : faEye}
+                            onClick={() => setNewPasswordVisible(!newPasswordVisible)}
+                            className="registerToggleIcon"
+                        />
+                    </div>
+                    
 
-                    <input className="passwordInput" placeholder={"Confirm Password"} />
+
+                    <div className="registerPasswordInputWrapper"> 
+                        <input className="passwordInput" type={confirmPasswordVisible ? "text" : "password"} placeholder={"Confirm Password"} onChange={(e) => setConfirmPassword(e.target.value)}/>
+                        <FontAwesomeIcon
+                            icon={confirmPasswordVisible ? faEyeSlash : faEye}
+                            onClick={() => setConfirmPasswordVisible(!confirmPasswordVisible)}
+                            className="registerToggleIcon"
+                        />
+                    </div>
                 
                     <button className="registerContinueButton" onClick={handleRegister}>
                         <FontAwesomeIcon icon={faPerson} className="registerPersonIcon"/>
