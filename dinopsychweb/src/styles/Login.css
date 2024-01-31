@@ -91,7 +91,7 @@
     opacity: 0.5; 
 }
 
-.headerDivider {
+.loginHeaderDivider {
     width: 100vw;
     height: 0.05vw;  
     background-color: white; 

@@ -27,7 +27,7 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-        const response = await fetch('http://10.111.26.70:3001/login', {
+        const response = await fetch('http://172.20.10.3:3001/login', {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
@@ -44,7 +44,7 @@ const Login = () => {
           localStorage.setItem("username", data.username);
           navigate("/manager");
         } else {
-          setLoginError('That username and/or password is incorrect.')
+          setLoginError(response.status); 
         }
     } catch (error) {
       return;
@@ -74,7 +74,7 @@ const Login = () => {
           </button>
         </div>
 
-        <div className="headerDivider"/>
+        <div className="loginHeaderDivider"/>
 
         {isHamburger && (
           <button className="hamburgerLoginButton" onClick={()=> setIsHamburger(!isHamburger)} style={{"backgroundColor": "#2D3436", "color": "#F5F5F5"}}>
@@ -87,8 +87,6 @@ const Login = () => {
               Sign Up
           </button>
         )}
-
-
       </div>
 
       <div className="loginBlock"> 
@@ -136,7 +134,11 @@ const Login = () => {
         <div className="loginError">{loginError}</div>
 
         {isEmail && (
-          <button className="loginSupplementalButton" onClick={()=> setIsEmail(!isEmail)}>
+          <button className="loginSupplementalButton" onClick={()=> {
+              setIsEmail(!isEmail); 
+              setLoginError("");
+            }}
+          >
             <span>
               <FontAwesomeIcon icon={faArrowLeft} className="envelopeIcon"/>
             </span>

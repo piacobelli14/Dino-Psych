@@ -15,8 +15,6 @@ app.use(bodyParser.json({ limit: '1gb' }));
 function authenticateToken(req, res, next) {
     const token = req.headers['authorization'];
   
-    console.log(token); 
-  
     if (token === undefined) {
       return res.status(401).json({ message: 'Unauthorized: No token provided.' });
     }
@@ -64,14 +62,14 @@ app.post('/login', async (req, res) => {
       if (!row) {
         return res.status(401).json({ message: 'Unable to verify login innfo at this time. Please try again.' });
       }
-  
+
       const username = row.username; 
       const storedSalt = row.salt;
       const storedHashedPassword = row.hashedpassword;
       const hashedPasswordToCheck = hashPassword(password, storedSalt);
   
       if (hashedPasswordToCheck === storedHashedPassword) {
-        const createLoginTokenQuery = 'INSERT INTO dinolabs_signintokens (username, signintimestamp) VALUES ($1, NOW(), $2);';
+        const createLoginTokenQuery = 'INSERT INTO dinolabs_signintokens (username, signintimestamp) VALUES ($1, NOW());';
         const createLoginTokenResult = await pool.query(createLoginTokenQuery, [username]);
   
         if (createLoginTokenResult.error) {
@@ -110,7 +108,7 @@ app.post('/validate-new-user-info', async (req, res) => {
     
         const rows = infoVerificationResult.rows;
         if (!rows || !Array.isArray(rows)) {
-            return res.status(200).json({ message: 'success' });
+            return res.status(200).json({});
         }
     
         let emailInUse = false;
@@ -137,19 +135,14 @@ app.post('/validate-new-user-info', async (req, res) => {
 
 app.post('/create-user', async (req, res) => {
     const { firstName, lastName, username, email, password, phone, image } = req.body;
-    console.log(req.body); 
     try {
       if (!firstName || !lastName || !username || !email || !password || !phone) {
         return res.status(401).json({ message: 'Unable to verify registration info. Please try again later.' });
       }
 
-
-  
       const capitalizedFirstName = capitalizeFirstLetter(firstName);
       const capitalizedLastName = capitalizeFirstLetter(lastName);
       const { salt, hashedPassword } = generateSaltedPassword(password);
-
-      console.log(salt); 
   
       const userCreationQuery = `
         INSERT INTO dinolabsusers (
@@ -167,13 +160,102 @@ app.post('/create-user', async (req, res) => {
 
       const userCreationResult = await pool.query(userCreationQuery, userCreationValues);
 
-      console.log(userCreationResult); 
       if (userCreationResult.error) {
         return res.status(500).json({ message: 'Unable to create new user. Please try again later.' });
       } else {
         return res.status(200).json({});
       }
         
+    } catch (error) {
+      return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+});
+
+app.post('/reset-password', async (req, res) => {
+    const { email } = req.body;
+    try {
+      const resetVerificationQuery = 'SELECT email, phone, password FROM dinolabsusers WHERE email = $1;';
+      const resetVerificationResult = await pool.query(resetVerificationQuery, [email]);
+  
+      if (resetVerificationResult.error) {
+        return res.status(500).json({ message: 'Unable to send verification email. Please try again later.' });
+      }
+  
+      const row = resetVerificationResult.rows[0];
+      if (!row) {
+        return res.status(401).json({ message: 'Unable to send verification email. Please try again later.' });
+      }
+  
+      const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
+      const expirationTimestamp = new Date();
+      expirationTimestamp.setMinutes(expirationTimestamp.getMinutes() + 3);
+  
+      const createResetTokenQuery = `
+        INSERT INTO dinolab_resettokens 
+        (username, resettoken, expirationtimestamp) 
+        VALUES ($1, $2, $3) 
+        RETURNING *;
+      `;
+  
+      const createResetTokenValues = [email, resetCode, expirationTimestamp.toISOString()];
+      const createResetTokenResult = await pool.query(createResetTokenQuery, createResetTokenValues);
+  
+      if (createResetTokenResult.error) {
+        return res.status(500).json({ message: 'Unable to send verification email. Please try again later.' });
+      }
+  
+      const transporter = nodemailer.createTransport({
+        host: 'smtp-mail.outlook.com',
+        port: 587,
+        secure: false,
+        auth: {
+          user: 'dinolabsauthentication@outlook.com',
+          pass: 'PAiac14-',
+        },
+      });
+  
+      const mailOptions = {
+        from: 'dinolabsauthentication@outlook.com',
+        to: email,
+        subject: 'Password Reset Code',
+        text: `Your password reset code is: ${resetCode}`,
+      };
+  
+      const sendMailResult = await transporter.sendMail(mailOptions);
+      if (sendMailResult.error) {
+        return res.status(500).json({ message: 'Unable to send verification email. Please try again later.' });
+      }
+  
+      return res.status(200).json({
+        message: 'Password reset code sent.',
+        data: {
+          resetCode: resetCode,
+          resetExpiration: expirationTimestamp.toISOString(),
+          currentPassword: row.password,
+          currentEmail: row.email,
+        },
+      });
+    } catch (error) {
+      return res.status(500).json({ message: 'Error connecting to the database or sending email. Please try again later.' });
+    }
+});
+
+app.post('/change-password', async (req, res) => {
+    const { newPassword, email } = req.body;
+    try {
+      const { salt, hashedPassword } = generateSaltedPassword(newPassword);
+      const storedSalt = salt;
+      const storedHashedPassword = hashedPassword;
+  
+      const updatePasswordQuery = 'UPDATE dinolabsusers SET password = $1, hashedpassword = $2, salt = $3 WHERE email = $4;';
+      const updatePasswordValues = [newPassword, storedHashedPassword, storedSalt, email];
+  
+      const updatePasswordResult = await pool.query(updatePasswordQuery, updatePasswordValues);
+      if (updatePasswordResult.error) {
+        return res.status(500).json({ message: 'Unable to update password. Please try again later.' });
+      }
+
+      return res.status(200).json({});
     } catch (error) {
       return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
     }
