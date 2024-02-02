@@ -41,25 +41,15 @@
 
 .loginLogo, 
 .loginHeader, 
-.hamburgerIcon, 
+.loginHamburgerIcon, 
 .loginTitle, 
 .loginInput, 
 .loginInputPassword {
     text-shadow: 0 0 2.5px rgba(255, 255, 255, 0.8);
 }
 
-.loginSipToContent:hover {
+.loginSkipToContent:hover {
     opacity: 0.8; 
-}
-
-.loginLogo, 
-.loginHeader, 
-.hamburgerCircle, 
-.loginInput, 
-.loginInputPassword,
-.loginInputButton, 
-.loginSupplementalButton {
-    transition: opacity 0.3s ease;
 }
 
 .loginSkipToContent:hover .loginLogo,
@@ -67,7 +57,7 @@
     opacity: 0.5;
 }
 
-.hamburgerCircle {
+.loginHamburgerCircle {
     width: 2rem; 
     height: 2rem; 
     display: flex; 
@@ -82,12 +72,12 @@
     box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
 }
 
-.hamburgerIcon {
+.loginHamburgerIcon {
     font-size: 1rem; 
     color: white;
 }
 
-.hamburgerCircle:hover {
+.loginHamburgerCircle:hover {
     opacity: 0.5; 
 }
 
@@ -192,10 +182,15 @@
     outline: none; 
     color: white; 
     font-size: 0.8rem; 
+    opacity: 0.7;
+}
+
+.loginSupplementalButton:focus {
+    outline: none; 
 }
 
 .loginSupplementalButton:hover {
-    opacity: 0.6; 
+    opacity: 0.4; 
     text-decoration: underline; 
 }
 
@@ -208,7 +203,7 @@
     color: black; 
 }
 
-.hamburgerPopout {
+.loginHamburgerPopout {
     z-index: 1000; 
     position: absolute; 
     width: 100vw;
@@ -218,7 +213,7 @@
     background-color: black;
 }
 
-.hamburgerLoginButton {
+.loginHamburgerButton {
     width: 80vw; 
     margin-left: 10vw;  
     margin-top: 1rem;

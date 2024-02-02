@@ -47,7 +47,7 @@ const Register = () => {
             }
 
             try {
-                const response = await fetch("http://172.20.10.3:3001/validate-new-user-info", {
+                const response = await fetch("http://10.111.26.70:3001/validate-new-user-info", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -117,7 +117,7 @@ const Register = () => {
             };
   
             try {
-                const response = await fetch("http://172.20.10.3:3001/create-user", {
+                const response = await fetch("http://10.111.26.70:3001/create-user", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",

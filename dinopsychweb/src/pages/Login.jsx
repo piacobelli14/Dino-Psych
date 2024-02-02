@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faX } from '@fortawesome/free-solid-svg-icons';
-import { faEnvelope } from '@fortawesome/free-solid-svg-icons'; 
-import { faPerson } from "@fortawesome/free-solid-svg-icons";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faX, faEnvelope, faPerson, faArrowLeft, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'; 
 
 import DinoLabsLogoWhite from "../assets/dinoLabsLogo_white.png";
 
@@ -27,7 +23,7 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-        const response = await fetch('http://172.20.10.3:3001/login', {
+        const response = await fetch('http://10.111.26.70:3001/login', {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
@@ -55,7 +51,7 @@ const Login = () => {
     <div>
 
       {isHamburger && (
-        <div className="hamburgerPopout"> 
+        <div className="loginHamburgerPopout"> 
         </div>
       )}
 
@@ -69,21 +65,21 @@ const Login = () => {
             </label> 
           </a>
 
-          <button className="hamburgerCircle" onClick={()=> setIsHamburger(!isHamburger)}>
-            <FontAwesomeIcon icon={isHamburger ? faX : faBars} className="hamburgerIcon" />
+          <button className="loginHamburgerCircle" onClick={()=> setIsHamburger(!isHamburger)}>
+            <FontAwesomeIcon icon={isHamburger ? faX : faBars} className="loginHamburgerIcon" />
           </button>
         </div>
 
         <div className="loginHeaderDivider"/>
 
         {isHamburger && (
-          <button className="hamburgerLoginButton" onClick={()=> setIsHamburger(!isHamburger)} style={{"backgroundColor": "#2D3436", "color": "#F5F5F5"}}>
+          <button className="loginHamburgerButton" onClick={()=> setIsHamburger(!isHamburger)} style={{"backgroundColor": "#2D3436", "color": "#F5F5F5"}}>
               Login
           </button>
         )}
 
         {isHamburger && (
-          <button className="hamburgerLoginButton" onClick={()=> navigate("/register")} style={{"backgroundColor": "#F5F5F5", "color": "#2D3436"}}>
+          <button className="loginHamburgerButton" onClick={()=> navigate("/register")} style={{"backgroundColor": "#F5F5F5", "color": "#2D3436"}}>
               Sign Up
           </button>
         )}

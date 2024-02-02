@@ -1,44 +1,53 @@
 * {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  }
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
 
-  body {
-    width: 100vw; 
-    height: 100vh; 
-    background: linear-gradient(to bottom, #000, #005);
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start; 
-    margin-left: 0;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    background-size: 200% 100%;
-    background-position: 100% 0%;
-    animation: shine 2s infinite;
-  }
-  
-  @keyframes shine {
-    0% {
+body {
+  width: 100vw;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: top;
+  margin-left: 0;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  animation: shine 2s infinite;
+  position: relative; /* Add this line */
+}
+
+body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  background: linear-gradient(to bottom, #000, #005);
+  background-attachment: fixed;
+}
+
+@keyframes shine {
+  0% {
       background-position: 200% 0%;
-    }
-    100% {
+  }
+  100% {
       background-position: -100% 0%;
-    }
   }
+}
 
-  body.surveyPageBody {
-    background: white;
-  }
+body.surveyPageBody {
+  background: white;
+}
 
-  body::-webkit-scrollbar {
-    width: 4px;
-  }
+body::-webkit-scrollbar {
+  width: 4px;
+}
 
-  body::-webkit-scrollbar-thumb:vertical {
-    background-color: #888; 
-  }
+body::-webkit-scrollbar-thumb:vertical {
+  background-color: #888;
+}
 
-  body::-webkit-scrollbar-track:vertical {
-    background-color: #333; 
-  }
+body::-webkit-scrollbar-track:vertical {
+  background-color: #333;
+}

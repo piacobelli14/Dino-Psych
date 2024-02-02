@@ -6,6 +6,8 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken'); 
 
+const secretKey = process.env.JWT_SECRET_KEY || 'your-secret-key'
+
 const app = express(); 
 const port = 3001; 
 
@@ -76,20 +78,24 @@ app.post('/login', async (req, res) => {
             return res.status(401).json({ message: 'Unable to verify login innfo at this time. Please try again.' });
         }
   
-        const token = jwt.sign(
-          {
-            userId: username,
-          },
-          '1fafce907062c54ef898e72a20e2e4fab5275e639be048d1d79fdfa5b516459b',
-          {
-            expiresIn: '1h',
-          }
-        );
-  
-        return res.status(200).json({ token, username });
+        if (hashedPasswordToCheck === storedHashedPassword) {
+            const token = jwt.sign(
+              {
+                userId: username,
+              },
+              secretKey,
+              {
+                expiresIn: '7d', 
+              }
+            );
+
+            return res.status(200).json({ token, username });
+        } else {
+            return res.status(401).json({ message: 'These login credentials are incorrect. Please try again.' });
+        }
       } else {
         return res.status(401).json({ message: 'These login credentials are incorrect. Please try again.' });
-      }
+        }
     } catch (error) {
       return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
     }
@@ -260,6 +266,58 @@ app.post('/change-password', async (req, res) => {
       return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
     }
 });
+
+app.post('/user-info', authenticateToken, async (req, res) => {
+    const { username } = req.body;
+    try {
+      const gatherUserInfoQuery = 'SELECT * FROM dinolabsusers WHERE username = $1;';
+      const gatherUserInfoResult = await pool.query(gatherUserInfoQuery, [username]);
+  
+      if (gatherUserInfoResult.error) {
+        return res.status(500).json({ message: 'Unable to fetch user info at this time. Please try again later.' });
+      }
+  
+      const formattedResult = gatherUserInfoResult.rows.map(row => ({
+        username: username,
+        email: row.email,
+        firstname: row.firstname,
+        lastname: row.lastname,
+        image: row.image,
+        phone: row.phone,
+        organizationid: row.organizationid,
+        isadmin: row.isadmin,
+      })); 
+  
+      return res.status(200).json(formattedResult);
+    } catch (error) {
+      return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+});
+
+app.post('/pull-organization-users', authenticateToken, async (req, res) => {
+    const { organizationID } = req.body;
+    console.log(organizationID); 
+    try {
+      const patientInfoQuery = 'SELECT * FROM patientinfo WHERE organizationid = $1;';
+      if (organizationID === 'null' || organizationID === null || organizationID === '') {
+        organizationID = username;
+      }
+  
+      const patientInfoResult = await pool.query(patientInfoQuery, [organizationID]);
+      if (patientInfoResult.error) {
+        return res.status(500).json({ message: 'Unable to gather patient information at this time. Please try again.' });
+      }
+  
+      const patientInfoArray = patientInfoResult.rows;
+      console.log(patientInfoArray);
+  
+      return res.status(200).json({ patientInfoArray });
+    } catch (error) {
+      return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+});
+
+
 
 function capitalizeFirstLetter(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);

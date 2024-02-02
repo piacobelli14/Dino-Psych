@@ -1,0 +1,447 @@
+.managerHeaderContainer {
+    z-index: 1001; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: space-between;
+    width: 100vw; 
+    top: 0; 
+    left: 0; 
+    margin-top: 1rem; 
+    position: absolute; 
+}
+
+.managerTopNavBarContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.managerSkipToContent {
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    margin-left: 2rem; 
+    background-color: rgba(255,255,255,0.0); 
+    border: none; 
+    outline: none;
+    cursor: pointer; 
+}
+
+.managerLogo {
+    width: 2.5rem; 
+    margin-right: 0.5rem;
+}
+
+.managerHeader {
+    font-size: 1.5rem;
+    font-weight: 600;  
+    color: white; 
+    cursor: pointer; 
+}
+
+.managerLogo, 
+.managerHeader, 
+.managerHamburgerIcon {
+    text-shadow: 0 0 2.5px rgba(255, 255, 255, 0.8);
+}
+
+.managerSkipToContent:hover {
+    opacity: 0.8; 
+}
+
+.managerSkipToContent:hover .managerLogo,
+.managerSkipToContent:hover .managerHeader {
+    opacity: 0.5;
+}
+
+.managerHamburgerCircle {
+    width: 2rem; 
+    height: 2rem; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    border: 1.5px solid white; 
+    border-radius: 50%; 
+    background-color: rgba(255,255,255,0.0);
+    margin-right: 2rem; 
+    padding: 0.2rem; 
+    cursor: pointer; 
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
+}
+
+.managerHamburgerIcon {
+    font-size: 1rem; 
+    color: white;
+}
+
+.managerHamburgerCircle:hover {
+    opacity: 0.5; 
+}
+
+.managerHeaderDivider, 
+.navigationButtonDivider {
+    height: 0.05vw;  
+    background-color: white; 
+    opacity: 0.2; 
+    border: none; 
+}
+
+.managerHeaderDivider {
+    width: 100vw; 
+    margin-top: 1.2rem; 
+}
+
+.navigationButtonDivider {
+    width: 100%; 
+    margin-top: 0.5rem;  
+}
+
+.managerHamburgerPopout {
+    z-index: 1000; 
+    position: absolute; 
+    width: 100vw;
+    height: 100vh; 
+    top: 0; 
+    left: 0; 
+    background-color: black;
+}
+
+.managerHamburgerButton {
+    width: 80vw; 
+    margin-left: 10vw;  
+    margin-top: 1rem;
+    border-radius: 0.4rem; 
+    outline: black;
+    cursor: pointer; 
+    padding: 0.8rem; 
+    box-shadow: 0 0 12px #2D3436;
+    font-size: 0.8rem; 
+    font-weight: 500;
+}
+
+.managerHamburgerContent {
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center;
+}
+
+.navigationButtonWrapper {
+    display: flex; 
+    flex-direction: column; 
+    justify-content: flex-start; 
+    align-items: flex-start;
+    width: 100%; 
+    margin-bottom: 1rem; 
+    background-color: rgba(255, 255, 255, 0);
+    border: none; 
+    outline: none; 
+    box-shadow: none;
+}
+
+.navigationButtonWrapper:focus {
+    outline: none; 
+}
+
+.navigationButtonWrapper:hover {
+    background-color: black;
+    opacity: 0.6; 
+}
+
+.navigationButton {
+    margin-left: 1rem; 
+    margin-bottom: 1rem; 
+    font-size: 1rem;
+    font-weight: 400; 
+    color: white; 
+}
+
+.navigationButtonIcon {
+    margin-right: 0.6rem; 
+}
+
+.managerNavigationFlex {
+    display: flex; 
+    justify-content: flex-start; 
+    align-items: center;
+    width: 100%; 
+}
+
+.managerTableWrapper {
+    display: flex; 
+    justify-content: space-evenly; 
+    align-items: center;
+}
+
+.managerTableContainer {
+    position: relative; 
+}
+
+.managerTableContainer, 
+.managerOperationsCard, 
+.managerDemographicsContainer {
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.4rem; 
+    overflow: scroll;
+    margin-top: 1rem;
+}
+
+.managerTableContainer, 
+.managerOperationsCard {
+    height: 44vh; 
+}
+
+.managerDemographicsContainer, 
+.managerTableContainer {
+    display: flex; 
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.managerDemographicsContainer {
+    height: 36vh; 
+    width: 97%; 
+}
+
+.managerTableContainer {
+    width: 60%; 
+}
+
+.managerOperationsCard {
+    width: 35%; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: flex-start; 
+    align-items: center;
+}
+
+.managerOperationsCard::-webkit-scrollbar {
+    width: 0.5px; 
+}
+
+.managerOperationsCard::-webkit-scrollbar-thumb:vertical {
+    background-color: #888;
+}
+
+.managerOperationsCard::-webkit-scrollbar-track:vertical {
+    background-color: #333;
+}
+
+.managerControlTable {
+    width: 90%; 
+    list-style: none;
+    table-layout: fixed; 
+    text-align: center; 
+    padding:  1.5rem 0; 
+}
+
+.managerControlTable th,
+.managerControlTable td {
+    width: auto; 
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+    white-space: nowrap;
+    overflow: scroll;
+}
+
+.managerControlTable tbody {
+    font-size: 0.6rem; 
+}
+
+.managerControlTable thead {
+    font-size: 0.7rem; 
+}
+
+.managerControlCheckbox {
+    cursor: pointer; 
+}
+
+.managerControlCheckbox:hover {
+    opacity: 0.7; 
+}
+
+.managerControlTable thead th:first-child,
+.managerControlTable tbody td:first-child {
+    width: 1rem;
+    padding: 0 0.4rem; 
+}
+
+.managerControlTableNavBar {
+    position: absolute; 
+    display: flex; 
+    justify-content: flex-end;
+    align-items: center;
+    bottom: 0; 
+    width: 100%; 
+    padding: 0 1rem; 
+    background-color: #2D3436; 
+    border-top: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.managerControlTableNavBarButton {
+    background-color: rgba(255, 255, 255, 0); 
+    border: none; 
+    outline: none; 
+    color: white; 
+    width: 1.2rem; 
+    margin-right: 0.5rem; 
+    text-shadow: 0 0 2.5px rgba(255, 255, 255, 0.8);
+    text-align: center; 
+}
+
+.managerControlTableNavBarButton:focus {
+    outline: none; 
+}
+
+.managerControlTableNavBarButton:hover {
+    opacity: 0.6; 
+}
+
+.managerControlTableNavBarIconLeading {
+    width: 1rem; 
+}
+
+.managerControlTableNavBarIconTrailing {
+    width: 0.8rem; 
+}
+
+.operationsHeader {
+    font-size: 0.8vw; 
+    font-weight: 500; 
+    text-decoration: underline; 
+    margin-top: 1.5rem; 
+}
+
+.operationsNameFlex {
+    display: flex;
+    justify-content: space-evenly; 
+    align-items: flex-start;
+    width: 80%; 
+}
+
+.operationsThreeSplitInput, 
+.operationsTwoSplitInput, 
+.operationsInput {
+    padding: 0.6vw 0; 
+}
+
+.operationsSelect {
+    padding:  0.5vw 0.4vw; 
+}
+
+.patientPictureUpload {
+    padding: 0.5vw; 
+}
+
+.operationsThreeSplitInput {
+    width: 30%; 
+}
+
+.operationsTwoSplitInput {
+    width: 40%; 
+}
+
+.operationsInput {
+    width: 30%; 
+}
+
+.operationsSplitInput:focus {
+    outline: none; 
+}
+
+.operationsSplitInput:hover {
+    opacity: 0.6; 
+}
+
+.patientPictureUpload  {
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    width: 50%; 
+    margin-top: 1.5rem; 
+    overflow: hidden;
+    background: rgba(255,255,255,0.0);
+    border: 1px solid #2D3436; 
+    border-radius: 0.5vw;
+    color: grey; 
+    font-size: 0.8vw;
+    font-weight: 600;  
+    cursor: pointer; 
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
+}
+
+.patientPictureUpload input {
+    display: none; 
+}
+
+.patientImageText {
+    cursor: pointer;
+}
+
+.patientPictureUpload:focus, 
+.enrollPatientButton:focus, 
+.cancelOperationButton:focus {
+    outline: none; 
+}
+
+.patientPictureUpload:hover .patientImageText, 
+.patientPictureUpload:hover .patientPicture, 
+.patientPictureUpload:hover, 
+.enrollPatientButton:hover, 
+.cancelOperationButton:hover {
+    opacity: 0.6; 
+}
+
+.enrollPatientButton {
+    width: 40%; 
+    padding: 0.8vw; 
+    background-color: #2D3436; 
+    color: white; 
+    font-size: 0.8vw; 
+    font-weight: 600; 
+    border: 1px solid #2D3436; 
+    border-radius: 0.5vw; 
+    margin-top: 2rem;
+}
+
+.cancelOperationButton {
+    margin-top: 0.2vw; 
+    background-color: rgba(255, 255, 255, 0);
+    border: none; 
+    outline: none; 
+    font-size: 0.7vw; 
+    font-weight: 500; 
+    text-decoration: underline; 
+    color: white; 
+}
+
+.operationsThreeSplitInput:hover, 
+.operationsTwoSplitInput:hover, 
+.operationsInput:hover, 
+.operationsSelect:hover {
+    opacity: 0.6; 
+}
+
+.operationsThreeSplitInput, 
+.operationsTwoSplitInput, 
+.operationsInput, 
+.operationsSelect {
+    background-color: rgba(255,255,255,0.0);
+    border: 1px solid #2D3436; 
+    border-radius: 0.5vw; 
+    color: white; 
+    font-size: 0.8vw; 
+    font-weight: normal; 
+    text-align: center; 
+    outline: none;
+    margin-top: 1.5rem; 
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
+}
+
+.managerError {
+    font-size: 0.8vw; 
+    font-weight: 400; 
+    text-align: center; 
+    color: #E54B4B;
+    margin-top: 0.5vw;  
+}
