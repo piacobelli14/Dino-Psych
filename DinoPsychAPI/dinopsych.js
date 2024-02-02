@@ -317,6 +317,57 @@ app.post('/pull-organization-users', authenticateToken, async (req, res) => {
     }
 });
 
+app.post('/enroll-user', async (req, res) => {
+    const { organizationID, firstName, lastName, age, sex, height, weight, image, email } = req.body;
+    console.log(req.body);
+  
+    try {
+      const newUserValidationQuery = 'SELECT ptid FROM patientinfo';
+      const newUserArchiveValidationQuery = 'SELECT ptid FROM patientinfo_archive';
+      const userInsertionQuery = 'INSERT INTO patientinfo (ptid, ptname, ptsex, ptage, ptheight, ptweight, ptimage, ptemail, organizationid) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)';
+  
+      let patientID;
+      let isUnique = false;
+  
+      while (!isUnique) {
+        patientID = Math.floor(100000 + Math.random() * 900000).toString();
+  
+        const { rows: currentRows } = await pool.query(newUserValidationQuery);
+  
+        for (const row of currentRows) {
+          if (row.ptid && row.ptid.toString() === patientID) {
+            isUnique = false;
+            break;
+          } else {
+            isUnique = true;
+          }
+        }
+  
+        if (isUnique) {
+          const { rows: archiveRows } = await pool.query(newUserArchiveValidationQuery);
+  
+          for (const archiveRow of archiveRows) {
+            if (archiveRow.ptid && archiveRow.ptid.toString() === patientID) {
+              isUnique = false;
+              break;
+            }
+          }
+        }
+      }
+  
+      await pool.query(userInsertionQuery, [patientID, `${firstName} ${lastName}`, sex, age, height, weight, image, email, organizationID]);
+  
+      console.log('Data inserted successfully.');
+  
+      return res.status(200).json({});
+  
+    } catch (error) {
+      console.error('Error:', error);
+      return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+  });
+  
+  
 
 
 function capitalizeFirstLetter(str) {

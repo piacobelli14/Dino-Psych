@@ -16,7 +16,7 @@ const Manager = () => {
     const [selectedPatientIDs, setSelectedPatientIDs] = useState([]); 
     const [selectedPatientInfo, setSelectedPatientInfo] = useState([]); 
     const [isHamburger, setIsHamburger] = useState(false);
-    const [selectedState, setSelectedState] = useState(""); 
+    const [selectedState, setSelectedState] = useState("enroll"); 
 
     const [enrollFirstName, setEnrollFirstName] = useState(); 
     const [enrollLastName, setEnrollLastName] = useState(); 
@@ -24,6 +24,8 @@ const Manager = () => {
     const [enrollImage, setEnrollImage] = useState(); 
     const [enrollHeight, setEnrollHeight] = useState(); 
     const [enrollWeight, setEnrollWeight] = useState();  
+    const [enrollSex, setEnrollSex] = useState(); 
+    const [enrollAge, setEnrollAge] = useState();
 
     const [editFirstName, setEditFirstName] = useState(); 
     const [editLastName, setEditLastName] = useState(); 
@@ -31,6 +33,8 @@ const Manager = () => {
     const [editImage, setEditImage] = useState(); 
     const [editHeight, setEditHeight] = useState(); 
     const [editWeight, setEditWeight] = useState();  
+    const [editSex, setEditSex] = useState(); 
+    const [editAge, setEditAge] = useState();
 
     const [managerError, setManagerError] = useState(); 
 
@@ -141,8 +145,6 @@ const Manager = () => {
             organizationID: organizationID, 
             firstName: enrollFirstName, 
             lastName: enrollLastName, 
-            patientID: enrollPatientID,  
-            deviceID: enrollDeviceID || "", 
             age: enrollAge, 
             sex: enrollSex, 
             height: enrollHeight, 
@@ -151,9 +153,9 @@ const Manager = () => {
             email: enrollEmail,
         };
     
-        if (enrollFirstName != "" && enrollLastName != "" && enrollPatientID != "" && enrollAge != "" && enrollSex != "" &&  enrollHeight != "" && enrollWeight != "" && enrollEmail != "") {
+        if (enrollFirstName != "" && enrollLastName != "" && enrollAge != "" && enrollSex != "" &&  enrollHeight != "" && enrollWeight != "" && enrollEmail != "") {
             try {
-                const response = await fetch('http://172.20.10.3:3000/enroll-user', {
+                const response = await fetch('http://172.20.10.3:3001/enroll-user', {
                     method: 'POST',
                     headers: {
                         "Content-Type": "application/json",
@@ -175,102 +177,7 @@ const Manager = () => {
     };
 
         
-    const handleDischarge = async () => {
-        const isConfirmed = window.confirm(
-            `Are you sure you want to archive these patients and all of their data?\n\n${selectedPatientInfo.map((patient, index) => `${patient.name} - (ID: ${patient.id})`).join('\n\n')}\n\nThis action can not be undone.`
-        );
     
-        if (isConfirmed) {
-            const dischargeUserData = {
-                organizationID: organizationID,
-                patientIDs: selectedPatientIDs
-            };
-    
-            try {
-                const response = await fetch('http://172.20.10.3:3000/discharge-user', {
-                    method: 'POST',
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `${token}`,
-                    },
-                    body: JSON.stringify(dischargeUserData),
-                });
-
-                if (response.status === 200) {
-                    window.location.reload();
-                } 
-                await response.json();
-            } catch (error) {
-                return; 
-            }
-        }
-    };
-
-    const handleDeletion = async () => {
-        const isConfirmed = window.confirm(
-            `Are you sure you want to permanently delete these patients and all of their data?\n\n${selectedPatientInfo.map((patient, index) => `${patient.name} - (ID: ${patient.id})`).join('\n\n')}\n\nThis action can not be undone.`
-        );
-    
-        if (isConfirmed) {
-            const deleteUserData = {
-                organizationID: organizationID,
-                patientIDs: selectedPatientIDs
-            };
-    
-            try {
-                const response = await fetch('http://172.20.10.3:3000/delete-user', {
-                    method: 'POST',
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `${token}`,
-                    },
-                    body: JSON.stringify(deleteUserData),
-                });
-    
-                if (response.status === 200) {
-                    window.location.reload();
-                } 
-                await response.json();
-            } catch (error) {
-                return;
-            }
-        }
-    };
-    
-    const handleEdit = async () => {
-        const editUserData = {
-            organizationID: organizationID, 
-            patientID: editPatientID, 
-            firstName: editFirstName, 
-            lastName: editLastName,  
-            age: editAge, 
-            sex: editSex, 
-            height: editHeight, 
-            weight: editWeight, 
-            image: editImage,
-            email: editEmail,
-        };
-    
-        try {
-            const response = await fetch('http://172.20.10.3:3000/edit-user', {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `${token}`,
-                },
-                body: JSON.stringify(editUserData),
-            });
-
-            if (response.status === 200)  {
-                window.location.reload();
-            } 
-            await response.json();
-        } catch (error) {
-            return;
-        }
-    };
-    
-
     return (
         <div> 
 
@@ -342,7 +249,6 @@ const Manager = () => {
                                     <th></th>
                                     <th>Name</th>
                                     <th>Patient ID</th>
-                                    <th>Device ID</th>
                                     <th>Sex</th>
                                     <th>Age</th>
                                     </tr>
@@ -359,7 +265,6 @@ const Manager = () => {
                                         </td>
                                         <td>{patient.ptname}</td>
                                         <td>{patient.ptid}</td>
-                                        <td>{patient.devid}</td>
                                         <td>{patient.ptsex === 'M' ? 'Male' : 'Female'}</td>
                                         <td>{patient.ptage} yo</td>
 
@@ -370,16 +275,16 @@ const Manager = () => {
 
                             <div className="managerControlTableNavBar">
                                 <button className="managerControlTableNavBarButton"> 
-                                        <FontAwesomeIcon icon={faPersonCirclePlus} className="managerControlTableNavBarIconLeading"/> 
+                                        <FontAwesomeIcon icon={faPersonCirclePlus} className="managerControlTableNavBarIconLeading" onClick={()=> setSelectedState("enroll")}/> 
                                 </button>
-                                <button className="managerControlTableNavBarButton"  disabled={selectedPatientIDs.length === 1 ? false : true}> 
-                                        <FontAwesomeIcon icon={faPersonCircleMinus} className="managerControlTableNavBarIconLeading" style={{'opacity': selectedPatientIDs.length === 1 ? 1 : 0.8}}/> 
+                                <button className="managerControlTableNavBarButton"  disabled={selectedPatientIDs.length > 0 ? false : true} onClick={()=> setSelectedState("discharge")}> 
+                                        <FontAwesomeIcon icon={faPersonCircleMinus} className="managerControlTableNavBarIconLeading" style={{'opacity': selectedPatientIDs.length > 0 ? 1 : 0.6}}/> 
                                 </button>
-                                <button className="managerControlTableNavBarButton"> 
-                                        <FontAwesomeIcon icon={faEdit} className="managerControlTableNavBarIconTrailing"/> 
+                                <button className="managerControlTableNavBarButton" disabled={selectedPatientIDs.length === 1 ? false : true}  onClick={()=> setSelectedState("edit")}> 
+                                        <FontAwesomeIcon icon={faEdit} className="managerControlTableNavBarIconTrailing" style={{'opacity': selectedPatientIDs.length === 1 ? 1 : 0.6}}/> 
                                 </button>
-                                <button className="managerControlTableNavBarButton"> 
-                                        <FontAwesomeIcon icon={faTrashCan} className="managerControlTableNavBarIconTrailing"/> 
+                                <button className="managerControlTableNavBarButton" disabled={selectedPatientIDs.length > 0 ? false : true}  onClick={()=> setSelectedState("delete")}> 
+                                        <FontAwesomeIcon icon={faTrashCan} className="managerControlTableNavBarIconTrailing" style={{'opacity': selectedPatientIDs.length > 0 ? 1 : 0.6}}/> 
                                 </button>
                                 
                             </div>
@@ -394,11 +299,11 @@ const Manager = () => {
                                 </label> 
 
                                 <div className="operationsNameFlex"> 
-                                    <input className="operationsTwoSplitInput" placeholder={"First Name"}/>
-                                    <input className="operationsTwoSplitInput" placeholder={"Last Name"}/>
+                                    <input className="operationsTwoSplitInput" placeholder={"First Name"} value={enrollFirstName} onChange={(e)=> setEnrollFirstName(e.target.value)}/>
+                                    <input className="operationsTwoSplitInput" placeholder={"Last Name"} value={enrollLastName} onChange={(e)=> setEnrollLastName(e.target.value)}/>
                                 </div>
                                 <div className="operationsNameFlex"> 
-                                    <input className="operationsInput" placeholder={"Email"}/>
+                                    <input className="operationsInput" placeholder={"Email"} value={enrollEmail} onChange={(e)=> setEnrollEmail(e.target.value)}/>
                                     <div className="patientPictureUpload">
                                         <label className="patientImageText" htmlFor="imageUpload">Choose a Photo</label>
                                         <input
@@ -406,20 +311,22 @@ const Manager = () => {
                                             type="file"
                                             id="imageUpload"
                                             accept="image/*"
+                                            onChange={handleImageChange}
                                         />
                                     </div>
                                 </div>
                                 <div className="operationsNameFlex"> 
-                                    <input className="operationsThreeSplitInput" placeholder={"Height"} type={"number"}/>
-                                    <input className="operationsThreeSplitInput" placeholder={"Weight"} type={"number"}/>
-                                    <select className="operationsSelect" placeholder={"Sex"}>
+                                    <input className="operationsThreeSplitInput" placeholder={"Height"} type={"number"} value={enrollHeight} onChange={(e)=> setEnrollHeight(e.target.value)}/>
+                                    <input className="operationsThreeSplitInput" placeholder={"Weight"} type={"number"} value={enrollWeight} onChange={(e)=> setEnrollWeight(e.target.value)}/>
+                                    <input className="operationsThreeSplitInput" placeholder={"Age"} type={"number"} value={enrollAge} onChange={(e)=> setEnrollAge(e.target.value)}/>
+                                    <select className="operationsSelect" placeholder={"Sex"} value={enrollSex} onChange={(e)=> setEnrollSex(e.target.value)}>
                                         <option className="operationsSelect" value="" hidden={true}></option>
                                         <option className="operationsSelect" value="M">Male</option>
                                         <option className="operationsSelect" value="F">Female</option>
                                     </select> 
                                 </div>
 
-                                <button className="enrollPatientButton"> 
+                                <button className="enrollPatientButton" onClick={handleEnroll}> 
                                     Confirm Enrollment 
                                 </button>
 
