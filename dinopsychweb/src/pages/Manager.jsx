@@ -18,7 +18,19 @@ const Manager = () => {
     const [isHamburger, setIsHamburger] = useState(false);
     const [selectedState, setSelectedState] = useState(""); 
 
+    const [enrollFirstName, setEnrollFirstName] = useState(); 
+    const [enrollLastName, setEnrollLastName] = useState(); 
+    const [enrollEmail, setEnrollEmail] = useState(); 
+    const [enrollImage, setEnrollImage] = useState(); 
+    const [enrollHeight, setEnrollHeight] = useState(); 
+    const [enrollWeight, setEnrollWeight] = useState();  
 
+    const [editFirstName, setEditFirstName] = useState(); 
+    const [editLastName, setEditLastName] = useState(); 
+    const [editEmail, setEditEmail] = useState(); 
+    const [editImage, setEditImage] = useState(); 
+    const [editHeight, setEditHeight] = useState(); 
+    const [editWeight, setEditWeight] = useState();  
 
     const [managerError, setManagerError] = useState(); 
 
@@ -36,7 +48,7 @@ const Manager = () => {
 
     const fetchUserInfo = async () => {
         try {
-            const response = await fetch('http://10.111.26.70:3001/user-info', {
+            const response = await fetch('http://172.20.10.3:3001/user-info', {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -60,7 +72,7 @@ const Manager = () => {
 
     const fetchOrganizationUsers = async () => {
         try {
-            const response = await fetch('http://10.111.26.70:3001/pull-organization-users', {
+            const response = await fetch('http://172.20.10.3:3001/pull-organization-users', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -105,6 +117,159 @@ const Manager = () => {
                   ]
         );
     };
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        
+        if (file) {
+            const reader = new FileReader();
+        
+            reader.onloadend = () => {
+                const base64Data = reader.result;
+                if (selectedState === "enroll") {
+                    setEnrollImage(base64Data);
+                } else {
+                    setEditImage(base64Data); 
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleEnroll = async () => {
+        const newUserData = {
+            organizationID: organizationID, 
+            firstName: enrollFirstName, 
+            lastName: enrollLastName, 
+            patientID: enrollPatientID,  
+            deviceID: enrollDeviceID || "", 
+            age: enrollAge, 
+            sex: enrollSex, 
+            height: enrollHeight, 
+            weight: enrollWeight, 
+            image: enrollImage || "default", 
+            email: enrollEmail,
+        };
+    
+        if (enrollFirstName != "" && enrollLastName != "" && enrollPatientID != "" && enrollAge != "" && enrollSex != "" &&  enrollHeight != "" && enrollWeight != "" && enrollEmail != "") {
+            try {
+                const response = await fetch('http://172.20.10.3:3000/enroll-user', {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `${token}`,
+                    },
+                    body: JSON.stringify(newUserData),
+                });
+    
+                if (response.status === 200) {
+                    window.location.reload();
+                }
+                await response.json();
+            } catch (error) {
+                return;
+            }
+        } else {
+            setEnrollmentError('Please fill in all fields.')
+        }
+    };
+
+        
+    const handleDischarge = async () => {
+        const isConfirmed = window.confirm(
+            `Are you sure you want to archive these patients and all of their data?\n\n${selectedPatientInfo.map((patient, index) => `${patient.name} - (ID: ${patient.id})`).join('\n\n')}\n\nThis action can not be undone.`
+        );
+    
+        if (isConfirmed) {
+            const dischargeUserData = {
+                organizationID: organizationID,
+                patientIDs: selectedPatientIDs
+            };
+    
+            try {
+                const response = await fetch('http://172.20.10.3:3000/discharge-user', {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `${token}`,
+                    },
+                    body: JSON.stringify(dischargeUserData),
+                });
+
+                if (response.status === 200) {
+                    window.location.reload();
+                } 
+                await response.json();
+            } catch (error) {
+                return; 
+            }
+        }
+    };
+
+    const handleDeletion = async () => {
+        const isConfirmed = window.confirm(
+            `Are you sure you want to permanently delete these patients and all of their data?\n\n${selectedPatientInfo.map((patient, index) => `${patient.name} - (ID: ${patient.id})`).join('\n\n')}\n\nThis action can not be undone.`
+        );
+    
+        if (isConfirmed) {
+            const deleteUserData = {
+                organizationID: organizationID,
+                patientIDs: selectedPatientIDs
+            };
+    
+            try {
+                const response = await fetch('http://172.20.10.3:3000/delete-user', {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `${token}`,
+                    },
+                    body: JSON.stringify(deleteUserData),
+                });
+    
+                if (response.status === 200) {
+                    window.location.reload();
+                } 
+                await response.json();
+            } catch (error) {
+                return;
+            }
+        }
+    };
+    
+    const handleEdit = async () => {
+        const editUserData = {
+            organizationID: organizationID, 
+            patientID: editPatientID, 
+            firstName: editFirstName, 
+            lastName: editLastName,  
+            age: editAge, 
+            sex: editSex, 
+            height: editHeight, 
+            weight: editWeight, 
+            image: editImage,
+            email: editEmail,
+        };
+    
+        try {
+            const response = await fetch('http://172.20.10.3:3000/edit-user', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `${token}`,
+                },
+                body: JSON.stringify(editUserData),
+            });
+
+            if (response.status === 200)  {
+                window.location.reload();
+            } 
+            await response.json();
+        } catch (error) {
+            return;
+        }
+    };
+    
 
     return (
         <div> 
@@ -222,45 +387,48 @@ const Manager = () => {
 
                         <div className="managerOperationsCard">
 
-                            <label className="operationsHeader"> 
-                                Enroll New Patient
-                            </label> 
+                            <div className="operationsContent">
 
-                            <div className="operationsNameFlex"> 
-                                <input className="operationsTwoSplitInput" placeholder={"First Name"}/>
-                                <input className="operationsTwoSplitInput" placeholder={"Last Name"}/>
-                            </div>
-                            <div className="operationsNameFlex"> 
-                                <input className="operationsInput" placeholder={"Email"}/>
-                                <div className="patientPictureUpload">
-                                    <label className="patientImageText" htmlFor="imageUpload">Choose a Photo</label>
-                                    <input
-                                        className="patientPicture"
-                                        type="file"
-                                        id="imageUpload"
-                                        accept="image/*"
-                                    />
+                                <label className="operationsHeader"> 
+                                    Enroll New Patient
+                                </label> 
+
+                                <div className="operationsNameFlex"> 
+                                    <input className="operationsTwoSplitInput" placeholder={"First Name"}/>
+                                    <input className="operationsTwoSplitInput" placeholder={"Last Name"}/>
                                 </div>
+                                <div className="operationsNameFlex"> 
+                                    <input className="operationsInput" placeholder={"Email"}/>
+                                    <div className="patientPictureUpload">
+                                        <label className="patientImageText" htmlFor="imageUpload">Choose a Photo</label>
+                                        <input
+                                            className="patientPicture"
+                                            type="file"
+                                            id="imageUpload"
+                                            accept="image/*"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="operationsNameFlex"> 
+                                    <input className="operationsThreeSplitInput" placeholder={"Height"} type={"number"}/>
+                                    <input className="operationsThreeSplitInput" placeholder={"Weight"} type={"number"}/>
+                                    <select className="operationsSelect" placeholder={"Sex"}>
+                                        <option className="operationsSelect" value="" hidden={true}></option>
+                                        <option className="operationsSelect" value="M">Male</option>
+                                        <option className="operationsSelect" value="F">Female</option>
+                                    </select> 
+                                </div>
+
+                                <button className="enrollPatientButton"> 
+                                    Confirm Enrollment 
+                                </button>
+
+                                <button className="cancelOperationButton"> 
+                                    Cancel Enrollment
+                                </button>
+
+                                <div className="managerError">Error{/*loginError*/}</div>
                             </div>
-                            <div className="operationsNameFlex"> 
-                                <input className="operationsThreeSplitInput" placeholder={"Height"} type={"number"}/>
-                                <input className="operationsThreeSplitInput" placeholder={"Weight"} type={"number"}/>
-                                <select className="operationsSelect" placeholder={"Sex"}>
-                                    <option className="operationsSelect" value="" hidden={true}></option>
-                                    <option className="operationsSelect" value="M">Male</option>
-                                    <option className="operationsSelect" value="F">Female</option>
-                                </select> 
-                            </div>
-
-                            <button className="enrollPatientButton"> 
-                                Confirm Enrollment 
-                            </button>
-
-                            <button className="cancelOperationButton"> 
-                                Cancel Enrollment
-                            </button>
-
-                            <div className="managerError">{/*loginError*/}</div>
 
                         </div>
                     </div>
