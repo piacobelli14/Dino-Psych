@@ -357,57 +357,56 @@ const Manager = () => {
         }        
     };
 
-    const data = {
+    const sexChartData = {
         labels: ['Male', 'Female'],
         datasets: [
-          {
-            label: 'Gender Distribution',
-            data: [maleCount, femaleCount],
-            backgroundColor: [
-              'rgba(54, 162, 235, 0.6)',
-              'rgba(255, 99, 132, 0.6)',
-            ],
-            borderColor: [
-              'rgba(54, 162, 235, 1)',
-              'rgba(255, 99, 132, 1)',
-            ],
-            borderWidth: 1,
-          },
+            {
+                label: 'Gender Distribution',
+                data: [maleCount, femaleCount],
+                backgroundColor: [
+                'rgba(54, 162, 235, 0.6)',
+                'rgba(255, 99, 132, 0.6)',
+                ],
+                borderColor: [
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 99, 132, 1)',
+                ],
+                borderWidth: 1,
+            },
         ],
-      };
-      
-      // Add options for cutout and legend
-      const options = {
+    };
+     
+    const sexChartOptions = {
         plugins: {
-          legend: {
-            display: false // This will hide the legend
-          }
+            legend: {
+                display: false 
+            }
         },
-        cutout: '50%' // This creates a cutout of 50%, adjust as needed
-      };
+        cutout: '50%' 
+    };
     
-    const barChartData = {
+    const ageChartData = {
         labels: sortedAgeRangeCount.map(item => item.age_range),
         datasets: [{
             label: 'Age Range Distribution',
-            data: sortedAgeRangeCount.map(item => parseInt(item.count, 10)), // Convert string to number
+            data: sortedAgeRangeCount.map(item => parseInt(item.count, 10)), 
             backgroundColor: 'rgba(54, 162, 235, 0.6)',
             borderColor: 'rgba(54, 162, 235, 1)',
             borderWidth: 1,
         }]
     };
 
-    const barChartOptions = {
+    const ageChartOptions = {
         scales: {
-          y: {
+        y: {
             beginAtZero: true,
             ticks: {
-              precision: 0, // Ensure only whole numbers
-              stepSize: 1, // Ensure that the y-axis steps at every whole number
+              precision: 0,
+              stepSize: 1, 
             },
             grid: {
-              display: false, // Hide grid lines
-              drawBorder: true, // Hide the axis line
+              display: false, 
+              drawBorder: true, 
             },
             border: {
                 lineWidth: 2,
@@ -416,8 +415,8 @@ const Manager = () => {
           },
           x: {
             grid: {
-              display: false, // Hide grid lines
-              drawBorder: false, // Optionally hide the axis line
+              display: false,
+              drawBorder: false, 
             },
             border: {
                 lineWidth: 2,
@@ -427,15 +426,15 @@ const Manager = () => {
         },
         plugins: {
           legend: {
-            display: false, // Optionally hide the legend if not needed
+            display: false, 
           }
         },
         elements: {
           line: {
-            borderWidth: 0 // Hide line borders
+            borderWidth: 0 
           },
           point: {
-            radius: 0 // Hide points
+            radius: 0 
           }
         }
       };
@@ -721,16 +720,15 @@ const Manager = () => {
 
                 {!isHamburger && (
                      <div className="managerTableWrapper">
-
-
                         <div className="managerDemographicsContainerAge">
                             <div className="demographicsAgeChartWrapper">
                            
                                 <div className="demographicsAgeChartContainer"> 
 
-                                    <Bar data={barChartData} options={barChartOptions}/>
+                                    <Bar data={ageChartData} options={ageChartOptions}/>
 
                                     <div className="demographicsBreakdownListWrapper">
+                                        <br/>
                                         <th className="demographicsListHeader">Age Distribution</th>
                                         
                                         <ul className="demographicsBreakdownList">
@@ -749,10 +747,10 @@ const Manager = () => {
                             <div className="demographicsSexChartWrapper"> 
 
                                 <div className="demographicsSexChartContainer"> 
-                                    <Pie data={data} options={options}/>
-
+                                    <Pie data={sexChartData} options={sexChartOptions}/>
 
                                     <div className="demographicsBreakdownListWrapper">
+                                        <br/>
                                         <th className="demographicsListHeader">Sex Distribution</th>
 
                                         <ul className="demographicsBreakdownList">
@@ -767,19 +765,9 @@ const Manager = () => {
                                     </div>
                                 </div>
                             </div>
-                           
-
-                            
-
-                            
-
                         </div>
                     </div>
                 )}
-
-                
-
-            
 
                 {!isHamburger && (
                     <div className="managerNavigationFlex"> 
