@@ -315,6 +315,20 @@ app.post('/pull-organization-users', authenticateToken, async (req, res) => {
     }
 });
 
+app.post('/selected-user-placeholders', async (req, res) => {
+    const { patientID, organizationID } = req.body;
+    try {
+  
+      const placeholderQuery = 'SELECT * FROM patientinfo WHERE ptid = $1::double precision AND organizationid = $2;';
+  
+      const placeholderResult = await pool.query(placeholderQuery, [patientID, organizationID]);    
+      
+      res.status(200).json({ patientInfo: placeholderResult.rows });
+    } catch (error) {
+      res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+});
+
 app.post('/enroll-user', async (req, res) => {
     const { organizationID, firstName, lastName, age, sex, height, weight, image, email } = req.body;
     try {
@@ -360,25 +374,85 @@ app.post('/enroll-user', async (req, res) => {
     }
 });
 
-app.post('/selected-user-placeholders', async (req, res) => {
-    const { patientID, organizationID } = req.body;
-    console.log(req.body); 
+app.post('/edit-user', async (req, res) => {
+    const { organizationID, patientID, firstName, lastName, age, sex, height, weight, image, email } = req.body;
     try {
+      const editQuery = `
+        UPDATE patientinfo
+        SET ptname = $1, ptage = $2, ptsex = $3, ptheight = $4, ptweight = $5, ptimage = $6, ptemail = $7
+        WHERE ptid = $8::double precision AND organizationid = $9;
+      `;
   
-      const placeholderQuery = 'SELECT * FROM patientinfo WHERE ptid = $1::double precision AND organizationid = $2;';
+      await pool.query(editQuery, [firstName + ' ' + lastName, age, sex, height, weight, image, email, patientID, organizationID]);
   
-      const placeholderResult = await pool.query(placeholderQuery, [patientID, organizationID]);    
-
-      console.log(placeholderResult.rows);
-      
-      res.status(200).json({ patientInfo: placeholderResult.rows });
+      res.status(200).json({});
     } catch (error) {
       res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
     }
-});
-  
-  
+});  
 
+app.post('/discharge-user', async (req, res) => {
+    const { organizationID, patientIDs } = req.body;
+    try {
+        const dischargeQueries = [
+            {
+                text: `
+                    WITH discharged_patients AS (
+                        DELETE FROM patientinfo
+                        WHERE organizationid = $1 AND ptid = ANY($2::double precision[])
+                        RETURNING *
+                    )
+                    INSERT INTO patientinfo_archive
+                    SELECT * FROM discharged_patients
+                `,
+                values: [organizationID, patientIDs],
+            },
+            {
+                text: `
+                    WITH discharged_data AS (
+                        DELETE FROM patientdata
+                        WHERE organizationid = $1 AND ptid = ANY($2::double precision[])
+                        RETURNING *
+                    )
+                    INSERT INTO patientdata_archive
+                    SELECT * FROM discharged_data
+                `,
+                values: [organizationID, patientIDs],
+            },
+        ];
+
+        for (const query of dischargeQueries) {
+            await pool.query(query.text, query.values);
+        }
+        return res.status(200).json({});
+
+    } catch (error) {
+        return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+});
+
+app.post('/delete-user', async (req, res) => {
+    const { organizationID, patientIDs } = req.body;
+    try {
+        const dischargeQueries = [
+            {
+                text: 'DELETE FROM patientinfo WHERE organizationid = $1 AND ptid = ANY($2::double precision[])',
+                values: [organizationID, patientIDs],
+            },
+            {
+                text: 'DELETE FROM patientdata WHERE organizationid = $1 AND ptid = ANY($2::double precision[])',
+                values: [organizationID, patientIDs],
+            },
+        ];
+         
+        for (const query of dischargeQueries) {
+           await pool.query(query.text, query.values);
+        }
+        return res.status(200).json({});
+    } catch (error) {
+        return res.status(500).json({ message: 'failure' });
+    }
+});
 
 function capitalizeFirstLetter(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);

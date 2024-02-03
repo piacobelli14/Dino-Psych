@@ -223,6 +223,108 @@ const Manager = () => {
         }
     };
 
+    const handleEdit = async () => {
+        const editUserData = {
+            organizationID: organizationID, 
+            patientID: selectedPatientIDs[0], 
+            firstName: editFirstName ? editFirstName : firstNamePlaceholder, 
+            lastName: editLastName ? editLastName : lastNamePlaceholder,  
+            age: editAge ? parseInt(editAge) : parseInt(agePlaceholder), 
+            sex: editSex ? editSex : sexPlaceholder, 
+            height: editHeight ? parseInt(editHeight) : parseInt(heightPlaceholder), 
+            weight: editWeight ? parseInt(editWeight) : parseInt(weightPlaceholder), 
+            image: editImage ? editImage : imagePlaceholder,
+            email: editEmail ? editEmail : emailPlaceholder,
+        };
+    
+        try {
+            const response = await fetch('http://172.20.10.3:3001/edit-user', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `${token}`,
+                },
+                body: JSON.stringify(editUserData),
+            });
+
+            if (response.status === 200)  {
+                window.location.reload();
+            } 
+            await response.json();
+        } catch (error) {
+            return;
+        }
+    }; 
+
+    const handleDischarge = async () => {
+        const isConfirmed = window.confirm(
+            `Are you sure you want to archive these patients and all of their data?\n\n${selectedPatientInfo.map((patient, index) => `${patient.name} - (ID: ${patient.id})`).join('\n\n')}\n\nThis action can not be undone.`
+        );
+    
+        if (isConfirmed) {
+            const dischargeUserData = {
+                organizationID: organizationID,
+                patientIDs: selectedPatientIDs
+            };
+    
+            try {
+                const response = await fetch('http://172.20.10.3:3001/discharge-user', {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `${token}`,
+                    },
+                    body: JSON.stringify(dischargeUserData),
+                });
+
+                if (response.status === 200)  {
+                    window.location.reload();
+                } 
+                await response.json();
+            } catch (error) {
+                return; 
+            }
+        }
+    };
+
+    const handleDeletion = async () => {
+        const isConfirmed = window.confirm(
+            `Are you sure you want to permanently delete these patients and all of their data?\n\n${selectedPatientInfo.map((patient, index) => `${patient.name} - (ID: ${patient.id})`).join('\n\n')}\n\nThis action can not be undone.`
+        );
+    
+        if (isConfirmed) {
+            const deleteUserData = {
+                organizationID: organizationID,
+                patientIDs: selectedPatientIDs
+            };
+    
+            try {
+                const response = await fetch('http://172.20.10.3:3001/delete-user', {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `${token}`,
+                    },
+                    body: JSON.stringify(deleteUserData),
+                });
+    
+                if (response.status === 200) {
+                    window.location.reload();
+                } 
+                await response.json();
+            } catch (error) {
+                return;
+            }
+        }
+    };
+    
+    
+
+
+
+
+
+
         
     
     return (
@@ -387,7 +489,7 @@ const Manager = () => {
                                 {selectedState === "enroll" && (
                                     <div className="operationsNameFlex"> 
                                         <input className="operationsInput" placeholder={"Email"} value={enrollEmail} onChange={(e)=> setEnrollEmail(e.target.value)}/>
-                                        <div className="patientPictureUpload">
+                                        <div className="patientPictureUpload" style={{"backgroundColor": enrollImage ? "#2D3436" : "rgba(255,255,255,0.0)"}}>
                                             <label className="patientImageText" htmlFor="imageUpload">Choose a Photo</label>
                                             <input
                                                 className="patientPicture"
@@ -421,7 +523,7 @@ const Manager = () => {
                                 {selectedState === "edit" && (
                                     <div className="operationsNameFlex"> 
                                         <input className="operationsInput" placeholder={emailPlaceholder} value={editEmail} onChange={(e)=> setEditEmail(e.target.value)}/>
-                                        <div className="patientPictureUpload">
+                                        <div className="patientPictureUpload" style={{"backgroundColor": imagePlaceholder ? "#2D3436" : "rgba(255,255,255,0.0)"}}>
                                             <label className="patientImageText" htmlFor="imageUpload">Choose a Photo</label>
                                             <input
                                                 className="patientPicture"
@@ -466,19 +568,19 @@ const Manager = () => {
                                 )}
 
                                 {selectedState === "discharge" && (
-                                    <button className="enrollPatientButton"> 
+                                    <button className="enrollPatientButton" onClick={handleDischarge}> 
                                         Confirm Discharge 
                                     </button>
                                 )}
 
                                 {selectedState === "edit" && (
-                                    <button className="enrollPatientButton"> 
+                                    <button className="enrollPatientButton" onClick={handleEdit}> 
                                         Confirm Edits 
                                     </button>
                                 )}
 
                                 {selectedState === "delete" && (
-                                    <button className="enrollPatientButton"> 
+                                    <button className="enrollPatientButton" onClick={handleDeletion}> 
                                         Confirm Deletion
                                     </button>
                                 )}
