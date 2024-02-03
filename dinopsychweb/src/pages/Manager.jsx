@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react"; 
 import { useNavigate } from "react-router-dom"; 
 import { Chart } from "chart.js/auto"; 
-import { Pie, Bar } from 'react-chartjs-2';
-import 'chartjs-plugin-datalabels';
+import { Pie, Bar } from "react-chartjs-2";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faX, faFile, faPerson, faRightFromBracket, faPersonCirclePlus, faPersonCircleMinus, faEdit, faTrash, faStopwatch, faDeleteLeft, faTrashCan } from '@fortawesome/free-solid-svg-icons';
-
 
 import DinoLabsLogoWhite from "../assets/dinoLabsLogo_white.png"; 
 
@@ -28,7 +26,6 @@ const Manager = () => {
     const sortedAgeRangeCount = ageReordered.map(orderItem => {
         return ageRangeCount.find(item => item.age_range === orderItem) || { age_range: orderItem, count: 0 };
     });
-
 
     const [enrollFirstName, setEnrollFirstName] = useState(""); 
     const [enrollLastName, setEnrollLastName] = useState(""); 
@@ -437,17 +434,7 @@ const Manager = () => {
             radius: 0 
           }
         }
-      };
-      
-
-    
-
-
-
-
-
-
-        
+    };
     
     return (
         <div> 
@@ -491,7 +478,7 @@ const Manager = () => {
                             <div className="navigationButtonDivider"/>
                         </button>
 
-                        <button className="navigationButtonWrapper">
+                        <button className="navigationButtonWrapper" onClick={()=> navigate('/dashboard')}>
                             <div className="navigationButton">
                                 <FontAwesomeIcon icon={faPerson} className="navigationButtonIcon"/>
                                 My Account

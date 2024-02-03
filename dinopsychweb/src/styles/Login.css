@@ -131,6 +131,7 @@
 
 .loginInput, 
 .loginInputPassword { 
+    color: black; 
     font-weight: 500; 
     box-shadow: 0 0 3px rgba(255, 255, 255, 0.8);
 }

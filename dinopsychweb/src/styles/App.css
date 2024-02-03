@@ -7,7 +7,7 @@ body {
   height: 100vh;
   background-position-x: 200%;
   background-position-y: 100%; 
-  color: white;
+  color: white; 
   display: flex;
   justify-content: center;
   align-items: top;

@@ -100,6 +100,7 @@
     border-radius: 0.4rem; 
     font-size: 1rem; 
     font-weight: 500; box-shadow: 0 0 3px rgba(255, 255, 255, 0.8);
+    color: black;
 }
 
 .registerInput, 
@@ -180,6 +181,7 @@
     font-weight: 600;  
     margin-bottom: 0.5rem;
     cursor: pointer; 
+    color: white;
 }
 
 .profilePictureUpload input {

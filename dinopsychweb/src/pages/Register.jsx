@@ -166,7 +166,7 @@ const Register = () => {
 
                     <input className="registerInput" placeholder={"Username"} onChange={(e) => setUsername(e.target.value)}/>
                     
-                    <div className="profilePictureUpload">
+                    <div className="profilePictureUpload" style={{"backgroundColor": profileImage ? "#2D3436" : "rgba(255,255,255,0.0)"}}>
                         <label className="profileImageText" htmlFor="imageUpload">Choose a Photo</label>
                         <input
                             className="profilePicture"
