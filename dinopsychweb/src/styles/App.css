@@ -4,12 +4,15 @@
 
 body {
   width: 100vw;
+  height: 100vh;
+  background-position-x: 200%;
+  background-position-y: 100%; 
   color: white;
   display: flex;
   justify-content: center;
   align-items: top;
   margin-left: 0;
-  overflow-y: scroll;
+  overflow-y: hidden;
   overflow-x: hidden;
   animation: shine 2s infinite;
   position: relative; /* Add this line */

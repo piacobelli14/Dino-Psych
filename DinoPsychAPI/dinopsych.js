@@ -322,7 +322,7 @@ app.post('/selected-user-placeholders', async (req, res) => {
       const placeholderQuery = 'SELECT * FROM patientinfo WHERE ptid = $1::double precision AND organizationid = $2;';
   
       const placeholderResult = await pool.query(placeholderQuery, [patientID, organizationID]);    
-      
+
       res.status(200).json({ patientInfo: placeholderResult.rows });
     } catch (error) {
       res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
@@ -451,6 +451,64 @@ app.post('/delete-user', async (req, res) => {
         return res.status(200).json({});
     } catch (error) {
         return res.status(500).json({ message: 'failure' });
+    }
+});
+
+app.post('/user-demographic-info', async (req, res) => {
+    const { organizationID } = req.body;
+    console.log(organizationID); 
+    try {
+      const maleCountQuery = `
+          SELECT COUNT(*) AS malecount FROM patientinfo WHERE organizationid = $1 AND ptsex = 'M';
+      `;
+      
+      const femaleCountQuery = `
+          SELECT COUNT(*) AS femalecount FROM patientinfo WHERE organizationid = $1 AND ptsex = 'F';
+      `;
+  
+      const ageDistributionQuery = `
+          SELECT
+              COALESCE(COUNT(p.ptage), 0) AS count,
+              age_range
+          FROM (
+              SELECT unnest(ARRAY['0-17', '18-24', '25-34', '35-44', '45-54', '55-64', '65+']) AS age_range
+          ) AS ranges
+          LEFT JOIN patientinfo p ON
+              organizationid = $1 AND
+              CASE
+                  WHEN p.ptage BETWEEN 0 AND 17 THEN '0-17'
+                  WHEN p.ptage BETWEEN 18 AND 24 THEN '18-24'
+                  WHEN p.ptage BETWEEN 25 AND 34 THEN '25-34'
+                  WHEN p.ptage BETWEEN 35 AND 44 THEN '35-44'
+                  WHEN p.ptage BETWEEN 45 AND 54 THEN '45-54'
+                  WHEN p.ptage BETWEEN 55 AND 64 THEN '55-64'
+                  WHEN p.ptage >= 65 THEN '65+'
+              END = ranges.age_range
+          GROUP BY age_range;
+      `;
+  
+      const { rows: maleRows } = await pool.query(maleCountQuery, [organizationID]);
+      const maleCount = maleRows[0].malecount;
+  
+      const { rows: femaleRows } = await pool.query(femaleCountQuery, [organizationID]);
+      const femaleCount = femaleRows[0].femalecount;
+  
+      const { rows: ageRows } = await pool.query(ageDistributionQuery, [organizationID]);
+      const ageDistribution = ageRows;
+
+      console.log({
+        maleCount,
+        femaleCount,
+        ageDistribution
+      }); 
+  
+      res.status(200).json({
+        maleCount,
+        femaleCount,
+        ageDistribution
+      });
+    } catch (error) {
+      res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
     }
 });
 

@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react"; 
 import { useNavigate } from "react-router-dom"; 
+import { Chart } from "chart.js/auto"; 
+import { Pie, Bar } from 'react-chartjs-2';
+import 'chartjs-plugin-datalabels';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faX, faFile, faPerson, faRightFromBracket, faPersonCirclePlus, faPersonCircleMinus, faEdit, faTrash, faStopwatch, faDeleteLeft, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+
 
 import DinoLabsLogoWhite from "../assets/dinoLabsLogo_white.png"; 
 
@@ -17,6 +21,14 @@ const Manager = () => {
     const [selectedPatientInfo, setSelectedPatientInfo] = useState([]); 
     const [isHamburger, setIsHamburger] = useState(false);
     const [selectedState, setSelectedState] = useState("enroll"); 
+    const [maleCount, setMaleCount] = useState(0); 
+    const [femaleCount, setFemaleCount] = useState(0); 
+    const [ageRangeCount, setAgeRangeCount] = useState([]); 
+    const ageReordered = ['0-17', '18-24', '25-34', '35-44', '45-54', '55-64', '65+'];
+    const sortedAgeRangeCount = ageReordered.map(orderItem => {
+        return ageRangeCount.find(item => item.age_range === orderItem) || { age_range: orderItem, count: 0 };
+    });
+
 
     const [enrollFirstName, setEnrollFirstName] = useState(""); 
     const [enrollLastName, setEnrollLastName] = useState(""); 
@@ -57,6 +69,7 @@ const Manager = () => {
 
     useEffect(() => {
         fetchOrganizationUsers(); 
+        fetchDemographicInfo();
     }, [organizationID]);
 
     const fetchUserInfo = async () => {
@@ -317,7 +330,117 @@ const Manager = () => {
             }
         }
     };
+
+    const fetchDemographicInfo = async () => {
+        try {
+            const response = await fetch('http://172.20.10.3:3001/user-demographic-info', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `${token}`,
+                },
+                body: JSON.stringify({
+                    organizationID,
+                }),
+            });
+        
+            if (response.status !== 200) {
+                throw new Error(`Internal Server Error`);
+            }
+        
+            const data = await response.json();
+            setMaleCount(data.maleCount);
+            setFemaleCount(data.femaleCount);
+            setAgeRangeCount(data.ageDistribution);
+        } catch (error) {
+            return;
+        }        
+    };
+
+    const data = {
+        labels: ['Male', 'Female'],
+        datasets: [
+          {
+            label: 'Gender Distribution',
+            data: [maleCount, femaleCount],
+            backgroundColor: [
+              'rgba(54, 162, 235, 0.6)',
+              'rgba(255, 99, 132, 0.6)',
+            ],
+            borderColor: [
+              'rgba(54, 162, 235, 1)',
+              'rgba(255, 99, 132, 1)',
+            ],
+            borderWidth: 1,
+          },
+        ],
+      };
+      
+      // Add options for cutout and legend
+      const options = {
+        plugins: {
+          legend: {
+            display: false // This will hide the legend
+          }
+        },
+        cutout: '50%' // This creates a cutout of 50%, adjust as needed
+      };
     
+    const barChartData = {
+        labels: sortedAgeRangeCount.map(item => item.age_range),
+        datasets: [{
+            label: 'Age Range Distribution',
+            data: sortedAgeRangeCount.map(item => parseInt(item.count, 10)), // Convert string to number
+            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1,
+        }]
+    };
+
+    const barChartOptions = {
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              precision: 0, // Ensure only whole numbers
+              stepSize: 1, // Ensure that the y-axis steps at every whole number
+            },
+            grid: {
+              display: false, // Hide grid lines
+              drawBorder: true, // Hide the axis line
+            },
+            border: {
+                lineWidth: 2,
+                color: 'grey',
+            }
+          },
+          x: {
+            grid: {
+              display: false, // Hide grid lines
+              drawBorder: false, // Optionally hide the axis line
+            },
+            border: {
+                lineWidth: 2,
+                color: 'grey',
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: false, // Optionally hide the legend if not needed
+          }
+        },
+        elements: {
+          line: {
+            borderWidth: 0 // Hide line borders
+          },
+          point: {
+            radius: 0 // Hide points
+          }
+        }
+      };
+      
+
     
 
 
@@ -599,7 +722,8 @@ const Manager = () => {
                 {!isHamburger && (
                      <div className="managerTableWrapper">
                         <div className="managerDemographicsContainer">
-
+                            <Pie data={data} options={options} />
+                            <Bar data={barChartData} options={barChartOptions}/>
 
                         </div>
                     </div>

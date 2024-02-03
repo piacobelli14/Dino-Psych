@@ -201,6 +201,7 @@
 .managerDemographicsContainer {
     height: 32vh; 
     width: 97%; 
+    overflow: scroll !important;
 }
 
 .managerTableContainer {
