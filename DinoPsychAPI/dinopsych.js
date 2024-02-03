@@ -296,7 +296,6 @@ app.post('/user-info', authenticateToken, async (req, res) => {
 
 app.post('/pull-organization-users', authenticateToken, async (req, res) => {
     const { organizationID } = req.body;
-    console.log(organizationID); 
     try {
       const patientInfoQuery = 'SELECT * FROM patientinfo WHERE organizationid = $1;';
       if (organizationID === 'null' || organizationID === null || organizationID === '') {
@@ -309,7 +308,6 @@ app.post('/pull-organization-users', authenticateToken, async (req, res) => {
       }
   
       const patientInfoArray = patientInfoResult.rows;
-      console.log(patientInfoArray);
   
       return res.status(200).json({ patientInfoArray });
     } catch (error) {
@@ -319,8 +317,6 @@ app.post('/pull-organization-users', authenticateToken, async (req, res) => {
 
 app.post('/enroll-user', async (req, res) => {
     const { organizationID, firstName, lastName, age, sex, height, weight, image, email } = req.body;
-    console.log(req.body);
-  
     try {
       const newUserValidationQuery = 'SELECT ptid FROM patientinfo';
       const newUserArchiveValidationQuery = 'SELECT ptid FROM patientinfo_archive';
@@ -357,15 +353,29 @@ app.post('/enroll-user', async (req, res) => {
   
       await pool.query(userInsertionQuery, [patientID, `${firstName} ${lastName}`, sex, age, height, weight, image, email, organizationID]);
   
-      console.log('Data inserted successfully.');
-  
       return res.status(200).json({});
-  
     } catch (error) {
       console.error('Error:', error);
       return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
     }
-  });
+});
+
+app.post('/selected-user-placeholders', async (req, res) => {
+    const { patientID, organizationID } = req.body;
+    console.log(req.body); 
+    try {
+  
+      const placeholderQuery = 'SELECT * FROM patientinfo WHERE ptid = $1::double precision AND organizationid = $2;';
+  
+      const placeholderResult = await pool.query(placeholderQuery, [patientID, organizationID]);    
+
+      console.log(placeholderResult.rows);
+      
+      res.status(200).json({ patientInfo: placeholderResult.rows });
+    } catch (error) {
+      res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+});
   
   
 

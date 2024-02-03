@@ -451,7 +451,7 @@
 }
 
 .operationsContent {
-    width: 70%;
+    width: 80%;
     height: 100%; 
     position: absolute; 
     top: 0;
@@ -459,4 +459,38 @@
     flex-direction: column; 
     justify-content: flex-start; 
     align-items: center;
+}
+
+.operationsRemovalListWrapper {
+    width: 90%;
+    height: 60%;
+    border: 0.5px solid white;
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+    border-radius: 0.5rem;
+    margin-top: 1rem;
+    overflow: auto; 
+}
+
+.operationsRemovalList {
+    list-style: none;
+    table-layout: fixed;
+    text-align: center;
+    padding: 0; 
+    margin: 0;
+}
+
+.removalListItem {
+    margin-top: 1rem;
+}
+
+.removalListItemHeader {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-decoration: underline;
+    margin-top: 0.2rem; 
+}
+
+.removalListItemSubheader {
+    font-size: 0.6rem;
+    font-weight: 500;
 }
