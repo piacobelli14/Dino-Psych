@@ -519,7 +519,7 @@
 }
 
 .demographicsSexChartWrapper {
-    width: 60%; 
+    width: 70%; 
 }
 
 .demographicsAgeChartWrapper {
@@ -569,9 +569,9 @@
     display: flex; 
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     margin-left: 2vw; 
-    z-index: 2000; 
+    margin-top: 1vh; 
 }
 
 .demographicsBreakdownList {
@@ -580,15 +580,15 @@
 }
 
 .demographicsListHeader {
-    font-size: 0.5rem; 
-    font-weight: 600; 
+    font-size: 0.6rem; 
+    font-weight: 700; 
     white-space: nowrap;
     color: grey; 
     text-decoration: underline; 
 }
 
 .demographicsListItem {
-    font-size: 0.6rem;
+    font-size: 0.7rem;
     font-weight: 500;
     white-space: nowrap; 
     color: grey;
