@@ -513,20 +513,17 @@
     flex-direction: column; 
     justify-content: center;
     align-items: center;
+    overflow: scroll; 
+    height: 30vh;
+    margin-top: 1vh; 
 }
 
 .demographicsSexChartWrapper {
-    width: 70%; 
-    overflow: scroll; 
-    height: 30vh;
-    overflow: scroll;
+    width: 60%; 
 }
 
 .demographicsAgeChartWrapper {
     width: 90%; 
-    overflow: scroll; 
-    height: 30vh;
-    overflow: scroll;
 }
 
 .demographicsSexChartContainer,

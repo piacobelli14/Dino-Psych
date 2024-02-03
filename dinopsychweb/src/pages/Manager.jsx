@@ -721,6 +721,8 @@ const Manager = () => {
 
                 {!isHamburger && (
                      <div className="managerTableWrapper">
+
+
                         <div className="managerDemographicsContainerAge">
                             <div className="demographicsAgeChartWrapper">
                            
@@ -745,6 +747,7 @@ const Manager = () => {
 
                         <div className="managerDemographicsContainerSex">
                             <div className="demographicsSexChartWrapper"> 
+
                                 <div className="demographicsSexChartContainer"> 
                                     <Pie data={data} options={options}/>
 
@@ -760,13 +763,9 @@ const Manager = () => {
                                             <li className="demographicsListItem">
                                                 {"Female"}: {femaleCount}
                                             </li>
-                                            
                                         </ul>
                                     </div>
-
                                 </div>
-
-                                
                             </div>
                            
 
