@@ -721,9 +721,58 @@ const Manager = () => {
 
                 {!isHamburger && (
                      <div className="managerTableWrapper">
-                        <div className="managerDemographicsContainer">
-                            <Pie data={data} options={options} />
-                            <Bar data={barChartData} options={barChartOptions}/>
+                        <div className="managerDemographicsContainerAge">
+                            <div className="demographicsAgeChartWrapper">
+                           
+                                <div className="demographicsAgeChartContainer"> 
+
+                                    <Bar data={barChartData} options={barChartOptions}/>
+
+                                    <div className="demographicsBreakdownListWrapper">
+                                        <th className="demographicsListHeader">Age Distribution</th>
+                                        
+                                        <ul className="demographicsBreakdownList">
+                                            {ageRangeCount.map((item, index) => (
+                                                <li className="demographicsListItem" key={index}>
+                                                    {item.age_range}: {item.count}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="managerDemographicsContainerSex">
+                            <div className="demographicsSexChartWrapper"> 
+                                <div className="demographicsSexChartContainer"> 
+                                    <Pie data={data} options={options}/>
+
+
+                                    <div className="demographicsBreakdownListWrapper">
+                                        <th className="demographicsListHeader">Sex Distribution</th>
+
+                                        <ul className="demographicsBreakdownList">
+                                            <li className="demographicsListItem">
+                                                {"Male"}: {maleCount}
+                                            </li>
+
+                                            <li className="demographicsListItem">
+                                                {"Female"}: {femaleCount}
+                                            </li>
+                                            
+                                        </ul>
+                                    </div>
+
+                                </div>
+
+                                
+                            </div>
+                           
+
+                            
+
+                            
 
                         </div>
                     </div>
