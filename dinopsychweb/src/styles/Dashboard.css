@@ -1,0 +1,168 @@
+.dashboardHeaderContainer {
+    z-index: 1001; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: space-between;
+    width: 100vw; 
+    top: 0; 
+    left: 0; 
+    margin-top: 1rem; 
+    position: absolute; 
+}
+
+.dashboardTopNavBarContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dashboardSkipToContent {
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    margin-left: 2rem; 
+    background-color: rgba(255,255,255,0.0); 
+    border: none; 
+    outline: none;
+    cursor: pointer; 
+}
+
+.dashboardLogo {
+    width: 2.5rem; 
+    margin-right: 0.5rem;
+}
+
+.dashboardHeader {
+    font-size: 1.5rem;
+    font-weight: 600;  
+    color: white; 
+    cursor: pointer; 
+}
+
+.dashboardLogo, 
+.dashboardHeader, 
+.dashboardHamburgerIcon {
+    text-shadow: 0 0 2.5px rgba(255, 255, 255, 0.8);
+}
+
+.dashboardSkipToContent:hover {
+    opacity: 0.8; 
+}
+
+.dashboardSkipToContent:hover .dashboardLogo,
+.dashboardSkipToContent:hover .dashboardHeader {
+    opacity: 0.5;
+}
+
+.dashboardHamburgerCircle {
+    width: 2rem; 
+    height: 2rem; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    border: 1.5px solid white; 
+    border-radius: 50%; 
+    background-color: rgba(255,255,255,0.0);
+    margin-right: 2rem; 
+    padding: 0.2rem; 
+    cursor: pointer; 
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
+}
+
+.dashboardHamburgerIcon {
+    font-size: 1rem; 
+    color: white;
+}
+
+.dashboardHamburgerCircle:hover {
+    opacity: 0.5; 
+}
+
+.dashboardHeaderDivider, 
+.navigationButtonDivider {
+    height: 0.05vw;  
+    background-color: white; 
+    opacity: 0.2; 
+    border: none; 
+}
+
+.dashboardHeaderDivider {
+    width: 100vw; 
+    margin-top: 1.2rem; 
+}
+
+.navigationButtonDivider {
+    width: 100%; 
+    margin-top: 0.5rem;  
+}
+
+.dashboardHamburgerPopout {
+    z-index: 1000; 
+    position: absolute; 
+    width: 100vw;
+    height: 100vh; 
+    top: 0; 
+    left: 0; 
+    background-color: black;
+}
+
+.dashboardHamburgerButton {
+    width: 80vw; 
+    margin-left: 10vw;  
+    margin-top: 1rem;
+    border-radius: 0.4rem; 
+    outline: black;
+    cursor: pointer; 
+    padding: 0.8rem; 
+    box-shadow: 0 0 12px #2D3436;
+    font-size: 0.8rem; 
+    font-weight: 500;
+}
+
+.dashboardHamburgerContent {
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center;
+}
+
+.navigationButtonWrapper {
+    display: flex; 
+    flex-direction: column; 
+    justify-content: flex-start; 
+    align-items: flex-start;
+    width: 100%; 
+    margin-bottom: 1rem; 
+    background-color: rgba(255, 255, 255, 0);
+    border: none; 
+    outline: none; 
+    box-shadow: none;
+}
+
+.navigationButtonWrapper:focus {
+    outline: none; 
+}
+
+.navigationButtonWrapper:hover {
+    background-color: black;
+    opacity: 0.6; 
+}
+
+.navigationButton {
+    margin-left: 1rem; 
+    margin-bottom: 1rem; 
+    font-size: 1rem;
+    font-weight: 400; 
+    color: white; 
+}
+
+.navigationButtonIcon {
+    margin-right: 0.6rem; 
+}
+
+.dashboardNavigationFlex {
+    display: flex; 
+    justify-content: flex-start; 
+    align-items: center;
+    width: 100%; 
+}

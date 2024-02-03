@@ -760,13 +760,7 @@ const Manager = () => {
                     <div className="managerNavigationFlex"> 
                     </div>
                 )}
-                
             </div>
-
-            
-
-
-
         </div>
     );
 }; 
