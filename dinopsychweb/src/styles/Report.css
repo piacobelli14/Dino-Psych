@@ -48,6 +48,10 @@
     text-shadow: 0 0 1.2px rgba(255, 255, 255, 0.8);
 }
 
+.exportReportButton:focus {
+    outline: none; 
+}
+
 .exportReportButton:hover {
     opacity: 0.6; 
 }
