@@ -304,7 +304,7 @@ app.post('/organization-info', async (req, res) => {
           userCount: userCountResult.rows[0].usercount,
           patientCount: patientCountResult.rows[0].patientcount,
         }));
-        return res.status(200).json(formattedResult);
+        return res.status(200).json(organizationInfo);
       }
     } catch (error) {
       return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });

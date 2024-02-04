@@ -1,0 +1,222 @@
+.reportTopNavBar {
+  width: 100vw;
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between;
+  position: fixed; 
+  background-color: #333;
+  top: 0;
+  left: 0;  
+  z-index: 1000; 
+  padding: 0.5rem 0; 
+}
+
+.outcomesReportTitleWrapper {
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center;
+    margin-left: 1rem; 
+}
+  
+.outcomesReportTitle {
+    font-size: 1rem; 
+    font-weight: 600; 
+}
+  
+.outcomesReportSubtitle {
+    font-size: 0.8rem; 
+    font-weight: 500; 
+}
+
+.outcomesReportTimestamp {
+    font-size: 0.6rem; 
+    font-weight: 500; 
+    margin-left: 1rem; 
+}
+  
+.exportReportButton {
+    display: flex; 
+    align-items: center;
+    justify-content: center; 
+    background-color: rgba(255, 255, 255, 0.0); 
+    border: none; 
+    outline: none; 
+    cursor: pointer; 
+    margin-right:  1rem; 
+}
+
+.exportReportButton:hover {
+    opacity: 0.6; 
+}
+
+.downloadReportIcon {
+    width: 1rem; 
+    color: white; 
+}
+
+.reportHeader {
+    font-size: 0.6rem; 
+    font-weight: 600; 
+}
+
+.downloadReportText {
+    font-size: 0.6rem; 
+    font-weight: 500; 
+    text-decoration: underline; 
+    margin-left: 0.2rem; 
+    margin-right: 0.2rem; 
+    color: white; 
+    cursor: pointer; 
+}
+
+.outcomesInterpretationContainer, 
+.trajectoryInterpretationContainer {
+  display: flex;  
+  align-items: center;
+  justify-content: space-evenly; 
+  width: 100vw; 
+} 
+
+.outcomesInterpretationContainer {
+    margin-top: 0.5rem;
+}
+  
+.outcomesTrajectoryChartContainer {
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center; 
+    text-align: center;
+    overflow: scroll;
+    width: 55%; 
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.4rem; 
+    height: 32vh;
+    padding: 1vh 0;
+}
+
+.trajectoryLineContainer {
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    width: 90%; 
+    height: 90%; 
+}
+
+.outcomesTrajectoryChart {
+    width: 100%; 
+    height: 100%; 
+}
+
+.reportPatientInterpretationFlex {
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center;  
+    align-items: center;
+    font-size: 0.6rem; 
+    font-weight: 500;
+    letter-spacing: 0.05vw;
+    overflow: scroll;
+    width: 40%; 
+    height: 32vh; 
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.4rem; 
+    padding: 1vh 0; 
+}
+
+.reportThresholdChartContainer, 
+.outcomesThresholdSummaryContainer {
+  display: flex; 
+  flex-direction: column; 
+  justify-content: center; 
+  align-items: center;
+  color: white;
+}
+
+
+.reportThresholdChartContainer {
+  height: 60% !important; 
+  position: relative;
+}
+  
+.reportValueBlock {
+    display: block; 
+    position: absolute; 
+    top: 6.5rem; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    overflow: visible; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center;
+}
+
+.reportMeasureValue {
+    font-size: 1.5rem; 
+    font-weight: 800;
+}
+
+.reportMeasureLabel {
+    text-align: center; 
+    font-weight: 600; 
+}
+
+.reportMeasureLabel {
+    font-size: 0.6rem; 
+    text-decoration: underline;
+}
+
+.reportMeasureTitle {
+    text-align: center; 
+    margin-top: 0.1rem; 
+    font-size: 0.5rem; 
+    font-weight: 300; 
+    margin-bottom: 1rem; 
+}
+
+.reportThresholdChartContainer {
+  width: 60%;
+  height: 60%; 
+  position: relative;
+}
+
+.outcomesThresholdSummaryContainer {
+  overflow: visible; 
+  width: 80%; 
+  text-align: center; 
+  font-size: 0.5rem;
+  display: flex; 
+  flex-direction: column; 
+  justify-content: flex-start !important; 
+  margin-top: 0.2rem;
+}
+
+.reportBottomNavBar {
+    width: 100vw; 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between;
+    padding: 1rem 0; 
+    bottom: 0; 
+}
+
+.dinoLabsTag {
+    display: flex; 
+    align-items: center;
+    justify-content: center; 
+    margin-right:  1rem; 
+}
+  
+.dinoLabsTextTag {
+    font-size: 0.6rem; 
+    font-weight: 500; 
+    margin-right: 0.2rem; 
+}
+
+.dinoLabsIconTag {
+    width: 1rem; 
+}
+  
+  
