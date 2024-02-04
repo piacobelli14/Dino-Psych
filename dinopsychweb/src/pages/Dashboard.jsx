@@ -748,7 +748,7 @@ const Dashboard = () => {
                                     <div className="trajectoryDoughnutContainer">
                                         <Doughnut className="outcomesDoughnutChart" data={gaugeChartData} options={gaugeChartOptions} />
                                         <div className="averageValueBlock">
-                                            <div className="averageMeasureValue">{(measureFilter && measureFilter !== 'undefined' && measureFilter === 'phq15') ? `${average.toFixed(1)}%` : average.toFixed(1)}</div>
+                                            <div className="averageMeasureValue">{average.toFixed(1)}</div>
                                             <div className="averageMeasureLabel">{(measureFilterLabel && measureFilter !== 'undefined') ? 'Average ' + measureFilterLabel : ''}</div>
                                             <div className="averageMeasureTitle">{(selectedID && selectedID !== '') ? `${selectedName} - (${selectedID})` : "All Patients"}</div>
                                         </div>
