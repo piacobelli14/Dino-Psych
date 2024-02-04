@@ -21,6 +21,10 @@ body {
   background: transparent; 
 }
 
+body.reportPageBody {
+  background: #002;
+}
+
 body::-webkit-scrollbar {
   width: 4px;
 }

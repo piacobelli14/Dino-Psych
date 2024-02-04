@@ -1,14 +1,14 @@
 .reportTopNavBar {
-  width: 100vw;
-  display: flex; 
-  align-items: center; 
-  justify-content: space-between;
-  position: fixed; 
-  background-color: #333;
-  top: 0;
-  left: 0;  
-  z-index: 1000; 
-  padding: 0.5rem 0; 
+    width: 100vw;
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between;
+    position: fixed; 
+    background-color: #003;
+    top: 0;
+    left: 0;  
+    z-index: 1000; 
+    padding: 0.5rem 0; 
 }
 
 .outcomesReportTitleWrapper {
@@ -17,6 +17,7 @@
     align-items: center; 
     justify-content: center;
     margin-left: 1rem; 
+    text-shadow: 0 0 1.2px rgba(255, 255, 255, 0.8);
 }
   
 .outcomesReportTitle {
@@ -44,6 +45,7 @@
     outline: none; 
     cursor: pointer; 
     margin-right:  1rem; 
+    text-shadow: 0 0 1.2px rgba(255, 255, 255, 0.8);
 }
 
 .exportReportButton:hover {
@@ -53,6 +55,7 @@
 .downloadReportIcon {
     width: 1rem; 
     color: white; 
+    margin-right: 0.2rem; 
 }
 
 .reportHeader {
@@ -70,8 +73,7 @@
     cursor: pointer; 
 }
 
-.outcomesInterpretationContainer, 
-.trajectoryInterpretationContainer {
+.outcomesInterpretationContainer {
   display: flex;  
   align-items: center;
   justify-content: space-evenly; 
@@ -82,7 +84,7 @@
     margin-top: 0.5rem;
 }
   
-.outcomesTrajectoryChartContainer {
+.reportOutcomesTrajectoryChartContainer {
     display: flex; 
     flex-direction: column; 
     justify-content: center; 
@@ -200,6 +202,7 @@
     justify-content: space-between;
     padding: 1rem 0; 
     bottom: 0; 
+    text-shadow: 0 0 1.2px rgba(255, 255, 255, 0.8);
 }
 
 .dinoLabsTag {

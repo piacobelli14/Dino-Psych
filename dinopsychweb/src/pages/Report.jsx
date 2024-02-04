@@ -49,7 +49,7 @@ const Report = () => {
         const margin = 10; 
     
         const addBackgroundColor = () => {
-            pdf.setFillColor(51, 51, 51); 
+            pdf.setFillColor("#002"); 
             pdf.rect(0, 0, pageWidth, pageHeight + 2 * margin, 'F'); 
         };
     
@@ -392,10 +392,17 @@ const Report = () => {
         return `${month}/${day}/${year} ${hours}:${minutes} ${ampm}`;
     }
     
+    useEffect(() => {
+        document.body.classList.add('reportPageBody');
+        return () => {
+          document.body.classList.remove('reportPageBody');
+        };
+    }, []);
+
     return (
             
         <div>
-            <div className="reportTopNavBar" ref={headerRef} style={{ backgroundColor: '#333' }}>
+            <div className="reportTopNavBar" ref={headerRef} style={{ backgroundColor: '#002' }}>
                 <div className="outcomesReportTitleWrapper">
                     <label className="outcomesReportTitle">{organizationHeader.split('-')[0]}</label>
                     <label className="outcomesReportSubtitle">ID: {organizationHeader.split('-')[1]}</label>
@@ -411,8 +418,8 @@ const Report = () => {
             <br/>
             <br/>
 
-            <div className="outcomesInterpretationContainer" ref={phq9Ref} style={{ backgroundColor: '#333' }}>
-                <div className="outcomesTrajectoryChartContainer">
+            <div className="outcomesInterpretationContainer" ref={phq9Ref} style={{ backgroundColor: '#002' }}>
+                <div className="reportOutcomesTrajectoryChartContainer">
                     <label className="reportHeader">Patient Health Questionnaire - Depression (PHQ-9)</label>
                     <div className="trajectoryLineContainer">
                         <canvas className="outcomesTrajectoryChart" id="phq9_Line"></canvas>
@@ -432,8 +439,8 @@ const Report = () => {
                 </div>
             </div>
 
-            <div className="outcomesInterpretationContainer" ref={phq15Ref} style={{ backgroundColor: '#333' }}>
-                <div className="outcomesTrajectoryChartContainer">
+            <div className="outcomesInterpretationContainer" ref={phq15Ref} style={{ backgroundColor: '#002' }}>
+                <div className="reportOutcomesTrajectoryChartContainer">
                     <label className="reportHeader">Patient Health Questionnaire - Somatization (PHQ-15)</label>
                     <div className="trajectoryLineContainer">
                         <canvas className="outcomesTrajectoryChart" id="phq15_Line"></canvas>
@@ -444,17 +451,17 @@ const Report = () => {
                     <div className="reportThresholdChartContainer">
                         <canvas id="phq15_Gauge"></canvas>
                         <div className="reportValueBlock">
-                        <div className="reportMeasureValue">{`${phq15Average.toFixed(1)}`}</div>
-                        <div className="reportMeasureLabel">PHQ-15</div>
-                        <div className="reportMeasureTitle">{(patientFilter && patientFilter !== '') ? `${patientFilter}` : "All Patients"}</div>
+                            <div className="reportMeasureValue">{`${phq15Average.toFixed(1)}`}</div>
+                            <div className="reportMeasureLabel">PHQ-15</div>
+                            <div className="reportMeasureTitle">{(patientFilter && patientFilter !== '') ? `${patientFilter}` : "All Patients"}</div>
                         </div>
                     </div>
                     <div className='outcomesThresholdSummaryContainer'>{phq15Interpretation}</div>
                 </div>
             </div>
 
-            <div className="outcomesInterpretationContainer" ref={gad7Ref} style={{ backgroundColor: '#333' }}>
-                <div className="outcomesTrajectoryChartContainer">
+            <div className="outcomesInterpretationContainer" ref={gad7Ref} style={{ backgroundColor: '#002' }}>
+                <div className="reportOutcomesTrajectoryChartContainer">
                     <label className="reportHeader">Generalized Anxiety Disorder 7 (GAD-7)</label>
                     <div className="trajectoryLineContainer">
                         <canvas className="outcomesTrajectoryChart" id="gad7_Line"></canvas>
@@ -465,9 +472,9 @@ const Report = () => {
                     <div className="reportThresholdChartContainer">
                         <canvas id="gad7_Gauge"></canvas>
                         <div className="reportValueBlock">
-                        <div className="reportMeasureValue">{`${gad7Average.toFixed(1)}`}</div>
-                        <div className="reportMeasureLabel">GAD-7</div>
-                        <div className="reportMeasureTitle">{(patientFilter && patientFilter !== '') ? `${patientFilter}` : "All Patients"}</div>
+                            <div className="reportMeasureValue">{`${gad7Average.toFixed(1)}`}</div>
+                            <div className="reportMeasureLabel">GAD-7</div>
+                            <div className="reportMeasureTitle">{(patientFilter && patientFilter !== '') ? `${patientFilter}` : "All Patients"}</div>
                         </div>
                         
                     </div>
@@ -475,8 +482,8 @@ const Report = () => {
                 </div>
             </div>
 
-            <div className="outcomesInterpretationContainer" ref={sbqrRef} style={{ backgroundColor: '#333' }}>
-                <div className="outcomesTrajectoryChartContainer">
+            <div className="outcomesInterpretationContainer" ref={sbqrRef} style={{ backgroundColor: '#002' }}>
+                <div className="reportOutcomesTrajectoryChartContainer">
                     <label className="reportHeader">Suicide Behaviors Questionnaire - Revised (SBQ-R)</label>
                     <div className="trajectoryLineContainer">
                         <canvas className="outcomesTrajectoryChart" id="sbqr_Line"></canvas>
@@ -496,8 +503,8 @@ const Report = () => {
                 </div>
             </div>
 
-            <div className="outcomesInterpretationContainer" ref={psqiRef} style={{ backgroundColor: '#333' }}>
-                <div className="outcomesTrajectoryChartContainer">
+            <div className="outcomesInterpretationContainer" ref={psqiRef} style={{ backgroundColor: '#002' }}>
+                <div className="reportOutcomesTrajectoryChartContainer">
                     <label className="reportHeader">Pittsburgh Sleep Quality Index (PSQI)</label>
                     <div className="trajectoryLineContainer">
                         <canvas className="outcomesTrajectoryChart" id="psqi_Line"></canvas>
@@ -517,11 +524,11 @@ const Report = () => {
                 </div>
             </div>
 
-            <div className="reportBottomNavBar" ref={footerRef} style={{ backgroundColor: '#333' }}> 
+            <div className="reportBottomNavBar" ref={footerRef} style={{ backgroundColor: '#002' }}> 
                 <label className="outcomesReportTimestamp">Outcomes Report - Generated on {formatDate()}</label>
 
                 <div className="dinoLabsTag"> 
-                <label className="dinoLabsTextTag">Generated by Dino Labs</label>
+                    <label className="dinoLabsTextTag">Generated by Dino Labs</label>
                     <img className="dinoLabsIconTag" src={DinoLabsLogoWhite}/>
                 </div>
             </div>
