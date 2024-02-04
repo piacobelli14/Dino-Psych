@@ -255,11 +255,19 @@ const Report = () => {
                             ticks: {
                                 stepSize: stepValue,
                             },
+                            border: {
+                                lineWidth: 2,
+                                color: 'grey',
+                            }
                         },
                         x: {
                             grid: {
                                 display: false,
                             },
+                            border: {
+                                lineWidth: 2,
+                                color: 'grey',
+                            }
                         },
                     },
                     plugins: {

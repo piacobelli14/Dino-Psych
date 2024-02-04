@@ -694,22 +694,6 @@ const Dashboard = () => {
                                 )}
                             </div>
 
-                            <div className="reportGenerationWrapper">
-                                <a className="generateReportButton" 
-                                    onClick={() => {
-                                        localStorage.setItem("organizationID", organizationID);
-                                        localStorage.setItem("reportPatient", selectedName !== '' ? `${selectedName} - ${selectedID}` : '');
-                                        localStorage.setItem("reportOrganization", selectedName === '' ? `${organizationName} - ${organizationID}` : '');
-                                    }}
-                                    href={'/dinopsych-report'}
-                                    target="_blank" 
-                                    rel="noopener noreferrer" 
-                                >
-                                    <FontAwesomeIcon icon={faFile} className="generateReportIcon"/> 
-                                    <label className="generateReportText">Generate {(selectedName !== '') ? `Report for ${selectedName}` : 'Patient-Wide Report'}</label>
-                                </a>
-                            </div>
-
                             <div className="trajectoryInterpretationContainer">
                                 <div className="outcomesTrajectoryChartContainer">
                                     <div className="measureFilterWrapper">
@@ -839,12 +823,23 @@ const Dashboard = () => {
                                 </div>
                             )}
 
+                            <div className="reportGenerationWrapper">
+                                <a className="generateReportButton" 
+                                    onClick={() => {
+                                        localStorage.setItem("organizationID", organizationID);
+                                        localStorage.setItem("reportPatient", selectedName !== '' ? `${selectedName} - ${selectedID}` : '');
+                                        localStorage.setItem("reportOrganization", selectedName === '' ? `${organizationName} - ${organizationID}` : '');
+                                    }}
+                                    href={'/report'}
+                                    target="_blank" 
+                                    rel="noopener noreferrer" 
+                                >
+                                    <FontAwesomeIcon icon={faFile} className="generateReportIcon"/> 
+                                    <label className="generateReportText">Generate {(selectedName !== '') ? `Report for ${selectedName}` : 'Patient-Wide Report'}</label>
+                                </a>
+                            </div>
                         </div>
-
                         <br/> 
-
-
-
                     </div>
                 )}
 
