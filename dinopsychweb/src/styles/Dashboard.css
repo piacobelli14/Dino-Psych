@@ -240,17 +240,7 @@
     color: white; 
 }
 
-.outcomesDoughnutChart {
-    width: 100% !important;
-    margin-top: -2rem; 
-}
-
-.outcomesTrajectoryChart {
-    height: 90% !important; 
-}
-  
 .outcomesThresholdChartContainer {
-    width: 50%;
     position: relative;
 }
 
@@ -263,15 +253,11 @@
 
 .patientInterpretationContainer {
     margin-top: 1vw;
-    width: 98%;
+    width: 86%;
 }
 
 .trajectoryInterpretationContainer {
-    width: 90%; 
-    height: 30vw; 
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    border-radius: 0.4rem; 
-    padding: 1rem; 
+    width: 86%;
 }
 
 .timepointBarChart {
@@ -280,70 +266,101 @@
 
 .outcomesTrajectoryChartContainer {
     display: flex; 
-    flex-direction: column;
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center; 
+    text-align: center;
+    overflow: scroll;
+    width: 55%; 
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.4rem; 
+    height: 30vh;
+    padding: 1vh 0; 
+}
+
+.trajectoryLineContainer {
+    display: flex; 
+    justify-content: center; 
     align-items: center;
+    width: 80%; 
+    height: 80%; 
+}
+
+.trajectoryDoughnutContainer, 
+.timepointBarContainer {
+    display: flex; 
+    flex-direction: column; 
     justify-content: center;
-    width: 55%;  
-    color: white; 
+    align-items: center;
+    width: 95%; 
+    height: 95%; 
+    position: relative;
+}
+
+.trajectoryDoughnutContainer {
+    width: 95%; 
+    height: 95%;
+}
+
+.timepointBarContainer {
+    width: 85%; 
+    height: 85%; 
 }
 
 .measureFilterWrapper {
     display: flex; 
-    justify-content: flex-start; 
+    justify-content: center; 
     align-items: center;
     width: 100%; 
 }
   
 .measureFilterIcon {
-    width: 2vw; 
+    width: 1.5rem; 
 }
   
 .filterByMeasurePrompt {
-    font-size: 1.2vw; 
+    font-size: 0.6rem; 
     font-weight: 400; 
     margin-left: 1vw;   
 }
 
 .measureSelect {
     border-radius: 0.5vw; 
-    font-size: 1vw; 
-    padding: 1vw;
+    font-size: 0.5rem; 
+    padding: 0.5rem;
     background-color: rgba(255,255,255,0.0);
     border: none; 
     outline: none; 
     color: white; 
-    margin-left: 1vw; 
+    margin-left: 0.5rem; 
     cursor: pointer; 
 }
   
 .measureSelect:hover {
     border: 1px solid white; 
-    border-radius: 0.5vw; 
+    border-radius: 0.4rem; 
 }
 
 .selectedPatientInterpretationFlex {
     display: flex; 
     flex-direction: column; 
-    justify-content: center;  
+    justify-content: flex-start;  
     align-items: center;
     font-size: 1vw; 
     font-weight: 500;
     letter-spacing: 0.05vw;
-    overflow: visible;
-    width: 35%; 
-}
-
-.outcomesDoughnutChart, 
-.outcomesTrajectoryChart {
-    width: 100% !important;
-    height: 100% !important;  
-    z-index: 1; 
+    overflow: scroll;
+    width: 40%; 
+    height: 30vh; 
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.4rem; 
+    padding: 1vh 0; 
 }
 
 .averageValueBlock {
   display: block; 
   position: absolute; 
-  top: 65%; 
+  top: 9rem; 
   left: 50%; 
   transform: translate(-50%, -50%); 
   overflow: visible; 
@@ -353,17 +370,9 @@
   align-items: center;
 }
 
-.averageValueBlock {
-  top: 65%; 
-}
-
 .averageMeasureValue {
-  font-size: 3vw; 
+  font-size: 1.2rem; 
   font-weight: 800;
-}
-
-.averageMeasureValue {
-  margin-top: -3rem;
 }
 
 .averageMeasureLabel, 
@@ -373,72 +382,52 @@
 }
 
 .averageMeasureLabel {
-  font-size: 0.8vw; 
+  font-size: 0.6rem; 
   text-decoration: underline;
 }
 
 .averageMeasureTitle {
     text-align: center; 
-    margin-top: 0.5vw; 
-    font-size: 0.8vw; 
+    margin-top: 0.1rem; 
+    font-size: 0.5rem; 
     font-weight: 300; 
-  }
-
-.outcomesThresholdChartContainer, 
-.outcomesThresholdSummaryContainer {
-  display: flex; 
-  flex-direction: column; 
-  justify-content: center; 
-  align-items: center;
-  color: white;
-  height: 60%; 
-}
-
-.outcomesThresholdChartContainer {
-  width: 100%;
-  position: relative;
-}
-
-.outcomesThresholdSummaryContainer {
-  overflow: visible; 
-  font-size: 0.8vw; 
-  height: 40%; 
-  margin-top: -6vw; 
+    margin-bottom: 1rem; 
 }
 
 .patientBreakdownContainer {
     display: flex; 
     flex-direction: column; 
     align-items: center; 
-    justify-content: center; 
+    justify-content: flex-start; 
     text-align: center;
     overflow: hidden;
     width: 45%; 
     border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: 0.4rem; 
-    height: 30vw; 
+    height: 36vh; 
     padding: 0 2vw;
 }
 
 .patientBreakdownTitle {
-    font-size: 1vw; 
-    text-decoration: underline; 
+    font-size: 0.7rem; 
     font-weight: 600; 
+    text-decoration: underline; 
+    margin-top: 0.8rem;
 }
 
 .patientBreakdownSubtitle {
-    font-size: 0.8vw; 
+    font-size: 0.6rem; 
     font-weight: 500; 
-    margin-top: 0.5vw; 
+    margin-top: 0.1rem; 
     position: sticky; 
 }
  
 .timepointControlTable {
-  text-align: center; 
-  margin-top: 1vw; 
+  text-align: center;  
+  margin-top: 0.6rem; 
   white-space: nowrap;
-  border-spacing: 1vw 1vw; 
-  width: 45vw; 
+  border-spacing: 0.4rem 0.4rem; 
+  width: 90%; 
 }
 
 .timepointControlTable thead::after {
@@ -446,7 +435,7 @@
     position: absolute;
     bottom: 0;
     left: 0;
-    top: 1.4vw;
+    top: 1.4rem;
     width: 100%;
     border-bottom: 1px solid grey; 
     z-index: 1; 
@@ -456,9 +445,7 @@
   color: whitesmoke; 
   position: sticky;
   top: 0;
-  bottom: 10; 
   font-weight: bold;
-  font-size: 1vw; 
 }
 
 .managerControlHeaders {
@@ -467,13 +454,13 @@
   top: 0;
   bottom: 10; 
   font-weight: bold;
-  font-size: 1vw; 
+  font-size: 0.5rem; 
 }
 
 .managerControlContent {
   color: white;
   white-space: nowrap;
-  font-size: 0.8vw;
+  font-size: 0.5rem;
   overflow: scroll; 
 }
 
@@ -494,13 +481,13 @@
     justify-content: center;  
     align-items: center;
     text-align: center;
-    font-size: 1vw; 
+    font-size: 0.7rem; 
     font-weight: 500;
     letter-spacing: 0.05vw;
     overflow: visible;
     position: relative;
     width: 40%; 
-    height: 30vw; 
+    height: 36vh; 
     border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: 0.4rem; 
     padding: 0 1rem; 
@@ -514,22 +501,21 @@
 .missingItemsBlock {
     display: block; 
     position: absolute; 
-    top: 50%; 
+    top: 45%; ; 
     left: 50%; 
     transform: translate(-50%, -50%); 
     overflow: visible; 
 }
 
-
 .missingItemValue {
-  font-size: 4vw; 
+  font-size: 2rem; 
   font-weight: 800;
 }
 
 .missingItemLabel {
     text-align: center; 
     font-weight: 600; 
-    font-size: 1vw;
+    font-size: 0.5rem;
 }
 
 

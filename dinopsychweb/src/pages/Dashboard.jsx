@@ -606,22 +606,8 @@ const Dashboard = () => {
       }));
     }
   }, [organizationCounts, maxCompletionCount]);
-  
-
-  useEffect(() => {
-    document.body.classList.add('dashboardPageBody');
-    return () => {
-      document.body.classList.remove('dashboardPageBody');
-    };
-  }, []);
 
   
-  
-  
-  
-
-    
-
     return (
         <div>
 
@@ -736,62 +722,64 @@ const Dashboard = () => {
 
                                     </div>
 
-                                    <Line className="outcomesTrajectoryChart" data={trajectoryChartData} options={trajectoryChartOptions} />
+                                    <div className="trajectoryLineContainer">
+                                        <Line className="outcomesTrajectoryChart" data={trajectoryChartData} options={trajectoryChartOptions} />
+                                    </div>
                                 </div>
-                                
 
                                 <div className="selectedPatientInterpretationFlex">
-                                    <div className="outcomesThresholdChartContainer">
+                                   
+                                    <div className="trajectoryDoughnutContainer">
                                         <Doughnut className="outcomesDoughnutChart" data={gaugeChartData} options={gaugeChartOptions} />
+                                    
                                         <div className="averageValueBlock">
-                                            <div className="averageMeasureValue">{(measureFilter && measureFilter !== 'undefined' && measureFilter === 'suicidalityindex') ? `${average.toFixed(1)}%` : average.toFixed(1)}</div>
-                                            <div className="averageMeasureLabel">{(measureFilterLabel && measureFilter !== 'undefined') ? measureFilterLabel : ''}</div>
+                                            <div className="averageMeasureValue">{(measureFilter && measureFilter !== 'undefined' && measureFilter === 'phq15') ? `${average.toFixed(1)}%` : average.toFixed(1)}</div>
+                                            <div className="averageMeasureLabel">{(measureFilterLabel && measureFilter !== 'undefined') ? 'Average ' + measureFilterLabel : ''}</div>
                                             <div className="averageMeasureTitle">{(selectedID && selectedID !== '') ? `${selectedName} - (${selectedID})` : "All Patients"}</div>
                                         </div>
                                     </div>
-
-                                    <div className='outcomesThresholdSummaryContainer'>{dataInterpretation}</div>
                                 </div>
                             </div>
 
                             {patientTimepointInfo.length > 0 && (
                                 <div className="patientInterpretationContainer">
                                     <div className="patientBreakdownContainer">
-                                        <div className="patientBreakdownTitle">{selectedName} (ID: {selectedID})</div>
-                                        <div className="patientBreakdownSubtitle">Completed Measure Scores</div>
+                                        <label className="patientBreakdownTitle">{selectedName} (ID: {selectedID})</label>
+                                        <label className="patientBreakdownSubtitle">Completed Measure Scores</label>
                                         <table className="timepointControlTable">
-                                        <thead className="managerControlHeaders">
-                                            <tr>
-                                            <th>Timepoint</th>
-                                            <th>PHQ-9</th>
-                                            <th>PHQ-15</th>
-                                            <th>GAD-7</th>
-                                            <th>PSQI</th>
-                                            <th>SBQ-R</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {patientTimepointInfo.map((patient, index) => (
-                                            <tr className="managerControlContent" key={index}>
-                                                <td>{patient.timepoint}</td>
-                                                <td>{patient.phq9.toFixed(2)}</td>
-                                                <td>{patient.phq15.toFixed(2)}</td>
-                                                <td>{patient.gad7.toFixed(2)}</td>
-                                                <td>{patient.psqi.toFixed(2)}</td>
-                                                <td>{patient.sbqr.toFixed(2)}</td>
-                                            </tr>
-                                            ))}
-                                        </tbody>
+                                            <thead className="managerControlHeaders">
+                                                <tr>
+                                                <th>Timepoint</th>
+                                                <th>PHQ-9</th>
+                                                <th>PHQ-15</th>
+                                                <th>GAD-7</th>
+                                                <th>PSQI</th>
+                                                <th>SBQ-R</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {patientTimepointInfo.map((patient, index) => (
+                                                <tr className="managerControlContent" key={index}>
+                                                    <td>{patient.timepoint}</td>
+                                                    <td>{patient.phq9.toFixed(2)}</td>
+                                                    <td>{patient.phq15.toFixed(2)}</td>
+                                                    <td>{patient.gad7.toFixed(2)}</td>
+                                                    <td>{patient.psqi.toFixed(2)}</td>
+                                                    <td>{patient.sbqr.toFixed(2)}</td>
+                                                </tr>
+                                                ))}
+                                            </tbody>
                                         </table>
                                     </div>
 
                                     <div className="selectedPatientCompletionFlex">
-                                        <Doughnut className="averageGaugeChart" data={missingItemsGaugeData} options={missingItemsGaugeOptions} />
-                                        <div className="missingItemsBlock">
-                                            <div className="missingItemValue">{patientTimepointInfo.length}/6</div>
-                                            <div className="missingItemLabel">Timepoints Completed</div>
+                                        <div className="trajectoryDoughnutContainer">
+                                            <Doughnut className="averageGaugeChart" data={missingItemsGaugeData} options={missingItemsGaugeOptions} />
+                                            <div className="missingItemsBlock">
+                                                <div className="missingItemValue">{patientTimepointInfo.length}/6</div>
+                                                <div className="missingItemLabel">Timepoints Completed</div>
+                                            </div>
                                         </div>
-
                                     </div>
                                 </div>
                             )}
@@ -828,8 +816,10 @@ const Dashboard = () => {
                                     </div>
 
                                     <div className="organizationCompletionFlex">
-                                        <div className="organizationBreakdownTitle">Completion By Timepoint</div>
-                                        <Bar className="timepointBarChart" data={barChartData} options={barChartOptions} />
+                                        <div className="patientBreakdownTitle">Completion By Timepoint</div>
+                                        <div className="trajectoryDoughnutContainer">
+                                            <Bar className="timepointBarChart" data={barChartData} options={barChartOptions}/>
+                                        </div>
                                     </div>
                                 </div>
                             )}
