@@ -613,7 +613,7 @@ const Dashboard = () => {
 
                                     </div>
 
-                                    <Line data={trajectoryChartData} options={trajectoryChartOptions} />
+                                    <Line className="outcomesTrajectoryChart" data={trajectoryChartData} options={trajectoryChartOptions} />
                                 </div>
                                 
 

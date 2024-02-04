@@ -239,6 +239,19 @@
     color: white; 
 }
 
+.outcomesDoughnutChart {
+    width: 100% !important;
+}
+
+.outcomesTrajectoryChart {
+    height: 90% !important; 
+}
+  
+.outcomesThresholdChartContainer {
+    width: 50%;
+    position: relative;
+}
+
 .patientInterpretationContainer {
   display: flex;  
   align-items: center;
@@ -252,7 +265,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 50%;   
+    width: 55%;   
     color: white; 
 }
 
@@ -299,7 +312,7 @@
     font-weight: 500;
     letter-spacing: 0.05vw;
     overflow: visible;
-    width: 45%; 
+    width: 35%; 
 }
 
 .outcomesThresholdChartContainer, 
@@ -311,15 +324,10 @@
     color: white;
 }
 
-.outcomesDoughnutChart {
+.outcomesDoughnutChart, 
+.outcomesTrajectoryChart {
     width: 100% !important;
     height: 100% !important;  
-}
-  
-  
-.outcomesThresholdChartContainer {
-    width: 50%;
-    position: relative;
 }
 
 .averageValueBlock {
