@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Chart from "chart.js/auto"; 
 import { Bar, Line, Pie, Doughnut } from "react-chartjs-2"; 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faX, faPerson, faRightFromBracket, faPeopleLine, faFilter } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faX, faPerson, faRightFromBracket, faPeopleLine, faFilter, faFile } from '@fortawesome/free-solid-svg-icons';
 
 import DinoLabsLogoWhite from "../assets/dinoLabsLogo_white.png"; 
 
@@ -694,6 +694,22 @@ const Dashboard = () => {
                                 )}
                             </div>
 
+                            <div className="reportGenerationWrapper">
+                                <a className="generateReportButton" 
+                                    onClick={() => {
+                                        localStorage.setItem("organizationID", organizationID);
+                                        localStorage.setItem("reportPatient", selectedName !== '' ? `${selectedName} - ${selectedID}` : '');
+                                        localStorage.setItem("reportOrganization", selectedName === '' ? `${organizationName} - ${organizationID}` : '');
+                                    }}
+                                    href={'/dinopsych-report'}
+                                    target="_blank" 
+                                    rel="noopener noreferrer" 
+                                >
+                                    <FontAwesomeIcon icon={faFile} className="generateReportIcon"/> 
+                                    <label className="generateReportText">Generate {(selectedName !== '') ? `Report for ${selectedName}` : 'Patient-Wide Report'}</label>
+                                </a>
+                            </div>
+
                             <div className="trajectoryInterpretationContainer">
                                 <div className="outcomesTrajectoryChartContainer">
                                     <div className="measureFilterWrapper">
@@ -728,12 +744,9 @@ const Dashboard = () => {
                                 </div>
 
                                 <div className="selectedPatientInterpretationFlex">
-
                                     <div className="patientBreakdownTitle">Average Outcomes Scores</div>
-                                   
                                     <div className="trajectoryDoughnutContainer">
                                         <Doughnut className="outcomesDoughnutChart" data={gaugeChartData} options={gaugeChartOptions} />
-                                    
                                         <div className="averageValueBlock">
                                             <div className="averageMeasureValue">{(measureFilter && measureFilter !== 'undefined' && measureFilter === 'phq15') ? `${average.toFixed(1)}%` : average.toFixed(1)}</div>
                                             <div className="averageMeasureLabel">{(measureFilterLabel && measureFilter !== 'undefined') ? 'Average ' + measureFilterLabel : ''}</div>
@@ -827,6 +840,8 @@ const Dashboard = () => {
                             )}
 
                         </div>
+
+                        <br/> 
 
 
 
