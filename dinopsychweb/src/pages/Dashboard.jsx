@@ -16,8 +16,6 @@ const Dashboard = () => {
     const [organizationID, setOrganizationID] = useState(""); 
     const [organizationName, setOrganizationName] = useState(""); 
     const [patientList, setPatientList] = useState(['']); 
-    const [selectedPatientIDs, setSelectedPatientIDs] = useState([]); 
-    const [selectedPatientInfo, setSelectedPatientInfo] = useState([]); 
     const [isHamburger, setIsHamburger] = useState(false);
     const [filteredSuggestions, setFilteredSuggestions] = useState([]);
     const [selectedID, setSelectedID] = useState(""); 
@@ -25,12 +23,10 @@ const Dashboard = () => {
     const [measureFilter, setMeasureFilter] = useState('phq15');
     const [measureFilterLabel, setMeasureFilterLabel] = useState('PHQ-15');
     const [average, setAverage] = useState(0);
-    const [dataInterpretation, setDataIntepretation] = useState('');
     const [patientTimepointInfo, setPatientTimepointInfo] = useState([]);
     const [organizationTimepointInfo, setOrganizationTimepointInfo] = useState([]);
     const [organizationCounts, setOrganizationCounts] = useState('');
     const [maxCompletionCount, setMaxCompletionCount] = useState('');
-    const [distributionList, setDistributionList] = useState(''); 
     const [trajectoryData, setTrajectoryData] = useState([]); 
 
     const [searchValue, setSearchValue] = useState(""); 
@@ -47,7 +43,6 @@ const Dashboard = () => {
     useEffect(() => {
         fetchPatientSearchOptions();
         fetchOrganizationInfo();
-        fetchDistributionInfo();
         fetchOrganizationTimepointData();
         fetchOrganizationCompletionCounts();
     }, [organizationID]);
@@ -57,10 +52,6 @@ const Dashboard = () => {
             fetchPatientOutcomesData();
         })
     }, [username, organizationID, selectedID, measureFilter]);
-
-    useEffect(() => {
-        fetchPatientAnalysis();
-    }, [average, measureFilter, selectedID]);
 
     const fetchUserInfo = async () => {
         try {
@@ -129,30 +120,6 @@ const Dashboard = () => {
       
           const data = await response.json();
           setPatientList(data.patientsArray);
-        } catch (error) {
-          return; 
-        }
-      };
-
-    const fetchDistributionInfo = async () => {
-        try {
-          const response = await fetch('http://172.20.10.3:3001/get-distribution-info', {
-            method: 'POST',
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `${token}`,
-            },
-            body: JSON.stringify({
-              organizationID,
-            }),
-          });
-      
-          if (response.status !== 200) {
-            throw new Error(`Internal Server Error`);
-          }
-      
-          const data = await response.json();
-          setDistributionList(data.patientList);
         } catch (error) {
           return; 
         }
@@ -233,32 +200,6 @@ const Dashboard = () => {
         }
     };
 
-    const fetchPatientAnalysis = async () => {
-        try {
-          const response = await fetch('http://10.111.26.70:3001/pull-patient-analysis', {
-            method: 'POST',
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `${token}`,
-            },
-            body: JSON.stringify({
-              selectedPatient: selectedName ? `${selectedName} (${selectedID})` : '',
-              selectedMeasure: (measureFilter && measureFilter !== 'undefined') ? measureFilter : 'suicidalityindex',
-              selectedScore: average,
-            }),
-          });
-      
-          if (response.status !== 200) {
-            throw new Error(`Internal Server Error`);
-          }
-      
-          const data = await response.json();
-          setDataIntepretation(data.text);
-        } catch (error) {
-          return; 
-        }
-    };
-
     const handleSearchChange = async (event) => {
         setSelectedID(''); 
         setSelectedName('');
@@ -272,30 +213,6 @@ const Dashboard = () => {
         );
       
         setFilteredSuggestions(filteredSuggestions);
-      
-        try {
-          const response = await fetch('http://172.20.10.3:3001/pull-patient-analysis', {
-            method: 'POST',
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `${token}`,
-            },
-            body: JSON.stringify({
-              selectedPatient: selectedName ? `${selectedName} (${selectedID})` : '',
-              selectedMeasure: (measureFilter && measureFilter !== 'undefined') ? measureFilter : 'phq15',
-              selectedScore: average,
-            }),
-          });
-      
-          if (response.status !== 200) {
-            throw new Error(`Internal Server Error`);
-          }
-      
-          const data = await response.json();
-          setDataIntepretation(data.text);
-        } catch (error) {
-          return; 
-        }
     };
       
     const handleSuggestionClick = async (suggestion) => {
@@ -431,66 +348,93 @@ const Dashboard = () => {
                 }
             },
         },
-        });
+      });
 
-  }, [trajectoryData, measureFilter]);
+    }, [trajectoryData, measureFilter]);
 
-  const [gaugeChartData, setGaugeChartData] = useState({
-    datasets: [
-      {
-        data: [],
-        backgroundColor: [],
-      },
-    ],
-  });
-  
-  const [gaugeChartOptions, setGaugeChartOptions] = useState({});
-  
-
-  useEffect(() => {
-    let measureCutoff = 15; // Default values
-    let measureMax = 30; // Default values
-  
-    switch (measureFilter) {
-      case "phq9":
-        measureCutoff = 20;
-        measureMax = 27;
-        break;
-      case "phq15":
-        measureCutoff = 15;
-        measureMax = 30;
-        break;
-      case "gad7":
-        measureCutoff = 15;
-        measureMax = 21;
-        break;
-      case "sbqr":
-        measureCutoff = 8;
-        measureMax = 18;
-        break;
-      case "psqi":
-        measureCutoff = 5;
-        measureMax = 21;
-        break;
-      default:
-        measureCutoff = 15;
-        measureMax = 30;
-    }
-  
-    setGaugeChartData({
+    const [gaugeChartData, setGaugeChartData] = useState({
       datasets: [
         {
-          data: [average, measureMax - average],
-          backgroundColor: [average >= measureCutoff ? '#E54B4B' : '#8884d8', 'grey'],
+          data: [],
+          backgroundColor: [],
+        },
+      ],
+    });
+  
+    const [gaugeChartOptions, setGaugeChartOptions] = useState({});
+  
+    useEffect(() => {
+      let measureCutoff = 15; 
+      let measureMax = 30;
+    
+      switch (measureFilter) {
+        case "phq9":
+          measureCutoff = 20;
+          measureMax = 27;
+          break;
+        case "phq15":
+          measureCutoff = 15;
+          measureMax = 30;
+          break;
+        case "gad7":
+          measureCutoff = 15;
+          measureMax = 21;
+          break;
+        case "sbqr":
+          measureCutoff = 8;
+          measureMax = 18;
+          break;
+        case "psqi":
+          measureCutoff = 5;
+          measureMax = 21;
+          break;
+        default:
+          measureCutoff = 15;
+          measureMax = 30;
+      }
+    
+      setGaugeChartData({
+        datasets: [
+          {
+            data: [average, measureMax - average],
+            backgroundColor: [average >= measureCutoff ? '#E54B4B' : '#8884d8', 'grey'],
+            borderWidth: 0,
+          },
+        ],
+      });
+    
+      setGaugeChartOptions({
+        cutout: "70%",
+        circumference: 180,
+        rotation: -90,
+        plugins: {
+          legend: {
+            display: false,
+          },
+        },
+        tooltips: {
+          enabled: false,
+        },
+      });
+    
+    }, [average, measureFilter]);
+
+    const [missingItemsGaugeData, setMissingItemsGaugeData] = useState({
+      datasets: [
+        {
+          data: [],
+          backgroundColor: ['#8884d8', 'grey'],
           borderWidth: 0,
         },
       ],
     });
   
-    setGaugeChartOptions({
+    const [missingItemsGaugeOptions, setMissingItemsGaugeOptions] = useState({
       cutout: "70%",
-      circumference: 180,
+      circumference: 360,
       rotation: -90,
+      responsive: true,
+      maintainAspectRatio: false,
       plugins: {
         legend: {
           display: false,
@@ -500,112 +444,83 @@ const Dashboard = () => {
         enabled: false,
       },
     });
-  
-  }, [average, measureFilter]);
 
-  const [missingItemsGaugeData, setMissingItemsGaugeData] = useState({
-    datasets: [
-      {
-        data: [],
-        backgroundColor: ['#8884d8', 'grey'],
-        borderWidth: 0,
-      },
-    ],
-  });
-  
-  const [missingItemsGaugeOptions, setMissingItemsGaugeOptions] = useState({
-    cutout: "70%",
-    circumference: 360,
-    rotation: -90,
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        display: false,
-      },
-    },
-    tooltips: {
-      enabled: false,
-    },
-  });
+    useEffect(() => {
+      if (patientTimepointInfo && patientTimepointInfo.length > 0) {
+        setMissingItemsGaugeData({
+          datasets: [
+            {
+              data: [patientTimepointInfo.length, 6 - patientTimepointInfo.length],
+              backgroundColor: ['#8884d8', 'grey'],
+              borderWidth: 0,
+            },
+          ],
+        });
+      }
+    }, [patientTimepointInfo]);
 
-  useEffect(() => {
-    if (patientTimepointInfo && patientTimepointInfo.length > 0) {
-      setMissingItemsGaugeData({
-        datasets: [
-          {
-            data: [patientTimepointInfo.length, 6 - patientTimepointInfo.length],
-            backgroundColor: ['#8884d8', 'grey'],
-            borderWidth: 0,
+    const [barChartData, setBarChartData] = useState({
+      labels: [],
+      datasets: [
+        {
+          label: 'Completion Counts',
+          data: [],
+          backgroundColor: '#8884d8',
+        },
+      ],
+    });
+  
+    const [barChartOptions, setBarChartOptions] = useState({
+      scales: {
+        y: {
+          min: 0,
+          max: 0, 
+          grid: {
+            display: false,
           },
-        ],
-      });
-    }
-  }, [patientTimepointInfo]);
-
-  const [barChartData, setBarChartData] = useState({
-    labels: [],
-    datasets: [
-      {
-        label: 'Completion Counts',
-        data: [],
-        backgroundColor: '#8884d8',
+        },
+        x: {
+          title: {
+            display: false,
+          },
+        },
       },
-    ],
-  });
-  
-  const [barChartOptions, setBarChartOptions] = useState({
-    scales: {
-      y: {
-        min: 0,
-        max: 0, // This will be dynamically set based on maxCompletionCount
-        grid: {
+      plugins: {
+        legend: {
           display: false,
         },
       },
-      x: {
-        title: {
-          display: false,
-        },
-      },
-    },
-    plugins: {
-      legend: {
-        display: false,
-      },
-      // Note: You mentioned using 'datalabels' plugin, ensure it's correctly configured or installed if you plan to use it
-    },
-  });
+    });
 
-  useEffect(() => {
-    if (organizationCounts) {
-      let completionCountMax = maxCompletionCount * 1.5;
-      const timepoints = Object.keys(organizationCounts);
-      const counts = Object.values(organizationCounts).map(count => parseInt(count, 10));
-  
-      setBarChartData({
-        labels: timepoints,
-        datasets: [
-          {
-            label: 'Completion Counts',
-            data: counts,
-            backgroundColor: '#8884d8',
+    useEffect(() => {
+      if (organizationCounts) {
+        let completionCountMax = maxCompletionCount * 1.5;
+        const timepoints = Object.keys(organizationCounts);
+        const counts = Object.values(organizationCounts).map(count => parseInt(count, 10));
+    
+        setBarChartData({
+          labels: timepoints,
+          datasets: [
+            {
+              label: 'Completion Counts',
+              data: counts,
+              backgroundColor: '#8884d8',
+            },
+          ],
+        });
+    
+        setBarChartOptions(prevOptions => ({
+          ...prevOptions,
+          scales: {
+            ...prevOptions.scales,
+            y: {
+              ...prevOptions.scales.y,
+              max: completionCountMax,
+            },
           },
-        ],
-      });
-  
-      setBarChartOptions(prevOptions => ({
-        ...prevOptions,
-        scales: {
-          ...prevOptions.scales,
-          y: {
-            ...prevOptions.scales.y,
-            max: completionCountMax,
-          },
-        },
-      }));
-    }
-  }, [organizationCounts, maxCompletionCount]);
+        }));
+      }
+    }, [organizationCounts, maxCompletionCount]);
 
   
     return (
@@ -786,7 +701,7 @@ const Dashboard = () => {
                             {patientTimepointInfo.length === 0 && (
                                 <div className="patientInterpretationContainer">
                                     <div className="patientBreakdownContainer">
-                                        <div className="patientBreakdownTitle">{organizationName} Organization ID: {organizationID}</div>
+                                        <div className="patientBreakdownTitle">{organizationName} (ID: {organizationID})</div>
                                         <div className="patientBreakdownSubtitle">Average Measure Scores</div>
                                         <table className="timepointControlTable">
                                         <thead className="managerControlHeaders">
@@ -842,10 +757,6 @@ const Dashboard = () => {
                         <br/> 
                     </div>
                 )}
-
-                
-
-
             </div>
         </div>
     );
