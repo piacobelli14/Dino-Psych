@@ -254,13 +254,29 @@
     position: relative;
 }
 
-.patientInterpretationContainer {
+.patientInterpretationContainer, 
+.trajectoryInterpretationContainer {
   display: flex;  
   align-items: center;
-  justify-content: space-between; 
-  width: 90%;
-  margin-top: 1rem; 
+  justify-content: space-evenly; 
 } 
+
+.patientInterpretationContainer {
+    margin-top: 1vw;
+    width: 98%;
+}
+
+.trajectoryInterpretationContainer {
+    width: 90%; 
+    height: 30vw; 
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.4rem; 
+    padding: 1rem; 
+}
+
+.timepointBarChart {
+    width: 100% !important; 
+}
 
 .outcomesTrajectoryChartContainer {
     display: flex; 
@@ -389,3 +405,136 @@
   height: 40%; 
   margin-top: -6vw; 
 }
+
+.patientBreakdownContainer {
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    text-align: center;
+    overflow: hidden;
+    width: 45%; 
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.4rem; 
+    height: 30vw; 
+    padding: 0 2vw;
+}
+
+.patientBreakdownTitle {
+    font-size: 1vw; 
+    text-decoration: underline; 
+    font-weight: 600; 
+}
+
+.patientBreakdownSubtitle {
+    font-size: 0.8vw; 
+    font-weight: 500; 
+    margin-top: 0.5vw; 
+    position: sticky; 
+}
+ 
+.timepointControlTable {
+  text-align: center; 
+  margin-top: 1vw; 
+  white-space: nowrap;
+  border-spacing: 1vw 1vw; 
+  width: 45vw; 
+}
+
+.timepointControlTable thead::after {
+    content: ''; 
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    top: 1.4vw;
+    width: 100%;
+    border-bottom: 1px solid grey; 
+    z-index: 1; 
+}
+
+.timepointControlTable {
+  color: whitesmoke; 
+  position: sticky;
+  top: 0;
+  bottom: 10; 
+  font-weight: bold;
+  font-size: 1vw; 
+}
+
+.managerControlHeaders {
+  color: whitesmoke; 
+  position: sticky;
+  top: 0;
+  bottom: 10; 
+  font-weight: bold;
+  font-size: 1vw; 
+}
+
+.managerControlContent {
+  color: white;
+  white-space: nowrap;
+  font-size: 0.8vw;
+  overflow: scroll; 
+}
+
+.managerControlContent select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.0);
+  color: grey;
+  overflow: scroll; 
+}
+ 
+.selectedPatientCompletionFlex, 
+.organizationCompletionFlex {
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center;  
+    align-items: center;
+    text-align: center;
+    font-size: 1vw; 
+    font-weight: 500;
+    letter-spacing: 0.05vw;
+    overflow: visible;
+    position: relative;
+    width: 40%; 
+    height: 30vw; 
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.4rem; 
+    padding: 0 1rem; 
+}
+
+.averageGaugeChart {
+    width: 90% !important;
+    height: 90% !important;
+}
+
+.missingItemsBlock {
+    display: block; 
+    position: absolute; 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    overflow: visible; 
+}
+
+
+.missingItemValue {
+  font-size: 4vw; 
+  font-weight: 800;
+}
+
+.missingItemLabel {
+    text-align: center; 
+    font-weight: 600; 
+    font-size: 1vw;
+}
+
+
+
+
+
+
+

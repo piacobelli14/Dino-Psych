@@ -608,7 +608,12 @@ const Dashboard = () => {
   }, [organizationCounts, maxCompletionCount]);
   
 
-  
+  useEffect(() => {
+    document.body.classList.add('dashboardPageBody');
+    return () => {
+      document.body.classList.remove('dashboardPageBody');
+    };
+  }, []);
 
   
   
@@ -703,7 +708,7 @@ const Dashboard = () => {
                                 )}
                             </div>
 
-                            <div className="patientInterpretationContainer">
+                            <div className="trajectoryInterpretationContainer">
                                 <div className="outcomesTrajectoryChartContainer">
                                     <div className="measureFilterWrapper">
                                         <FontAwesomeIcon icon={faFilter} className="navigationButtonIcon"/>
@@ -747,88 +752,85 @@ const Dashboard = () => {
 
                                     <div className='outcomesThresholdSummaryContainer'>{dataInterpretation}</div>
                                 </div>
-                                
                             </div>
 
                             {patientTimepointInfo.length > 0 && (
                                 <div className="patientInterpretationContainer">
-                                <div className="patientBreakdownContainer">
-                                    <div className="patientBreakdownTitle">{selectedName} (ID: {selectedID})</div>
-                                    <div className="patientBreakdownSubtitle">Completed Measure Scores</div>
-                                    <table className="timepointControlTable">
-                                    <thead className="managerControlHeaders">
-                                        <tr>
-                                        <th>Timepoint</th>
-                                        <th>PHQ-9</th>
-                                        <th>PHQ-15</th>
-                                        <th>GAD-7</th>
-                                        <th>PSQI</th>
-                                        <th>SBQ-R</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {patientTimepointInfo.map((patient, index) => (
-                                        <tr className="managerControlContent" key={index}>
-                                            <td>{patient.timepoint}</td>
-                                            <td>{patient.phq9.toFixed(2)}</td>
-                                            <td>{patient.phq15.toFixed(2)}</td>
-                                            <td>{patient.gad7.toFixed(2)}</td>
-                                            <td>{patient.psqi.toFixed(2)}</td>
-                                            <td>{patient.sbqr.toFixed(2)}</td>
-                                        </tr>
-                                        ))}
-                                    </tbody>
-                                    </table>
-                                </div>
-
-                                <div className="selectedPatientCompletionFlex">
-                                    <div style={{"width": "40%"}}>
-                                        <Doughnut  data={missingItemsGaugeData} options={missingItemsGaugeOptions} />
-                                    </div>
-                                    <div className="missingItemsBlock">
-                                        <div className="missingItemValue">{patientTimepointInfo.length}/6</div>
-                                        <div className="missingItemLabel">Timepoints Completed</div>
+                                    <div className="patientBreakdownContainer">
+                                        <div className="patientBreakdownTitle">{selectedName} (ID: {selectedID})</div>
+                                        <div className="patientBreakdownSubtitle">Completed Measure Scores</div>
+                                        <table className="timepointControlTable">
+                                        <thead className="managerControlHeaders">
+                                            <tr>
+                                            <th>Timepoint</th>
+                                            <th>PHQ-9</th>
+                                            <th>PHQ-15</th>
+                                            <th>GAD-7</th>
+                                            <th>PSQI</th>
+                                            <th>SBQ-R</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {patientTimepointInfo.map((patient, index) => (
+                                            <tr className="managerControlContent" key={index}>
+                                                <td>{patient.timepoint}</td>
+                                                <td>{patient.phq9.toFixed(2)}</td>
+                                                <td>{patient.phq15.toFixed(2)}</td>
+                                                <td>{patient.gad7.toFixed(2)}</td>
+                                                <td>{patient.psqi.toFixed(2)}</td>
+                                                <td>{patient.sbqr.toFixed(2)}</td>
+                                            </tr>
+                                            ))}
+                                        </tbody>
+                                        </table>
                                     </div>
 
-                                </div>
+                                    <div className="selectedPatientCompletionFlex">
+                                        <Doughnut className="averageGaugeChart" data={missingItemsGaugeData} options={missingItemsGaugeOptions} />
+                                        <div className="missingItemsBlock">
+                                            <div className="missingItemValue">{patientTimepointInfo.length}/6</div>
+                                            <div className="missingItemLabel">Timepoints Completed</div>
+                                        </div>
+
+                                    </div>
                                 </div>
                             )}
 
                             {patientTimepointInfo.length === 0 && (
                                 <div className="patientInterpretationContainer">
-                                <div className="patientBreakdownContainer">
-                                    <div className="patientBreakdownTitle">{organizationName} (ID: {organizationID})</div>
-                                    <div className="patientBreakdownSubtitle">Average Measure Scores</div>
-                                    <table className="timepointControlTable">
-                                    <thead className="managerControlHeaders">
-                                        <tr>
-                                        <th>Timepoint</th>
-                                        <th>PHQ-9</th>
-                                        <th>PHQ-15</th>
-                                        <th>GAD-7</th>
-                                        <th>PSQI</th>
-                                        <th>SBQ-R</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {organizationTimepointInfo.map((organization, index) => (
-                                        <tr className="managerControlContent" key={index}>
-                                            <td>{organization.timepoint}</td>
-                                            <td>{organization.averages.phq9.toFixed(2)}</td>
-                                            <td>{organization.averages.phq15.toFixed(2)}</td>
-                                            <td>{organization.averages.gad7.toFixed(2)}</td>
-                                            <td>{organization.averages.psqi.toFixed(2)}</td>
-                                            <td>{organization.averages.sbqr.toFixed(2)}</td>
-                                        </tr>
-                                        ))}
-                                    </tbody>
-                                    </table>
-                                </div>
+                                    <div className="patientBreakdownContainer">
+                                        <div className="patientBreakdownTitle">{organizationName} Organization ID: {organizationID}</div>
+                                        <div className="patientBreakdownSubtitle">Average Measure Scores</div>
+                                        <table className="timepointControlTable">
+                                        <thead className="managerControlHeaders">
+                                            <tr>
+                                            <th>Timepoint</th>
+                                            <th>PHQ-9</th>
+                                            <th>PHQ-15</th>
+                                            <th>GAD-7</th>
+                                            <th>PSQI</th>
+                                            <th>SBQ-R</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {organizationTimepointInfo.map((organization, index) => (
+                                            <tr className="managerControlContent" key={index}>
+                                                <td>{organization.timepoint}</td>
+                                                <td>{organization.averages.phq9.toFixed(2)}</td>
+                                                <td>{organization.averages.phq15.toFixed(2)}</td>
+                                                <td>{organization.averages.gad7.toFixed(2)}</td>
+                                                <td>{organization.averages.psqi.toFixed(2)}</td>
+                                                <td>{organization.averages.sbqr.toFixed(2)}</td>
+                                            </tr>
+                                            ))}
+                                        </tbody>
+                                        </table>
+                                    </div>
 
-                                <div className="organizationCompletionFlex">
-                                    <div className="organizationBreakdownTitle">Completion By Timepoint</div>
-                                    <Bar data={barChartData} options={barChartOptions} />
-                                </div>
+                                    <div className="organizationCompletionFlex">
+                                        <div className="organizationBreakdownTitle">Completion By Timepoint</div>
+                                        <Bar className="timepointBarChart" data={barChartData} options={barChartOptions} />
+                                    </div>
                                 </div>
                             )}
 
