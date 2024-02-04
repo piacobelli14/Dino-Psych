@@ -249,7 +249,7 @@
   display: flex;  
   align-items: center;
   justify-content: space-evenly; 
-  width: 90%;
+  width: 94%;
 } 
 
 .patientInterpretationContainer {
@@ -401,6 +401,7 @@
     border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: 0.4rem; 
     height: 36vh; 
+    padding: 1vh 0; 
 }
 
 .patientBreakdownTitle {
@@ -485,6 +486,7 @@
     height: 36vh; 
     border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: 0.4rem; 
+    padding: 1vh 0; 
 }
 
 .averageGaugeChart {
