@@ -407,20 +407,28 @@ const Dashboard = () => {
         },
         scales: {
             y: {
-            beginAtZero: true,
-            min: 0,
-            max: measureMax,
-            ticks: {
-                stepSize: stepValue,
-            },
-            grid: {
-                display: false,
-            },
+                beginAtZero: true,
+                min: 0,
+                max: measureMax,
+                ticks: {
+                    stepSize: stepValue,
+                },
+                grid: {
+                    display: false,
+                },
+                border: {
+                    lineWidth: 2,
+                    color: 'grey',
+                }
             },
             x: {
-            grid: {
-                display: false,
-            },
+                grid: {
+                    display: false,
+                },
+                border: {
+                    lineWidth: 2,
+                    color: 'grey',
+                }
             },
         },
         });
@@ -494,6 +502,116 @@ const Dashboard = () => {
     });
   
   }, [average, measureFilter]);
+
+  const [missingItemsGaugeData, setMissingItemsGaugeData] = useState({
+    datasets: [
+      {
+        data: [],
+        backgroundColor: ['#8884d8', 'grey'],
+        borderWidth: 0,
+      },
+    ],
+  });
+  
+  const [missingItemsGaugeOptions, setMissingItemsGaugeOptions] = useState({
+    cutout: "70%",
+    circumference: 360,
+    rotation: -90,
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+    tooltips: {
+      enabled: false,
+    },
+  });
+
+  useEffect(() => {
+    if (patientTimepointInfo && patientTimepointInfo.length > 0) {
+      setMissingItemsGaugeData({
+        datasets: [
+          {
+            data: [patientTimepointInfo.length, 6 - patientTimepointInfo.length],
+            backgroundColor: ['#8884d8', 'grey'],
+            borderWidth: 0,
+          },
+        ],
+      });
+    }
+  }, [patientTimepointInfo]);
+
+  const [barChartData, setBarChartData] = useState({
+    labels: [],
+    datasets: [
+      {
+        label: 'Completion Counts',
+        data: [],
+        backgroundColor: '#8884d8',
+      },
+    ],
+  });
+  
+  const [barChartOptions, setBarChartOptions] = useState({
+    scales: {
+      y: {
+        min: 0,
+        max: 0, // This will be dynamically set based on maxCompletionCount
+        grid: {
+          display: false,
+        },
+      },
+      x: {
+        title: {
+          display: false,
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        display: false,
+      },
+      // Note: You mentioned using 'datalabels' plugin, ensure it's correctly configured or installed if you plan to use it
+    },
+  });
+
+  useEffect(() => {
+    if (organizationCounts) {
+      let completionCountMax = maxCompletionCount * 1.5;
+      const timepoints = Object.keys(organizationCounts);
+      const counts = Object.values(organizationCounts).map(count => parseInt(count, 10));
+  
+      setBarChartData({
+        labels: timepoints,
+        datasets: [
+          {
+            label: 'Completion Counts',
+            data: counts,
+            backgroundColor: '#8884d8',
+          },
+        ],
+      });
+  
+      setBarChartOptions(prevOptions => ({
+        ...prevOptions,
+        scales: {
+          ...prevOptions.scales,
+          y: {
+            ...prevOptions.scales.y,
+            max: completionCountMax,
+          },
+        },
+      }));
+    }
+  }, [organizationCounts, maxCompletionCount]);
+  
+
+  
+
+  
+  
   
   
 
@@ -631,6 +749,88 @@ const Dashboard = () => {
                                 </div>
                                 
                             </div>
+
+                            {patientTimepointInfo.length > 0 && (
+                                <div className="patientInterpretationContainer">
+                                <div className="patientBreakdownContainer">
+                                    <div className="patientBreakdownTitle">{selectedName} (ID: {selectedID})</div>
+                                    <div className="patientBreakdownSubtitle">Completed Measure Scores</div>
+                                    <table className="timepointControlTable">
+                                    <thead className="managerControlHeaders">
+                                        <tr>
+                                        <th>Timepoint</th>
+                                        <th>PHQ-9</th>
+                                        <th>PHQ-15</th>
+                                        <th>GAD-7</th>
+                                        <th>PSQI</th>
+                                        <th>SBQ-R</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {patientTimepointInfo.map((patient, index) => (
+                                        <tr className="managerControlContent" key={index}>
+                                            <td>{patient.timepoint}</td>
+                                            <td>{patient.phq9.toFixed(2)}</td>
+                                            <td>{patient.phq15.toFixed(2)}</td>
+                                            <td>{patient.gad7.toFixed(2)}</td>
+                                            <td>{patient.psqi.toFixed(2)}</td>
+                                            <td>{patient.sbqr.toFixed(2)}</td>
+                                        </tr>
+                                        ))}
+                                    </tbody>
+                                    </table>
+                                </div>
+
+                                <div className="selectedPatientCompletionFlex">
+                                    <div style={{"width": "40%"}}>
+                                        <Doughnut  data={missingItemsGaugeData} options={missingItemsGaugeOptions} />
+                                    </div>
+                                    <div className="missingItemsBlock">
+                                        <div className="missingItemValue">{patientTimepointInfo.length}/6</div>
+                                        <div className="missingItemLabel">Timepoints Completed</div>
+                                    </div>
+
+                                </div>
+                                </div>
+                            )}
+
+                            {patientTimepointInfo.length === 0 && (
+                                <div className="patientInterpretationContainer">
+                                <div className="patientBreakdownContainer">
+                                    <div className="patientBreakdownTitle">{organizationName} (ID: {organizationID})</div>
+                                    <div className="patientBreakdownSubtitle">Average Measure Scores</div>
+                                    <table className="timepointControlTable">
+                                    <thead className="managerControlHeaders">
+                                        <tr>
+                                        <th>Timepoint</th>
+                                        <th>PHQ-9</th>
+                                        <th>PHQ-15</th>
+                                        <th>GAD-7</th>
+                                        <th>PSQI</th>
+                                        <th>SBQ-R</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {organizationTimepointInfo.map((organization, index) => (
+                                        <tr className="managerControlContent" key={index}>
+                                            <td>{organization.timepoint}</td>
+                                            <td>{organization.averages.phq9.toFixed(2)}</td>
+                                            <td>{organization.averages.phq15.toFixed(2)}</td>
+                                            <td>{organization.averages.gad7.toFixed(2)}</td>
+                                            <td>{organization.averages.psqi.toFixed(2)}</td>
+                                            <td>{organization.averages.sbqr.toFixed(2)}</td>
+                                        </tr>
+                                        ))}
+                                    </tbody>
+                                    </table>
+                                </div>
+
+                                <div className="organizationCompletionFlex">
+                                    <div className="organizationBreakdownTitle">Completion By Timepoint</div>
+                                    <Bar data={barChartData} options={barChartOptions} />
+                                </div>
+                                </div>
+                            )}
 
                         </div>
 

@@ -223,6 +223,7 @@
     font-weight: bold; 
     padding: 0; 
     top: calc(100% - 2.5vw); 
+    z-index: 1000;
 }
   
 .patientSearchSuggestions li {
@@ -241,6 +242,7 @@
 
 .outcomesDoughnutChart {
     width: 100% !important;
+    margin-top: -2rem; 
 }
 
 .outcomesTrajectoryChart {
@@ -257,7 +259,7 @@
   align-items: center;
   justify-content: space-between; 
   width: 90%;
-  height: 44vh; 
+  margin-top: 1rem; 
 } 
 
 .outcomesTrajectoryChartContainer {
@@ -265,7 +267,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 55%;   
+    width: 55%;  
     color: white; 
 }
 
@@ -315,19 +317,11 @@
     width: 35%; 
 }
 
-.outcomesThresholdChartContainer, 
-.outcomesThresholdSummaryContainer {
-    display: flex; 
-    flex-direction: column; 
-    justify-content: flex-start; 
-    align-items: center;
-    color: white;
-}
-
 .outcomesDoughnutChart, 
 .outcomesTrajectoryChart {
     width: 100% !important;
     height: 100% !important;  
+    z-index: 1; 
 }
 
 .averageValueBlock {
@@ -337,6 +331,10 @@
   left: 50%; 
   transform: translate(-50%, -50%); 
   overflow: visible; 
+  display: flex; 
+  flex-direction: column; 
+  justify-content: center; 
+  align-items: center;
 }
 
 .averageValueBlock {
@@ -349,7 +347,7 @@
 }
 
 .averageMeasureValue {
-  margin-top: 4vw;
+  margin-top: -3rem;
 }
 
 .averageMeasureLabel, 
@@ -366,7 +364,7 @@
 .averageMeasureTitle {
     text-align: center; 
     margin-top: 0.5vw; 
-    font-size: 0.6vw; 
+    font-size: 0.8vw; 
     font-weight: 300; 
   }
 
@@ -377,15 +375,17 @@
   justify-content: center; 
   align-items: center;
   color: white;
+  height: 60%; 
 }
 
 .outcomesThresholdChartContainer {
   width: 100%;
-  height: 60%; 
   position: relative;
-  margin-top: 2vw;
 }
 
 .outcomesThresholdSummaryContainer {
   overflow: visible; 
+  font-size: 0.8vw; 
+  height: 40%; 
+  margin-top: -6vw; 
 }
