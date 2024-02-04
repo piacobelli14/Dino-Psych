@@ -267,6 +267,50 @@ app.post('/change-password', async (req, res) => {
     }
 });
 
+app.post('/organization-info', async (req, res) => {
+    const { organizationID } = req.body;
+    try {
+      const userCountQuery = 'SELECT COUNT(*) AS usercount FROM dinolabsusers WHERE organizationid = $1';
+      const patientCountQuery = 'SELECT COUNT(*) AS patientcount FROM patientinfo WHERE organizationid = $1';
+
+      if (organizationID === 'null' || organizationID === null || organizationID === '') {
+        organizationID = username;
+  
+        const patientInfoQuery = 'SELECT firstname, lastname, email, image FROM dinolabsusers WHERE username = $1';
+        const organizationidResult = await pool.query(patientInfoQuery, [organizationID]);
+        const userCountResult = await pool.query(userCountQuery, [organizationID]);
+        const patientCountResult = await pool.query(patientCountQuery, [organizationID]);
+  
+        const organizationInfo = organizationidResult.rows.map(row => ({
+          orgtype: 'individual',
+          orgname: row.firstname + ' ' + row.lastname,
+          orgid: row.email,
+          orgimage: row.image,
+          userCount: userCountResult.rows[0].usercount,
+          patientCount: patientCountResult.rows[0].patientcount,
+        }));
+        return res.status(200).json(organizationInfo);
+      } else {
+        const patientInfoQuery = 'SELECT * FROM dinolabsorganizations WHERE orgid = $1';
+        const organizationidResult = await pool.query(patientInfoQuery, [organizationID]);
+        const userCountResult = await pool.query(userCountQuery, [organizationID]);
+        const patientCountResult = await pool.query(patientCountQuery, [organizationID]);
+
+        const organizationInfo = organizationidResult.rows.map(row => ({
+          orgtype: 'organization',
+          orgname: row.orgname,
+          orgid: organizationID,
+          orgimage: row.orgimage,
+          userCount: userCountResult.rows[0].usercount,
+          patientCount: patientCountResult.rows[0].patientcount,
+        }));
+        return res.status(200).json(formattedResult);
+      }
+    } catch (error) {
+      return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+});
+
 app.post('/user-info', authenticateToken, async (req, res) => {
     const { username } = req.body;
     try {
@@ -456,7 +500,6 @@ app.post('/delete-user', async (req, res) => {
 
 app.post('/user-demographic-info', async (req, res) => {
     const { organizationID } = req.body;
-    console.log(organizationID); 
     try {
       const maleCountQuery = `
           SELECT COUNT(*) AS malecount FROM patientinfo WHERE organizationid = $1 AND ptsex = 'M';
@@ -496,12 +539,6 @@ app.post('/user-demographic-info', async (req, res) => {
       const { rows: ageRows } = await pool.query(ageDistributionQuery, [organizationID]);
       const ageDistribution = ageRows;
 
-      console.log({
-        maleCount,
-        femaleCount,
-        ageDistribution
-      }); 
-  
       res.status(200).json({
         maleCount,
         femaleCount,
@@ -511,6 +548,316 @@ app.post('/user-demographic-info', async (req, res) => {
       res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
     }
 });
+
+app.post('/patient-search-options', authenticateToken, async (req, res) => {
+    const { organizationID } = req.body; 
+    try {
+        const patientSelectionQuery = `SELECT ptname, ptid FROM patientinfo WHERE organizationid = $1`
+        if (organizationID === 'null' || organizationID === null || organizationID === '') {
+            organizationID = username;        
+        }
+
+        const patientSelectionResult = await pool.query(patientSelectionQuery, [organizationID]);
+        if (patientSelectionResult.error) {
+            return res.status(500).json({ message: 'Unable to gather patient info at this time. Please try again.' });
+        }
+
+        const patientsArray = patientSelectionResult.rows.map(patient => `${patient.ptname} (${patient.ptid})`);
+        
+        return res.status(200).json({ patientsArray });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+});
+
+app.post('/get-distribution-info', async (req, res) => {
+    const { organizationID } = req.body;
+    try {   
+      if (organizationID === 'null' || organizationID === null || organizationID === '') {
+        organizationID = username;
+      }
+
+      const patientInfoQuery = 'SELECT ptname, ptid FROM patientinfo WHERE organizationid = $1';
+      const patientInfoResult = await pool.query(patientInfoQuery, [organizationID]);
+
+      const patientList = patientInfoResult.rows.map(row => ({
+        ptname: row.ptname,
+        ptid: row.ptid,
+      }));
+  
+      return res.status(200).json({ patientList });
+    } catch (error) {
+      return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+});
+
+app.post('/pull-organization-timepoint-data', authenticateToken, async (req, res) => {
+    const { organizationID } = req.body;
+
+    try {
+      const patientDataQuery = `SELECT * FROM dinopsych_patientinfo WHERE organizationid = $1 ORDER BY timepoint;`;
+      const patientDataResult = await pool.query(patientDataQuery, [organizationID]);
+      if (patientDataResult.error) {
+        return res.status(500).json({ message: 'Error querying patient data. Please try again later.' });
+      }
+
+      const timepointGroups = groupByTimepoint(patientDataResult.rows); 
+      const measureAverages = Object.keys(timepointGroups).map(timepoint => ({
+        timepoint,
+        averages: calculateAverageForGroup(timepointGroups[timepoint]),
+      })); 
+  
+      res.status(200).json({ measureAverages });
+    } catch (error) {
+      return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+});
+
+app.post('/pull-organization-completion-counts', authenticateToken, async (req, res) => {
+    const { organizationID } = req.body;
+    try {
+      if (organizationID === 'null' || organizationID === null || organizationID === '') {
+        organizationID = username;
+      }
+  
+      const completionCountQuery = `
+        SELECT
+            timepoint,
+            COUNT(*) as count
+        FROM
+            dinopsych_patientinfo
+        WHERE
+            organizationid = $1
+        GROUP BY
+            timepoint
+        ORDER BY
+            CASE
+                WHEN timepoint = 'W1' THEN 1
+                WHEN timepoint = 'W2' THEN 2
+                WHEN timepoint = 'W3' THEN 3
+                WHEN timepoint = 'W4' THEN 4
+                WHEN timepoint = 'W5' THEN 5
+                WHEN timepoint = 'W6' THEN 6
+                ELSE 7 -- For any other cases, if there are any
+            END;
+      `;
+
+      const completionCountResult = await pool.query(completionCountQuery, [organizationID]);
+      if (completionCountResult.error) {
+        return res.status(500).json({ message: 'Error querying patient data. Please try again later.' });
+      }
+  
+      const completionCounts = completionCountResult.rows.reduce((acc, { timepoint, count }) => {
+        acc[timepoint] = count;
+        return acc;
+      }, {});
+  
+      const maxCount = Math.max(...Object.values(completionCounts));
+  
+      return res.status(200).json({ completionCounts, maxCount });
+    } catch (error) {
+      return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+});
+
+app.post('/patient-outcomes-data', authenticateToken, async (req, res) => {
+    let { organizationID, patientFilter, measureFilter } = req.body;
+    try {
+        if (organizationID === 'null' || organizationID === null || organizationID === '') {
+            organizationID = username;
+        }
+
+        if (patientFilter == '' || !patientFilter) {
+            patientFilter = null;
+        }
+
+        if (measureFilter == '' || !measureFilter) {
+            measureFilter = 'suicidalityindex';
+        }
+
+        const selectedW1 = [];
+        const selectedW2 = [];
+        const selectedW3 = [];
+        const selectedW4 = [];
+        const selectedW5 = [];
+        const selectedW6 = [];
+
+        let dataSelectionQuery;
+        let queryParameters;
+        if (measureFilter !== 'suicidalityindex') {
+            if (patientFilter !== null && patientFilter !== 'none') {
+                dataSelectionQuery = `SELECT timepoint, ${measureFilter} FROM dinopsych_patientinfo WHERE ptid = $1 AND organizationid = $2;`;
+                queryParameters = [patientFilter, organizationID];
+            } else {
+                orgOnly = true;
+                dataSelectionQuery = `SELECT timepoint, ${measureFilter} FROM dinopsych_patientinfo WHERE organizationid = $1;`;
+                queryParameters = [organizationID];
+            }
+        } else {
+            if (patientFilter !== null && patientFilter !== 'none') {
+                dataSelectionQuery = `SELECT timepoint, phq9, phq15, gad7, psqi, sbqr FROM dinopsych_patientinfo WHERE ptid = $1 AND organizationid = $2;`;
+                queryParameters = [patientFilter, organizationID];
+            } else {
+                orgOnly = true;
+                dataSelectionQuery = `SELECT timepoint, phq9, phq15, gad7, psqi, sbqr FROM dinopsych_patientinfo WHERE organizationid = $1;`;
+                queryParameters = [organizationID];
+            }
+        }
+
+        const { rows } = await pool.query(dataSelectionQuery, queryParameters);
+
+        const calculateAverage = (values) => {
+            const filteredValues = values.filter(value => !isNaN(value));
+
+            if (filteredValues.length > 0) {
+                const sum = filteredValues.reduce((a, b) => a + b);
+                return sum / filteredValues.length;
+            } else if (values.length > 0) {
+                return -99.0;
+            } else {
+                return null; 
+            }
+        };
+
+        const calculatePercentageLikelihood = async (phq15, phq9, gad7, psqi, sbqr) => {
+            try {
+                const jsonData = await fs.readFile('suicidalityIndexV1.json', 'utf-8');
+                const data = JSON.parse(jsonData);
+
+                const finalMus = math.matrix(data.final_mus);
+                const classConditionals = data.class_conditionals;
+
+                let newInstance = [phq15, phq9, gad7, psqi, sbqr];
+                const newInstanceVector = math.transpose(math.matrix(newInstance));
+
+                const classLikelihoods = [];
+                for (let i = 0; i < finalMus.size()[0]; i++) {
+                    const mean = math.matrix(classConditionals.mean[i]);
+                    const covarianceMatrix = math.matrix(classConditionals.covariance_matrix[i]);
+
+                    const diff = math.subtract(newInstanceVector, mean);
+                    const covarianceInverse = math.inv(covarianceMatrix);
+                    const exponent = math.multiply(-0.5, math.multiply(diff, math.multiply(covarianceInverse, diff)));
+                    const likelihood = math.exp(exponent);
+
+                    classLikelihoods.push(likelihood);
+                }
+
+                const totalLikelihood = math.sum(classLikelihoods);
+                const percentageLikelihoodClass1 = (classLikelihoods[1] / totalLikelihood) * 100;
+
+                return percentageLikelihoodClass1;
+            } catch (error) {
+                return -99.0; 
+            }
+        };
+
+        for (const patientData of rows) {
+            switch (patientData.timepoint) {
+                case 'W1':
+                    if (measureFilter === 'suicidalityindex') {
+                        w1Data = await calculatePercentageLikelihood(parseFloat(patientData.phq9), parseFloat(patientData.phq15), parseFloat(patientData.gad7), parseFloat(patientData.psqi), parseFloat(patientData.sbqr));
+                        selectedW1.push(w1Data);
+                    } else {
+                        selectedW1.push(parseFloat(patientData[measureFilter]));
+                    }
+                    break;
+                case 'W2':
+                    if (measureFilter === 'suicidalityindex') {
+                        w2Data = await calculatePercentageLikelihood(parseFloat(patientData.phq9), parseFloat(patientData.phq15), parseFloat(patientData.gad7), parseFloat(patientData.psqi), parseFloat(patientData.sbqr));
+                        selectedW2.push(w2Data);
+                    } else {
+                        selectedW2.push(parseFloat(patientData[measureFilter]));
+                    }
+                    break;
+                case 'W3':
+                    if (measureFilter === 'suicidalityindex') {
+                        w3Data = await calculatePercentageLikelihood(parseFloat(patientData.phq9), parseFloat(patientData.phq15), parseFloat(patientData.gad7), parseFloat(patientData.psqi), parseFloat(patientData.sbqr));
+                        selectedW3.push(w3Data);
+                    } else {
+                        selectedW3.push(parseFloat(patientData[measureFilter]));
+                    }
+                    break;
+                case 'W4':
+                    if (measureFilter === 'suicidalityindex') {
+                        w4Data = await calculatePercentageLikelihood(parseFloat(patientData.phq9), parseFloat(patientData.phq15), parseFloat(patientData.gad7), parseFloat(patientData.psqi), parseFloat(patientData.sbqr));
+                        selectedW4.push(w4Data);
+                    } else {
+                        selectedW4.push(parseFloat(patientData[measureFilter]));
+                    }
+                    break;
+                case 'W5':
+                    if (measureFilter === 'suicidalityindex') {
+                        w5Data = await calculatePercentageLikelihood(parseFloat(patientData.phq9), parseFloat(patientData.phq15), parseFloat(patientData.gad7), parseFloat(patientData.psqi), parseFloat(patientData.sbqr));
+                        selectedW5.push(w5Data);
+                    } else {
+                        selectedW5.push(parseFloat(patientData[measureFilter]));
+                    }
+                    break;
+                case 'W6':
+                    if (measureFilter === 'suicidalityindex') {
+                        w6Data = await calculatePercentageLikelihood(parseFloat(patientData.phq9), parseFloat(patientData.phq15), parseFloat(patientData.gad7), parseFloat(patientData.psqi), parseFloat(patientData.sbqr));
+                        selectedW6.push(w6Data);
+                    } else {
+                        selectedW6.push(parseFloat(patientData[measureFilter]));
+                    }
+                    break;
+                default:
+                    break;
+            }
+        };
+
+        const selectedW1Avg = calculateAverage(selectedW1) || 0;
+        const selectedW2Avg = calculateAverage(selectedW2) || 0;
+        const selectedW3Avg = calculateAverage(selectedW3) || 0;
+        const selectedW4Avg = calculateAverage(selectedW4) || 0;
+        const selectedW5Avg = calculateAverage(selectedW5) || 0;
+        const selectedW6Avg = calculateAverage(selectedW6) || 0;
+
+        res.status(200).json(
+            {
+                trajectoryData: [
+                    selectedW1Avg,
+                    selectedW2Avg,
+                    selectedW3Avg,
+                    selectedW4Avg,
+                    selectedW5Avg,
+                    selectedW6Avg
+                ]
+            }
+        );
+    } catch (error) {
+        return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+});
+
+app.post('/pull-patient-analysis', authenticateToken, async (req, res) => {
+    const { selectedPatient, selectedMeasure, selectedScore } = req.body;
+
+    try {
+        return res.status(200).json({ text: generateText(selectedPatient, selectedMeasure, selectedScore) });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+});
+
+app.post('/pull-patient-timepoint-data', authenticateToken, async (req, res) => {
+    const { organizationID, selectedPatient } = req.body; 
+
+    try {
+        const patientDataQuery = `SELECT * FROM dinopsych_patientinfo WHERE ptid = $1 AND organizationid = $2;`
+        const patientDataResult = await pool.query(patientDataQuery, [selectedPatient, organizationID]); 
+        if (patientDataResult.error) {
+            return res.status(404).json({ message: 'Unable to gather patient info at this time. Please try again.' });
+        }
+
+        const patientDataArray = patientDataResult.rows;
+
+        return res.status(200).json({ patientDataArray });
+    } catch {
+        return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+}); 
 
 function capitalizeFirstLetter(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
@@ -534,6 +881,190 @@ function generateSaltedPassword(password) {
     const hashedPassword = hash.update(saltedPassword).digest('hex'); 
     return { salt, hashedPassword };
 }
+
+const calculateHoursInBed = (bedtime, waketime) => {
+    let [bedHours, bedMinutes] = bedtime.split(':').map(str => parseInt(str, 10));
+    let [wakeHours, wakeMinutes] = waketime.split(':').map(str => parseInt(str, 10));
+
+    const isBedtimePM = /pm/i.test(bedtime);
+
+    if (isBedtimePM && bedHours !== 12) {
+        bedHours += 12;
+    }
+
+    if (/pm/i.test(waketime) && wakeHours !== 12) {
+        wakeHours += 12;
+    }
+
+    let hoursInBed = wakeHours - bedHours;
+    let minutesInBed = wakeMinutes - bedMinutes;
+
+    if (minutesInBed < 0) {
+        hoursInBed -= 1;
+        minutesInBed += 60;
+    }
+
+    return hoursInBed;
+};
+
+function groupByTimepoint(rows) {
+    const groups = {};
+    rows.forEach(row => {
+        const timepoint = row.timepoint;
+        if (!groups[timepoint]) {
+        groups[timepoint] = [];
+        }
+        groups[timepoint].push(row);
+    }); 
+    return groups;
+}
+
+function calculateAverageForGroup(group) {
+    const measureAverages = {};
+    const measures = ['phq9', 'phq15', 'gad7', 'psqi', 'sbqr']; 
+
+    measures.forEach(measure => {
+        const values = group.map(data => data[measure]);
+        measureAverages[measure] = calculateAverage(values);
+    });
+
+    return measureAverages;
+}
+
+function calculateAverage(values) {
+    const sum = values.reduce((acc, value) => acc + value, 0);
+    return sum / values.length;
+}
+
+function measureSelectionParse(selectedMeasure, selectedScore) {
+    selectedScore = parseFloat(selectedScore); 
+    selectedScore = selectedScore; 
+    selectedScore = selectedScore.toString()
+
+    var decidedMeasureAnalysis; 
+    switch(selectedMeasure) {
+        case 'suicidalityindex': 
+            decidedMeasure = 'suicidality index'; 
+            decidedMeasureDescription = 'is a measure that determines the likelihood of an individual patient to die by suicide based on self-report psychiatric measures.';
+            if (selectedScore <= 12) {
+                decidedMeasureAnalysis = 'extremely low likelihood of suicide post-discharge.';
+            } else if (selectedScore >= 13 && selectedScore <= 30) {
+                decidedMeasureAnalysis = 'low likelihood of suicide post-discharge.';
+            } else if (selectedScore >= 31 && selectedScore <= 50) {
+                decidedMeasureAnalysis = 'mild likelihood of suicide post-discharge.';
+            } else if (selectedScore >= 51 && selectedScore <= 80) {
+                decidedMeasureAnalysis = 'moderate likelihood of suicide post-discharge.';
+            } else if (selectedScore >= 81 && selectedScore <= 90) {
+                decidedMeasureAnalysis = 'high likelihood of suicide post-discharge.';
+            } else {
+                decidedMeasureAnalysis = 'extremely high likelihood of suicide post-discharge.';
+            }
+            break; 
+        case 'phq9': 
+            decidedMeasure = 'PHQ-9 score'; 
+            decidedMeasureDescription = 'is a self-report measure that determines the presence and severity of depression for an individual patient.';
+            if (selectedScore <= 4) {
+                decidedMeasureAnalysis = 'low likelihood for the presence of clinical depression or depressive symptoms.';
+            } else if (selectedScore >= 5 && selectedScore <= 14) {
+                decidedMeasureAnalysis = 'mild likelihood for the presence of clinical depression or depressive symptoms.';
+            } else if (selectedScore >= 15 && selectedScore <= 19) {
+                decidedMeasureAnalysis = 'moderate likelihood for the presence of clinical depression or depressive symptoms.';
+            } else {
+                decidedMeasureAnalysis = 'high likelihood for the presence of clinical depression or depressive symptoms.';
+            }
+            break; 
+        case 'phq15': 
+            decidedMeasure = 'PHQ-15 score'; 
+            decidedMeasureDescription = 'is a self-report measure that screens and rates the physical health of an individual patient and their consequent risk for somatic disorders.';
+            decidedMeasureAnalysis = '';
+            break; 
+        case 'gad7': 
+            decidedMeasure = 'GAD-7 score'; 
+            decidedMeasureDescription = 'is a self-report measure that determines the presence and severity of anxiety for an individual patient.';
+            if (selectedScore <= 4) {
+                decidedMeasureAnalysis = 'low likelihood for the presence of clinical anxiety or anxiety symptoms.';
+            } else if (selectedScore >= 5 && selectedScore <= 9) {
+                decidedMeasureAnalysis = 'mild likelihood for the presence of clinical anxiety or anxiety symptoms.';
+            } else if (selectedScore >= 10 && selectedScore <= 14) {
+                decidedMeasureAnalysis = 'moderate likelihood for the presence of clinical anxiety or anxiety symptoms.';
+            } else {
+                decidedMeasureAnalysis = 'high likelihood for the presence of clinical anxiety or anxiety symptoms.';
+            }
+            break; 
+        case 'sbqr': 
+            decidedMeasure = 'SBQ-R score'; 
+            decidedMeasureDescription = 'is a self-report measure that screens an individual patient for the presence and severity of suicidal ideation.';
+            if (selectedScore <= 3) {
+                decidedMeasureAnalysis = 'low likelihood for the existence of suicidal ideation.';
+            } else if (selectedScore == 4) {
+                decidedMeasureAnalysis = 'mild likelihood for the existence of suicidal ideation.';
+            } else if (selectedScore >= 5 && selectedScore <= 7) {
+                decidedMeasureAnalysis = 'moderate likelihood for the existence of suicidal ideation.';
+            } else {
+                decidedMeasureAnalysis = 'high likelihood for the existence of suicidal ideation.';
+            }
+            break; 
+        case 'psqi': 
+            decidedMeasure = 'PSQI score'; 
+            decidedMeasureDescription = 'is a self-report measure that screens and rates the quality of sleep for an individual patient.';
+            if (selectedScore <= 4) {
+                decidedMeasureAnalysis = 'low likelihood for the existence of sleep problems.';
+            } else if (selectedScore >= 5 && selectedScore <= 9) {
+                decidedMeasureAnalysis = 'mild likelihood for the existence of sleep problems.';
+            } else if (selectedScore >= 10 && selectedScore <= 14) {
+                decidedMeasureAnalysis = 'moderate likelihood for the existence of sleep problems.';
+            } else {
+                decidedMeasureAnalysis = 'high likelihood for the existence of sleep problems.';
+            }
+            break; 
+        default: 
+            decidedMeasure = 'suicidality index'
+            decidedMeasureDescription = 'is a measure that determines the likelihood of an individual patient to die by suicide based on self-report psychiatric measures.'
+            if (selectedScore <= 12) {
+                decidedMeasureAnalysis = 'extremely low likelihood of suicide post-discharge.';
+            } else if (selectedScore >= 13 && selectedScore <= 30) {
+                decidedMeasureAnalysis = 'low likelihood of suicide post-discharge.';
+            } else if (selectedScore >= 31 && selectedScore <= 50) {
+                decidedMeasureAnalysis = 'mild likelihood of suicide post-discharge.';
+            } else if (selectedScore >= 51 && selectedScore <= 80) {
+                decidedMeasureAnalysis = 'moderate likelihood of suicide post-discharge.';
+            } else if (selectedScore >= 81 && selectedScore <= 90) {
+                decidedMeasureAnalysis = 'high likelihood of suicide post-discharge.';
+            } else {
+                decidedMeasureAnalysis = 'extremely high likelihood  of suicide post-discharge.';
+            }
+            break;
+    }
+    return [decidedMeasure, decidedMeasureDescription, decidedMeasureAnalysis, selectedScore];
+}
+
+function generateText(selectedPatient, selectedMeasure, selectedScore) {
+    var decidedPatient;
+    if (!selectedPatient || selectedPatient == '') {
+        decidedPatient = 'patient-wide';
+    } else {
+        decidedPatient = selectedPatient;
+    }
+
+    selectedScore = parseFloat(selectedScore); 
+    selectedScore = selectedScore.toFixed(1);
+    selectedScore = selectedScore.toString()
+
+    if (measureSelectionParse(selectedMeasure, selectedScore)[2].includes('extremely')) {
+        selectedMeasureBuffer = ' A score of ' + `${selectedMeasure === 'suicidalityindex' ? selectedScore+'%' : selectedScore}` + ' indicates an ' + measureSelectionParse(selectedMeasure, selectedScore)[2]
+    } else {
+        selectedMeasureBuffer = ' A score of ' + `${selectedMeasure === 'suicidalityindex' ? selectedScore+'%' : selectedScore}` + ' indicates a ' + measureSelectionParse(selectedMeasure, selectedScore)[2]
+    }
+
+   
+    if (decidedPatient == 'patient-wide') {
+        var calculatedDescription = 'The average, ' + decidedPatient + ' ' +  measureSelectionParse(selectedMeasure, selectedScore)[0] + ' over six weeks is ' + `${selectedMeasure === 'suicidalityindex' ? selectedScore+'%' : selectedScore}` + '. The ' + measureSelectionParse(selectedMeasure, selectedScore)[0].replace(' score', '') + ' ' + measureSelectionParse(selectedMeasure, selectedScore)[1] + selectedMeasureBuffer
+    } else {
+        var calculatedDescription = 'The average '+ measureSelectionParse(selectedMeasure, selectedScore)[0] + ' for ' + decidedPatient + ' over six weeks is ' + `${selectedMeasure === 'suicidalityindex' ? selectedScore+'%': selectedScore}` + '. The ' + measureSelectionParse(selectedMeasure, selectedScore)[0].replace(' score', '') + ' ' + measureSelectionParse(selectedMeasure, selectedScore)[1] + selectedMeasureBuffer
+    }
+    return calculatedDescription;
+}
+
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
