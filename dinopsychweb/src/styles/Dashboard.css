@@ -249,15 +249,11 @@
   display: flex;  
   align-items: center;
   justify-content: space-evenly; 
+  width: 90%;
 } 
 
 .patientInterpretationContainer {
     margin-top: 1vw;
-    width: 86%;
-}
-
-.trajectoryInterpretationContainer {
-    width: 86%;
 }
 
 .timepointBarChart {
@@ -282,8 +278,8 @@
     display: flex; 
     justify-content: center; 
     align-items: center;
-    width: 80%; 
-    height: 80%; 
+    width: 90%; 
+    height: 90%; 
 }
 
 .trajectoryDoughnutContainer, 
@@ -360,7 +356,7 @@
 .averageValueBlock {
   display: block; 
   position: absolute; 
-  top: 9rem; 
+  top: 8rem; 
   left: 50%; 
   transform: translate(-50%, -50%); 
   overflow: visible; 
@@ -401,15 +397,14 @@
     justify-content: flex-start; 
     text-align: center;
     overflow: hidden;
-    width: 45%; 
+    width: 55%; 
     border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: 0.4rem; 
     height: 36vh; 
-    padding: 0 2vw;
 }
 
 .patientBreakdownTitle {
-    font-size: 0.7rem; 
+    font-size: 0.6rem; 
     font-weight: 600; 
     text-decoration: underline; 
     margin-top: 0.8rem;
@@ -490,7 +485,6 @@
     height: 36vh; 
     border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: 0.4rem; 
-    padding: 0 1rem; 
 }
 
 .averageGaugeChart {

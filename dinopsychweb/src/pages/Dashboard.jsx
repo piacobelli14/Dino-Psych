@@ -728,6 +728,8 @@ const Dashboard = () => {
                                 </div>
 
                                 <div className="selectedPatientInterpretationFlex">
+
+                                    <div className="patientBreakdownTitle">Average Outcomes Scores</div>
                                    
                                     <div className="trajectoryDoughnutContainer">
                                         <Doughnut className="outcomesDoughnutChart" data={gaugeChartData} options={gaugeChartOptions} />
