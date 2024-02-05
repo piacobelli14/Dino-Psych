@@ -1040,7 +1040,6 @@ function measureSelectionParse(selectedMeasure, selectedScore) {
 
 app.post('/check-access-key', async (req, res) => {
     const { surveyKey } = req.body;
-    console.log(req.body); 
     try {
         const surveyKeyResult = await pool.query('SELECT ptid, organizationid, keyaccessed FROM dinopsych_distributionkeys WHERE surveykey = $1', [surveyKey]);
     
@@ -1065,15 +1064,13 @@ app.post('/check-access-key', async (req, res) => {
 
 app.post('/increment-timepoint', async (req, res) => {
     let { patientID, organizationID } = req.body;
-    console.log(req.body); 
-    patientID = '100004'
+
     try {
       const highestTimepointQuery = 'SELECT MAX(timepoint) AS max_timepoint FROM dinopsych_patientinfo WHERE ptid = $1 AND organizationid = $2';
       const highestTimepointResult = await pool.query(highestTimepointQuery, [patientID, organizationID]);
   
       if (highestTimepointResult.rows.length > 0) {
         const maxTimepoint = highestTimepointResult.rows[0].max_timepoint;
-        console.log(maxTimepoint)
   
         if (maxTimepoint) {
           const incrementedTimepoint = `W${parseInt(maxTimepoint.substring(1)) + 1}`;
@@ -1087,6 +1084,481 @@ app.post('/increment-timepoint', async (req, res) => {
       }
     } catch (error) {
       return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+});
+
+
+app.post('/score-and-store', async (req, res) => {
+    const { patientID, organizationID, surveyKey, timepoint, phq15Responses, phq9Responses, phq9_10, gad7Responses, gad7_8A, gad7ResponsesSupplement, psqi_1, psqi_2, psqi_3, psqi_4, psqi_5Responses, psqi_6, psqi_7, psqi_8, psqi_9, sbqr_1, sbqr_2, sbqr_3, sbqr_4 } = req.body;
+
+    try {
+        const defaultPHQ15Responses = {
+            phq15_1: 0,
+            phq15_2: 0,
+            phq15_3: 0,
+            phq15_4: 0,
+            phq15_5: 0,
+            phq15_6: 0,
+            phq15_7: 0,
+            phq15_8: 0,
+            phq15_9: 0,
+            phq15_10: 0,
+            phq15_11: 0,
+            phq15_12: 0,
+            phq15_13: 0,
+            phq15_14: 0,
+        };
+
+        const defaultPHQ9Scores = {
+            phq9_1: 0,
+            phq9_2: 0,
+            phq9_3: 0,
+            phq9_4: 0,
+            phq9_5: 0,
+            phq9_6: 0,
+            phq9_7: 0,
+            phq9_8: 0,
+            phq9_9: 0
+        }
+
+        const defaultGAD7Scores = {
+            gad7_1: 0,
+            gad7_2: 0,
+            gad7_4: 0,
+            gad7_3: 0,
+            gad7_5: 0,
+            gad7_6: 0,
+            gad7_7: 0,
+        };
+
+        const defaultGAD7SupplementScores = {
+            gad7_8B: 0,
+            gad7_8C: 0,
+            gad7_8D: 0,
+            gad7_8E: 0,
+        };
+
+        const defaultPSQI5Scores = {
+            psqi_5A: 0,
+            psqi_5B: 0,
+            psqi_5C: 0,
+            psqi_5D: 0,
+            psqi_5E: 0,
+            psqi_5F: 0,
+            psqi_5G: 0,
+            psqi_5H: 0,
+            psqi_5I: 0,
+        };
+
+        const phq15ResponsesMerged = {
+            ...defaultPHQ15Responses,
+            ...phq15Responses,
+        };
+
+        const phq9ResponsesMerged = {
+            ...defaultPHQ9Scores, 
+            ...phq9Responses
+        }; 
+
+        const gad7ResponsesMerged = {
+            ...defaultGAD7Scores, 
+            ...gad7Responses
+        }; 
+
+        const gad7ResponsesSupplementMerged = {
+            ...defaultGAD7SupplementScores, 
+            ...gad7ResponsesSupplement
+        }; 
+
+        const psqi5ResponsesMerged = {
+            ...defaultPSQI5Scores, 
+            ...psqi_5Responses
+        }; 
+
+        const phq15RecodeMapping = {
+            'Not bothered at all': 0,
+            'Bothered a little': 1,
+            'Bothered a lot': 2,
+        };
+
+        const phq9RecodeMapping = {
+            'Not at all': 0, 
+            'Several days': 1, 
+            'More than half the days': 2, 
+            'Nearly every day': 3,
+        };
+
+        const gad7RecodeMapping = {
+            'Not at all': 0, 
+            'Several days': 1, 
+            'More than half the days': 2, 
+            'Nearly every day': 3,
+        };
+
+        const gad7SupplementRecodeMapping = {
+            'No': 0, 
+            'Yes': 1,
+        };
+
+        const psqi5RecodeMapping = {
+            'Not during the past month': 0,
+            'Less than once a week': 1,
+            'Once or twice a week': 2,
+            'Three or more times a week': 3,
+        };
+
+        let phq9_10Recoded;
+        if (phq9_10 && phq9_10 !== null && phq9_10 !== '') {
+            if (phq9_10.split('_')[1] === 'NotDifficult') {
+                phq9_10Recoded = 1
+            } else if (phq9_10.split('_')[1] === 'SomewhatDifficult') {
+                phq9_10Recoded = 2
+            } else if (phq9_10.split('_')[1] === 'VeryDifficult') {
+                phq9_10Recoded = 3
+            } else if (phq9_10.split('_')[1] === 'ExtremelyDifficult') {
+                phq9_10Recoded = 4
+            }
+        } else {
+            phq9_10Recoded = 0; 
+        }
+
+        let gad7_8ARecoded;
+        if (gad7_8A && gad7_8A !== null && gad7_8A !== '') {
+            if (gad7_8A.split('_')[1] === 'YesAnxietyAttack') {
+                gad7_8ARecoded = 1
+            } else if (gad7_8A.split('_')[1] === 'NoAnxietyAttack') {
+                gad7_8ARecoded = 0
+            }
+        } else {
+            gad7_8ARecoded = 0; 
+        }
+
+        let psqi_6Recoded; 
+        if (psqi_6 && psqi_6 !== null && psqi_6 !== '') {
+            if (psqi_6.split('_')[1] === '6A') {
+                psqi_6Recoded = 0
+            } else if (psqi_6.split('_')[1] === '6B') {
+                psqi_6Recoded = 1
+            } else if (psqi_6.split('_')[1] === '6C') {
+                psqi_6Recoded = 2
+            } else if (psqi_6.split('_')[1] === '6D') {
+                psqi_6Recoded = 3
+            }
+        } else {
+            psqi_6Recoded = 0; 
+        }
+
+        let psqi_7Recoded; 
+        if (psqi_7 && psqi_7 !== null && psqi_7 !== '') {
+            if (psqi_7.split('_')[1] === '7A') {
+                psqi_7Recoded = 0
+            } else if (psqi_7.split('_')[1] === '7B') {
+                psqi_7Recoded = 1
+            } else if (psqi_7.split('_')[1] === '7C') {
+                psqi_7Recoded = 2
+            } 
+        } else {
+            psqi_7Recoded = 0; 
+        }
+
+        let psqi_8Recoded; 
+        if (psqi_8 && psqi_8 !== null && psqi_8 !== '') {
+            if (psqi_8.split('_')[1] === '8A') {
+                psqi_8Recoded = 0
+            } else if (psqi_8.split('_')[1] === '8B') {
+                psqi_8Recoded = 1
+            } else if (psqi_8.split('_')[1] === '8C') {
+                psqi_8Recoded = 2
+            } 
+        } else {
+            psqi_8Recoded = 0; 
+        }
+
+        let psqi_9Recoded; 
+        if (psqi_9 && psqi_9 !== null && psqi_9 !== '') {
+            if (psqi_9.split('_')[1] === '9A') {
+                psqi_9Recoded = 0
+            } else if (psqi_9.split('_')[1] === '9B') {
+                psqi_9Recoded = 1
+            } else if (psqi_9.split('_')[1] === '9C') {
+                psqi_9Recoded = 2
+            } else if (psqi_9.split('_')[1] === '9D') {
+                psqi_9Recoded = 3
+            }
+        } else {
+            psqi_9Recoded = 0; 
+        }
+
+        let sbqr_1Recoded; 
+        if (sbqr_1 && sbqr_1 !== null && sbqr_1 !== '') {
+            if (sbqr_1.split('_')[1] === '1A') {
+                sbqr_1Recoded = 1
+            } else if (sbqr_1.split('_')[1] === '1B') {
+                sbqr_1Recoded = 2
+            } else if (sbqr_1.split('_')[1] === '1C') {
+                sbqr_1Recoded = 3
+            } else if (sbqr_1.split('_')[1] === '1D') {
+                sbqr_1Recoded = 3
+            } else if (sbqr_1.split('_')[1] === '1E') {
+                sbqr_1Recoded = 4
+            } else if (sbqr_1.split('_')[1] === '1F') {
+                sbqr_1Recoded = 4
+            }
+        } else {
+            sbqr_1Recoded = 0; 
+        }
+
+        let sbqr_2Recoded; 
+        if (sbqr_2 && sbqr_2 !== null && sbqr_2 !== '') {
+            if (sbqr_2.split('_')[1] === '2A') {
+                sbqr_2Recoded = 1
+            } else if (sbqr_2.split('_')[1] === '2B') {
+                sbqr_2Recoded = 2
+            } else if (sbqr_2.split('_')[1] === '2C') {
+                sbqr_2Recoded = 3
+            } else if (sbqr_2.split('_')[1] === '2D') {
+                sbqr_2Recoded = 4
+            } else if (sbqr_2.split('_')[1] === '2E') {
+                sbqr_2Recoded = 5
+            }
+        } else {
+            sbqr_2Recoded = 0; 
+        }
+
+        let sbqr_3Recoded; 
+        if (sbqr_3 && sbqr_3 !== null && sbqr_3 !== '') {
+            if (sbqr_3.split('_')[1] === '3A') {
+                sbqr_3Recoded = 1
+            } else if (sbqr_3.split('_')[1] === '3B') {
+                sbqr_3Recoded = 2
+            } else if (sbqr_3.split('_')[1] === '3C') {
+                sbqr_3Recoded = 2
+            } else if (sbqr_3.split('_')[1] === '3D') {
+                sbqr_3Recoded = 3
+            } else if (sbqr_3.split('_')[1] === '3E') {
+                sbqr_3Recoded = 3
+            }
+        } else {
+            sbqr_3Recoded = 0; 
+        }
+
+        let sbqr_4Recoded; 
+        if (sbqr_4 && sbqr_4 !== null && sbqr_4 !== '') {
+            if (sbqr_4.split('_')[1] === '4A') {
+                sbqr_4Recoded = 0
+            } else if (sbqr_4.split('_')[1] === '4B') {
+                sbqr_4Recoded = 1
+            } else if (sbqr_4.split('_')[1] === '4C') {
+                sbqr_4Recoded = 2
+            } else if (sbqr_4.split('_')[1] === '4D') {
+                sbqr_4Recoded = 3
+            } else if (sbqr_4.split('_')[1] === '4E') {
+                sbqr_4Recoded = 4
+            } else if (sbqr_4.split('_')[1] === '4F') {
+                sbqr_4Recoded = 5
+            } else if (sbqr_4.split('_')[1] === '4G') {
+                sbqr_4Recoded = 6
+            }
+        } else {
+            sbqr_4Recoded = 0; 
+        }
+
+        const phq15ResponsesRecoded = Object.fromEntries(
+            Object.entries(phq15ResponsesMerged).map(([key, value]) => [key, phq15RecodeMapping[value]])
+        );
+
+        const phq9ResponsesRecoded = Object.fromEntries(
+            Object.entries(phq9ResponsesMerged).map(([key, value]) => [key, phq9RecodeMapping[value]])
+        );
+
+        const gad7ResponsesRecoded = Object.fromEntries(
+            Object.entries(gad7ResponsesMerged).map(([key, value]) => [key, gad7RecodeMapping[value]])
+        );
+
+        const gad7ResponsesSupplementRecoded = Object.fromEntries(
+            Object.entries(gad7ResponsesSupplementMerged).map(([key, value]) => [key, gad7SupplementRecodeMapping[value]])
+        );
+
+        const psqi5ResponsesRecoded = Object.fromEntries(
+            Object.entries(psqi5ResponsesMerged).map(([key, value]) => [key, psqi5RecodeMapping[value]])
+        );
+
+        const phq15ScoringAlg = (dictionary) => {
+            let phq15Sum = 0; 
+            for (const key in dictionary) {
+                if (dictionary[key] !== '') {
+                    phq15Sum += Number(dictionary[key])
+                }
+            }
+
+            return phq15Sum; 
+        };
+        const phq15Score = phq15ScoringAlg(phq15ResponsesRecoded); 
+
+        const phq9ScoringAlg = (dictionary) => {
+            let phq9Sum = 0; 
+            for (const key in dictionary) {
+                if (dictionary[key] !== '') {
+                    phq9Sum += Number(dictionary[key])
+                }
+            }
+
+            return phq9Sum;
+        };
+        const phq9Score = phq9ScoringAlg(phq9ResponsesRecoded);
+
+        const gad7ScoringAlg = (dictionary) => {
+            let gad7Sum = 0; 
+            for (const key in dictionary) {
+                if (dictionary[key] !== '') {
+                    gad7Sum += Number(dictionary[key])
+                }
+            }
+
+            return gad7Sum; 
+        };
+        const gad7Score = gad7ScoringAlg(gad7ResponsesRecoded); 
+
+        const psqiScoringAlg = () => {
+
+            let psqiComp1 = 0; 
+            if (psqi_9Recoded !== '') {
+                psqiComp1 = psqi_9Recoded
+            }
+
+            let psqiComp2 = 0; 
+            let summedQ2Q5 = 0; 
+            if (parseInt(psqi_2) <= 15) {
+                summedQ2Q5 = 0
+            } else if (parseInt(psqi_2) >= 16 && parseInt(psqi_2) <= 30) {
+                summedQ2Q5 = 1
+            } else if (parseInt(psqi_2) >= 31 && parseInt(psqi_2) <= 60) {
+                summedQ2Q5 = 2
+            } else if (parseInt(psqi_2) > 60) {
+                summedQ2Q5 = 3
+            }
+
+            if (psqi5ResponsesRecoded.psqi_5A !== '' && psqi5ResponsesRecoded.psqi_5A !== null && psqi5ResponsesRecoded.psqi_5A) {
+                summedQ2Q5 = summedQ2Q5 + psqi5ResponsesRecoded.psqi_5A
+            }
+
+            if (summedQ2Q5 === 0) {
+                psqiComp2 = 0
+            } else if (summedQ2Q5 === 1 || summedQ2Q5 === 2) {
+                psqiComp2 = 1
+            } else if (summedQ2Q5 === 3 || summedQ2Q5 === 4) {
+                psqiComp2 = 2
+            } else if (summedQ2Q5 === 5 || summedQ2Q5 === 6) {
+                psqiComp2 = 3
+            }
+
+            let psqiComp3 = 0; 
+            if (parseInt(psqi_4) > 7) {
+                psqiComp3 = 0
+            } else if (parseInt(psqi_4) > 6 && parseInt(psqi_4) <= 7 ) {
+                psqiComp3 = 1
+            } else if (parseInt(psqi_4) >= 5 && parseInt(psqi_4) <= 6) {
+                psqiComp3 = 2
+            } else if (parseInt(psqi_4) < 5) {
+                psqiComp3 = 3
+            }
+
+            let psqiComp4 = 0; 
+            let sleepEfficiencyScore = (parseInt(psqi_1)/calculateHoursInBed(psqi_1, psqi_3))*100;
+            if (sleepEfficiencyScore > 85) {
+                psqiComp4 = 0
+            } else if (sleepEfficiencyScore >= 75 && sleepEfficiencyScore <= 84) {
+                psqiComp4 = 1
+            } else if (sleepEfficiencyScore >= 65 && sleepEfficiencyScore <= 74) {
+                psqiComp4 = 2
+            } else if (sleepEfficiencyScore < 65) {
+                psqiComp4 = 3
+            }
+
+            let psqiComp5 = 0; 
+            let summedQ5Scores = parseInt(psqi5ResponsesRecoded.psqi_5B || 0) + parseInt(psqi5ResponsesRecoded.psqi_5C || 0) + parseInt(psqi5ResponsesRecoded.psqi_5D || 0) + parseInt(psqi5ResponsesRecoded.psqi_5E || 0) + parseInt(psqi5ResponsesRecoded.psqi_5F || 0) + parseInt(psqi5ResponsesRecoded.psqi_5G || 0) + parseInt(psqi5ResponsesRecoded.psqi_5H || 0) + parseInt(psqi5ResponsesRecoded.psqi_5I || 0);
+        
+            if (summedQ5Scores === 0) {
+                psqiComp5 = 0
+            } else if (summedQ5Scores >= 1 && summedQ5Scores <= 9) {
+                psqiComp5 = 1
+            } else if (summedQ5Scores >= 10 && summedQ5Scores <= 18) {
+                psqiComp5 = 2
+            } else if (summedQ5Scores >= 19 && summedQ5Scores <= 27) {
+                psqiComp5 = 3
+            }
+
+            let psqiComp6 = 0; 
+            psqiComp6 = psqi_6Recoded
+
+            let psqiComp7 = 0; 
+            let summedQ7Q8 = 0;
+            if ((psqi_7Recoded !== '' && psqi_7Recoded !== null && psqi_7Recoded) && (psqi_8Recoded !== '' && psqi_8Recoded !== null && psqi_8Recoded)) {
+                summedQ7Q8 = parseInt(psqi_7Recoded) + parseInt(psqi_8Recoded);
+            } else {
+                summedQ7Q8 = 0;
+            }
+
+            if (summedQ7Q8 === 0) {
+                psqiComp7 = 0
+            } else if (summedQ7Q8 === 1 || summedQ7Q8 === 2) {
+                psqiComp7 = 1
+            } else if (summedQ7Q8 === 3 || summedQ7Q8 === 4) {
+                psqiComp7 = 2
+            } else if (summedQ7Q8 === 5 || summedQ7Q8 === 6) {
+                psqiComp7 = 3
+            } 
+
+            let psqiSummedScore = psqiComp1 + psqiComp2 + psqiComp3 + psqiComp4 + psqiComp5 + psqiComp6 + psqiComp7
+            return psqiSummedScore; 
+        }; 
+        const psqiScore = psqiScoringAlg();
+
+        const sbqrScoringAlg = () => {
+            let sbqrSummedScore = sbqr_1Recoded + sbqr_2Recoded + sbqr_3Recoded + sbqr_4Recoded
+            return sbqrSummedScore; 
+        };
+        const sbqrScore = sbqrScoringAlg(); 
+
+
+        const outcomesInsertionQuery = `
+            INSERT INTO dinopsych_patientinfo (
+                ptid, organizationid, timepoint, phq9, phq15, gad7, psqi, sbqr, 
+                phq15_1, phq15_2, phq15_3, phq15_4, phq15_5, phq15_6, phq15_7, phq15_8, phq15_9, phq15_10, phq15_11, phq15_12, phq15_13, phq15_14, 
+                phq9_1, phq9_2, phq9_3, phq9_4, phq9_5, phq9_6, phq9_7, phq9_8, phq9_9, phq9_10, 
+                gad7_1, gad7_2, gad7_3, gad7_4, gad7_5, gad7_6, gad7_7, gad7_8a, gad7_8b, gad7_8c, gad7_8d, gad7_8e, 
+                psqi_1, psqi_2, psqi_3, psqi_4, psqi_5a, psqi_5b, psqi_5c, psqi_5d, psqi_5e, psqi_5f, psqi_5g, psqi_5h, psqi_5i, psqi_6, psqi_7, psqi_8, psqi_9,
+                sbqr_1, sbqr_2, sbqr_3, sbqr_4
+            ) 
+            VALUES (
+                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35,
+                $36, $37, $38, $39, $40, $41, $42, $43, $44, $45, $46, $47, $48, $49, $50, $51, $52, $53, $54, $55, $56, $57, $58, $59, $60, $61, $62, $63, $64, $65
+            );
+        `
+        const outcomesInsertionValues = [
+            patientID, organizationID, timepoint, phq9Score, phq15Score, gad7Score, psqiScore, sbqrScore, 
+            phq15ResponsesRecoded.phq15_1, phq15ResponsesRecoded.phq15_2, phq15ResponsesRecoded.phq15_3, phq15ResponsesRecoded.phq15_4, phq15ResponsesRecoded.phq15_5, phq15ResponsesRecoded.phq15_6, phq15ResponsesRecoded.phq15_7, phq15ResponsesRecoded.phq15_8, phq15ResponsesRecoded.phq15_9, phq15ResponsesRecoded.phq15_10, phq15ResponsesRecoded.phq15_11, phq15ResponsesRecoded.phq15_12, phq15ResponsesRecoded.phq15_13, phq15ResponsesRecoded.phq15_14, 
+            phq9ResponsesRecoded.phq9_1, phq9ResponsesRecoded.phq9_2, phq9ResponsesRecoded.phq9_3, phq9ResponsesRecoded.phq9_4, phq9ResponsesRecoded.phq9_5, phq9ResponsesRecoded.phq9_6, phq9ResponsesRecoded.phq9_7, phq9ResponsesRecoded.phq9_8, phq9ResponsesRecoded.phq9_9, phq9_10Recoded,
+            gad7ResponsesRecoded.gad7_1, gad7ResponsesRecoded.gad7_2, gad7ResponsesRecoded.gad7_3, gad7ResponsesRecoded.gad7_4, gad7ResponsesRecoded.gad7_5, gad7ResponsesRecoded.gad7_6, gad7ResponsesRecoded.gad7_7, gad7_8ARecoded, gad7ResponsesSupplementRecoded.gad7_8B,  gad7ResponsesSupplementRecoded.gad7_8C, gad7ResponsesSupplementRecoded.gad7_8D, gad7ResponsesSupplementRecoded.gad7_8E,
+            psqi_1, psqi_2, psqi_3, psqi_4, psqi5ResponsesRecoded.psqi_5A, psqi5ResponsesRecoded.psqi_5B, psqi5ResponsesRecoded.psqi_5C, psqi5ResponsesRecoded.psqi_5D, psqi5ResponsesRecoded.psqi_5E, psqi5ResponsesRecoded.psqi_5F, psqi5ResponsesRecoded.psqi_5G, psqi5ResponsesRecoded.psqi_5H, psqi5ResponsesRecoded.psqi_5I, psqi_6Recoded, psqi_7Recoded, psqi_8Recoded, psqi_9Recoded, 
+            sbqr_1Recoded, sbqr_2Recoded, sbqr_3Recoded, sbqr_4Recoded
+        ]
+
+        const patientDataResult = await pool.query(outcomesInsertionQuery, outcomesInsertionValues);
+        if (patientDataResult.error) {
+            return res.status(500).json({ message: 'Error querying patient data. Please try again later.' });
+        }
+
+        const surveyKeyKillQuery = 'UPDATE dinopsych_distributionkeys SET keyaccessed = \'yes\' WHERE surveykey = $1';
+        const surveyKeyKillResult = await pool.query(surveyKeyKillQuery, [surveyKey]);
+        if (surveyKeyKillResult.rowCount === 0) {
+          return res.status(500).json({ message: 'Error saving data. Please try again later.' });
+        }
+        
+        return res.status(200).json()
+
+    } catch (error) {
+        return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
     }
 });
 
