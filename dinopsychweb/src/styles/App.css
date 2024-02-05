@@ -25,6 +25,10 @@ body.reportPageBody {
   background: #002;
 }
 
+body.surveyPageBody {
+  background: white;
+}
+
 body::-webkit-scrollbar {
   width: 4px;
 }
