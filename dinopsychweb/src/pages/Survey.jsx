@@ -16,33 +16,33 @@ const Survey = () => {
     const [lockSurvey, setLockSurvey] = useState(''); 
     const validTimepoints = ['W1', 'W2', 'W3', 'W4', 'W5', 'W6']
 
-      const checkAccessKey = async (surveyKey) => {
+    const checkAccessKey = async (surveyKey) => {
         try {
-          const response = await fetch('http://10.111.26.70:3001/check-access-key', {
-            method: 'POST',
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              surveyKey,
-            }),
-          });
-      
-          if (response.status !== 200) {
-            setIsKeyAccessed(true);
-          }
-      
-          const data = await response.json();
-          setPatientID(data.patientID);
-          setOrganizationID(data.organizationID);
+            const response = await fetch('http://172.20.10.3:3001/check-access-key', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    surveyKey,
+                }),
+            });
+        
+            if (response.status !== 200) {
+                setIsKeyAccessed(true);
+            }
+        
+            const data = await response.json();
+            setPatientID(data.patientID);
+            setOrganizationID(data.organizationID);
         } catch (error) {
-          return;
+            return;
         }
-      };
+    };
 
-      const incrementTimepoint = async () => {
+    const incrementTimepoint = async () => {
         try {
-          const response = await fetch('http://10.111.26.70:3001/increment-timepoint', {
+          const response = await fetch('http://172.20.10.3:3001/increment-timepoint', {
             method: 'POST',
             headers: {
               "Content-Type": "application/json",
@@ -66,7 +66,7 @@ const Survey = () => {
 
     const handleScores = async () => {
       try {
-        const response = await fetch('http://10.111.26.70:3001/score-and-store', {
+        const response = await fetch('http://172.20.10.3:3001/score-and-store', {
           method: 'POST',
           headers: {
             "Content-Type": "application/json",
@@ -110,7 +110,7 @@ const Survey = () => {
     };
     
     useEffect(() => {
-      checkAccessKey(); 
+      checkAccessKey(surveyKey); 
     }, [surveyKey]);
 
     useEffect(() => {
@@ -1215,7 +1215,9 @@ const Survey = () => {
             )}
 
             {!validTimepoints.includes(incrementedTimepoint) && (
+                
               <div className="loggedOutContainer">
+                {<div style={{'color': 'black'}}>{surveyKey}</div>}
                 <img className="loggedOutLogo" src={DinoLabsLogoBlack} alt="Dino Labs Logo"></img>
                 <div className="surveyCompletedPrompt">This program has been completed.</div>
                 <div className="surveyCompletedSubheader">Thanks for your time!</div>

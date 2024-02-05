@@ -1038,6 +1038,58 @@ function measureSelectionParse(selectedMeasure, selectedScore) {
     return [decidedMeasure, decidedMeasureDescription, decidedMeasureAnalysis, selectedScore];
 }
 
+app.post('/check-access-key', async (req, res) => {
+    const { surveyKey } = req.body;
+    console.log(req.body); 
+    try {
+        const surveyKeyResult = await pool.query('SELECT ptid, organizationid, keyaccessed FROM dinopsych_distributionkeys WHERE surveykey = $1', [surveyKey]);
+    
+        if (surveyKeyResult.rows.length > 0) {
+            const keyAccessed = surveyKeyResult.rows[0].keyaccessed;
+    
+            if (keyAccessed === 'yes') {
+                return res.status(500).json({ message: 'That key has already been accessed' });
+            } else {
+                const patientID = surveyKeyResult.rows[0].ptid;
+                const organizationID = surveyKeyResult.rows[0].organizationid;
+                
+                return res.json({ patientID, organizationID });
+            }
+        } else {
+            return res.status(404).json({ message: 'Survey key not found.' });
+        }
+    } catch (error) {
+        return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+});
+
+app.post('/increment-timepoint', async (req, res) => {
+    let { patientID, organizationID } = req.body;
+    console.log(req.body); 
+    patientID = '100004'
+    try {
+      const highestTimepointQuery = 'SELECT MAX(timepoint) AS max_timepoint FROM dinopsych_patientinfo WHERE ptid = $1 AND organizationid = $2';
+      const highestTimepointResult = await pool.query(highestTimepointQuery, [patientID, organizationID]);
+  
+      if (highestTimepointResult.rows.length > 0) {
+        const maxTimepoint = highestTimepointResult.rows[0].max_timepoint;
+        console.log(maxTimepoint)
+  
+        if (maxTimepoint) {
+          const incrementedTimepoint = `W${parseInt(maxTimepoint.substring(1)) + 1}`;
+          return res.status(200).json({ incrementedTimepoint });
+        } else {
+          const incrementedTimepoint = 'W1';
+          return res.status(200).json({ incrementedTimepoint });
+        }
+      } else {
+        return res.status(404).json({ message: 'No timepoints found for the patient.' });
+      }
+    } catch (error) {
+      return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+});
+
 function generateText(selectedPatient, selectedMeasure, selectedScore) {
     var decidedPatient;
     if (!selectedPatient || selectedPatient == '') {
