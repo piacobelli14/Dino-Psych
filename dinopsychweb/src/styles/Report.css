@@ -96,10 +96,10 @@
     text-align: center;
     overflow: scroll;
     width: 55%; 
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 4px solid rgba(255, 255, 255, 0.2);
     border-radius: 0.4rem; 
     height: 32vh;
-    padding: 1vh 0;
+    padding: 2vw 0;
 }
 
 .trajectoryLineContainer {
@@ -118,7 +118,7 @@
 .reportPatientInterpretationFlex {
     display: flex; 
     flex-direction: column; 
-    justify-content: center;  
+    justify-content: flex-start;  
     align-items: center;
     font-size: 0.6rem; 
     font-weight: 500;
@@ -126,9 +126,10 @@
     overflow: scroll;
     width: 40%; 
     height: 32vh; 
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 4px solid rgba(255, 255, 255, 0.2);
     border-radius: 0.4rem; 
-    padding: 1vh 0; 
+    padding: 2vw 0; 
+    position: relative; 
 }
 
 .reportThresholdChartContainer, 
@@ -142,7 +143,6 @@
 
 
 .reportThresholdChartContainer {
-  height: 60% !important; 
   position: relative;
 }
   
@@ -157,7 +157,7 @@
 }
 
 .reportMeasureValue {
-    font-size: 1.4rem; 
+    font-size: 2vw; 
     font-weight: 800;
 }
 
@@ -181,19 +181,21 @@
 
 .reportThresholdChartContainer {
   width: 60%;
-  height: 60%; 
+  height: 40%;
   position: relative;
 }
 
 .outcomesThresholdSummaryContainer {
   overflow: visible; 
   width: 80%; 
+  height: 55%; 
   text-align: center; 
-  font-size: 0.8vw;
+  font-size: 0.8rem;
   display: flex; 
   flex-direction: column; 
   justify-content: flex-start !important; 
-  margin-top: 0.2rem;
+  overflow: scroll; 
+  margin-top: 5%; 
 }
 
 .reportBottomNavBar {
