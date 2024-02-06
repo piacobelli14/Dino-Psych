@@ -18,7 +18,7 @@ const Survey = () => {
 
     const checkAccessKey = async (surveyKey) => {
         try {
-            const response = await fetch('http://172.20.10.3:3001/check-access-key', {
+            const response = await fetch('http://10.111.26.70:3001/check-access-key', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -42,7 +42,7 @@ const Survey = () => {
 
     const incrementTimepoint = async () => {
         try {
-          const response = await fetch('http://172.20.10.3:3001/increment-timepoint', {
+          const response = await fetch('http://10.111.26.70:3001/increment-timepoint', {
             method: 'POST',
             headers: {
               "Content-Type": "application/json",
@@ -66,7 +66,7 @@ const Survey = () => {
 
     const handleScores = async () => {
       try {
-        const response = await fetch('http://172.20.10.3:3001/score-and-store', {
+        const response = await fetch('http://10.111.26.70:3001/score-and-store', {
           method: 'POST',
           headers: {
             "Content-Type": "application/json",

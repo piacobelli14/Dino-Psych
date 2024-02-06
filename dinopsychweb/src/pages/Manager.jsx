@@ -71,7 +71,7 @@ const Manager = () => {
 
     const fetchUserInfo = async () => {
         try {
-            const response = await fetch('http://172.20.10.3:3001/user-info', {
+            const response = await fetch('http://10.111.26.70:3001/user-info', {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -95,7 +95,7 @@ const Manager = () => {
 
     const fetchOrganizationUsers = async () => {
         try {
-            const response = await fetch('http://172.20.10.3:3001/pull-organization-users', {
+            const response = await fetch('http://10.111.26.70:3001/pull-organization-users', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -163,7 +163,7 @@ const Manager = () => {
     const getSelectedUserPlaceholders = async () => {
         if (selectedPatientIDs.length === 1) {
             try {
-                const response = await fetch('http://172.20.10.3:3001/selected-user-placeholders', {
+                const response = await fetch('http://10.111.26.70:3001/selected-user-placeholders', {
                     method: 'POST',
                     headers: {
                         "Content-Type": "application/json",
@@ -212,7 +212,7 @@ const Manager = () => {
     
         if (enrollFirstName != "" && enrollLastName != "" && enrollAge != "" && enrollSex != "" &&  enrollHeight != "" && enrollWeight != "" && enrollEmail != "") {
             try {
-                const response = await fetch('http://172.20.10.3:3001/enroll-user', {
+                const response = await fetch('http://10.111.26.70:3001/enroll-user', {
                     method: 'POST',
                     headers: {
                         "Content-Type": "application/json",
@@ -248,7 +248,7 @@ const Manager = () => {
         };
     
         try {
-            const response = await fetch('http://172.20.10.3:3001/edit-user', {
+            const response = await fetch('http://10.111.26.70:3001/edit-user', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -278,7 +278,7 @@ const Manager = () => {
             };
     
             try {
-                const response = await fetch('http://172.20.10.3:3001/discharge-user', {
+                const response = await fetch('http://10.111.26.70:3001/discharge-user', {
                     method: 'POST',
                     headers: {
                         "Content-Type": "application/json",
@@ -309,7 +309,7 @@ const Manager = () => {
             };
     
             try {
-                const response = await fetch('http://172.20.10.3:3001/delete-user', {
+                const response = await fetch('http://10.111.26.70:3001/delete-user', {
                     method: 'POST',
                     headers: {
                         "Content-Type": "application/json",
@@ -330,7 +330,7 @@ const Manager = () => {
 
     const fetchDemographicInfo = async () => {
         try {
-            const response = await fetch('http://172.20.10.3:3001/user-demographic-info', {
+            const response = await fetch('http://10.111.26.70:3001/user-demographic-info', {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

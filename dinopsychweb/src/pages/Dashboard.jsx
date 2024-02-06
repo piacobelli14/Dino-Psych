@@ -55,7 +55,7 @@ const Dashboard = () => {
 
     const fetchUserInfo = async () => {
         try {
-            const response = await fetch('http://172.20.10.3:3001/user-info', {
+            const response = await fetch('http://10.111.26.70:3001/user-info', {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -79,7 +79,7 @@ const Dashboard = () => {
 
     const fetchOrganizationInfo = async () => {
         try {
-          const response = await fetch('http://172.20.10.3:3001/organization-info', {
+          const response = await fetch('http://10.111.26.70:3001/organization-info', {
             method: 'POST',
             headers: {
               "Content-Type": "application/json",
@@ -103,7 +103,7 @@ const Dashboard = () => {
 
     const fetchPatientSearchOptions = async () => {
         try {
-          const response = await fetch('http://172.20.10.3:3001/patient-search-options', {
+          const response = await fetch('http://10.111.26.70:3001/patient-search-options', {
             method: 'POST',
             headers: {
               "Content-Type": "application/json",
@@ -127,7 +127,7 @@ const Dashboard = () => {
     
     const fetchOrganizationTimepointData = async () => {
         try {
-          const response = await fetch('http://172.20.10.3:3001/pull-organization-timepoint-data', {
+          const response = await fetch('http://10.111.26.70:3001/pull-organization-timepoint-data', {
             method: 'POST',
             headers: {
               "Content-Type": "application/json",
@@ -151,7 +151,7 @@ const Dashboard = () => {
     
     const fetchOrganizationCompletionCounts = async () => {
         try {
-          const response = await fetch('http://172.20.10.3:3001/pull-organization-completion-counts', {
+          const response = await fetch('http://10.111.26.70:3001/pull-organization-completion-counts', {
             method: 'POST',
             headers: {
               "Content-Type": "application/json",
@@ -176,7 +176,7 @@ const Dashboard = () => {
 
     const fetchPatientOutcomesData = async () => {
         try {
-          const response = await fetch('http://172.20.10.3:3001/patient-outcomes-data', {
+          const response = await fetch('http://10.111.26.70:3001/patient-outcomes-data', {
             method: 'POST',
             headers: {
               "Content-Type": "application/json",
@@ -231,7 +231,7 @@ const Dashboard = () => {
         setFilteredSuggestions([]);
       
         try {
-          const response = await fetch('http://172.20.10.3:3001/pull-patient-timepoint-data', {
+          const response = await fetch('http://10.111.26.70:3001/pull-patient-timepoint-data', {
             method: 'POST',
             headers: {
               "Content-Type": "application/json",

@@ -35,7 +35,7 @@ const Reset = () => {
         try {
             setResetCode("xxx");
     
-            const response = await fetch("http://172.20.10.3:3001/reset-password", {
+            const response = await fetch("http://10.111.26.70:3001/reset-password", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -83,7 +83,7 @@ const Reset = () => {
             setResetError("Passwords do not match.");
         } else {
             try {
-                const response = await fetch("http://172.20.10.3:3001/change-password", {
+                const response = await fetch("http://10.111.26.70:3001/change-password", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
