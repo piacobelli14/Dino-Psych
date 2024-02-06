@@ -357,11 +357,8 @@
 }
 
 .averageValueBlock {
-  display: block; 
   position: absolute; 
-  top: 8.5rem; 
-  left: 50%; 
-  transform: translate(-50%, -50%); 
+  top: 50%; 
   overflow: visible; 
   display: flex; 
   flex-direction: column; 
@@ -370,7 +367,7 @@
 }
 
 .averageMeasureValue {
-  font-size: 1.2rem; 
+  font-size: 1.4rem; 
   font-weight: 800;
 }
 
