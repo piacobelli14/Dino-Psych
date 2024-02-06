@@ -147,11 +147,8 @@
 }
   
 .reportValueBlock {
-    display: block; 
     position: absolute; 
-    top: 6.5rem; 
-    left: 50%; 
-    transform: translate(-50%, -50%); 
+    top: 50%; 
     overflow: visible; 
     display: flex; 
     flex-direction: column; 
@@ -160,7 +157,7 @@
 }
 
 .reportMeasureValue {
-    font-size: 1.5rem; 
+    font-size: 1.4rem; 
     font-weight: 800;
 }
 
@@ -192,7 +189,7 @@
   overflow: visible; 
   width: 80%; 
   text-align: center; 
-  font-size: 0.5rem;
+  font-size: 0.8vw;
   display: flex; 
   flex-direction: column; 
   justify-content: flex-start !important; 
