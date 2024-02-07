@@ -229,7 +229,7 @@
     flex-direction: column; 
     justify-content: center; 
     align-items: center; 
-    width: 30%; 
+    width: 25%; 
 }
 
 .managerSummaryContainer {
@@ -241,7 +241,7 @@
 }
 
 .managerDemographicsContainerSex {
-    width: 25%; 
+    width: 28%; 
 }
 
 .managerSummaryContainer {
@@ -249,12 +249,12 @@
 }
 
 .managerTableContainer {
-    width: 55%; 
+    width: 50%; 
 }
 
 .managerOperationsCard {
     position: relative; 
-    width: 40%; 
+    width: 45%; 
     display: flex; 
     flex-direction: column;
     justify-content: center; 
@@ -564,8 +564,16 @@
     display: flex;
     justify-content: flex-start;
     align-items: center; 
+}
+
+.demographicsSexChartContainer {
+    width: 90%; 
+    height: 90%; 
+}
+
+.demographicsAgeChartContainer {
     width: 95%; 
-    height: 100%;
+    height: 95%;
 }
 
 .demographicsCountWrapper {
@@ -607,12 +615,12 @@
     margin-top: 1vh; 
     position: absolute; 
     right: 2%;
-    top: 2%;  
-    background-color: white;
-    opacity: 0.8;  
-    padding: 1vw; 
-    border: 2px solid black; 
-    border-radius: 0.4rem; 
+    top: 1%;  
+    background-color: #003;
+    opacity: 0.9;  
+    padding: 0.8vw; 
+    border: 0.5px solid white; 
+    border-radius: 0.2rem; 
     box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
 }
 
@@ -629,7 +637,7 @@
     font-size: 0.7vw; 
     font-weight: 700; 
     white-space: nowrap;
-    color: black; 
+    color: white; 
     text-decoration: underline; 
 }
 
@@ -637,7 +645,7 @@
     font-size: 0.6vw;
     font-weight: 500;
     white-space: nowrap; 
-    color: black;
+    color: white;
     opacity: 0.8; 
 }
 
