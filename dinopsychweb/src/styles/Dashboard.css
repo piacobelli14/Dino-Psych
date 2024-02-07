@@ -289,14 +289,12 @@
     flex-direction: column; 
     justify-content: center;
     align-items: center;
-    width: 95%; 
-    height: 95%; 
     position: relative;
 }
 
 .trajectoryDoughnutContainer {
-    width: 95%; 
-    height: 95%;
+    width: 85%;
+    height: 65%;
 }
 
 .timepointBarContainer {
@@ -357,16 +355,16 @@
 }
 
 .outcomesThresholdMainContainer {
+    width: 95%; 
+    height: 30%; 
     overflow: visible; 
-    width: 80%; 
-    height: 55%; 
     text-align: center; 
-    font-size: 0.8rem;
+    font-size: 0.6rem;
     display: flex; 
     flex-direction: column; 
     justify-content: flex-start !important; 
     overflow: scroll; 
-    margin-top: 5%; 
+    color: white; 
   }
 
 .averageValueBlock {

@@ -49,13 +49,15 @@ const Dashboard = () => {
     }, [organizationID]);
 
     useEffect(() => {
-        setTimeout(() => {
-            fetchPatientOutcomesData();
-        })
+      setTimeout(()=> {
+        fetchPatientOutcomesData();
+      }, 50)
     }, [username, organizationID, selectedID, measureFilter]);
 
     useEffect(() => {
-      fetchPatientAnalysis();
+      setTimeout(()=> {
+        fetchPatientAnalysis();
+      }, 50); 
     }, [average, measureFilter, selectedID]);
   
 
@@ -285,6 +287,7 @@ const Dashboard = () => {
     };
 
     const fetchPatientAnalysis = async () => {
+
       try {
         const response = await fetch('http://10.111.26.70:3001/pull-patient-analysis', {
           method: 'POST',
@@ -298,15 +301,15 @@ const Dashboard = () => {
             selectedScore: average,
           }),
         });
-    
+  
         if (response.status !== 200) {
           throw new Error(`Internal Server Error`);
         }
-    
+  
         const data = await response.json();
-        setDataIntrepretation(data.text);
+        setDataInterpretation(data.text);
       } catch (error) {
-        return; 
+          return; 
       }
     };
 
@@ -698,6 +701,7 @@ const Dashboard = () => {
                                     </div>
                                 </div>
 
+          
                                 <div className="selectedPatientInterpretationFlex">
                                     <div className="trajectoryDoughnutContainer">
                                         <Doughnut className="outcomesDoughnutChart" data={gaugeChartData} options={gaugeChartOptions} />
@@ -706,8 +710,11 @@ const Dashboard = () => {
                                             <div className="averageMeasureLabel">{(measureFilterLabel && measureFilter !== 'undefined') ? 'Average ' + measureFilterLabel : ''}</div>
                                             <div className="averageMeasureTitle">{(selectedID && selectedID !== '') ? `${selectedName} - (${selectedID})` : "All Patients"}</div>
                                         </div>
+                                        
                                     </div>
                                     <div className='outcomesThresholdMainContainer'>{dataInterpretation}</div>
+
+                                   
                                 </div>
                             </div>
 
