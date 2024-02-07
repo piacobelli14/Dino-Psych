@@ -414,7 +414,7 @@
     width: 55%; 
     border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: 0.4rem; 
-    height: 34vh; 
+    height: 28vh; 
     padding: 1vh 0; 
     box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
 }
@@ -500,7 +500,7 @@
     overflow: visible;
     position: relative;
     width: 40%; 
-    height: 34vh; 
+    height: 28vh; 
     border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: 0.4rem; 
     padding: 1vh 0; 
@@ -537,9 +537,7 @@
     display: flex; 
     justify-content: flex-end; 
     align-items: center;
-    margin-top: 1rem; 
-    bottom: 0; 
-    position: sticky; 
+    margin-top: 0.4rem; 
 }
 
 .generateReportButton {
