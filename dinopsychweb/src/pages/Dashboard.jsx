@@ -28,6 +28,7 @@ const Dashboard = () => {
     const [organizationCounts, setOrganizationCounts] = useState('');
     const [maxCompletionCount, setMaxCompletionCount] = useState('');
     const [trajectoryData, setTrajectoryData] = useState([]); 
+    const [dataInterpretation, setDataInterpretation] = useState('');
 
     const [searchValue, setSearchValue] = useState(""); 
 
@@ -52,6 +53,11 @@ const Dashboard = () => {
             fetchPatientOutcomesData();
         })
     }, [username, organizationID, selectedID, measureFilter]);
+
+    useEffect(() => {
+      fetchPatientAnalysis();
+    }, [average, measureFilter, selectedID]);
+  
 
     const fetchUserInfo = async () => {
         try {
@@ -213,6 +219,30 @@ const Dashboard = () => {
         );
       
         setFilteredSuggestions(filteredSuggestions);
+
+        try {
+          const response = await fetch('http://10.111.26.70:3001/pull-patient-analysis', {
+            method: 'POST',
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `${token}`,
+            },
+            body: JSON.stringify({
+              selectedPatient: selectedName ? `${selectedName} (${selectedID})` : '',
+              selectedMeasure: (measureFilter && measureFilter !== 'undefined') ? measureFilter : 'suicidalityindex',
+              selectedScore: average,
+            }),
+          });
+      
+          if (response.status !== 200) {
+            throw new Error(`Internal Server Error`);
+          }
+      
+          const data = await response.json();
+          setDataInterpretation(data.text);
+        } catch (error) {
+          return; 
+        }
     };
       
     const handleSuggestionClick = async (suggestion) => {
@@ -252,6 +282,32 @@ const Dashboard = () => {
         } catch (error) {
           return;
         }
+    };
+
+    const fetchPatientAnalysis = async () => {
+      try {
+        const response = await fetch('http://10.111.26.70:3001/pull-patient-analysis', {
+          method: 'POST',
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `${token}`,
+          },
+          body: JSON.stringify({
+            selectedPatient: selectedName ? `${selectedName} (${selectedID})` : '',
+            selectedMeasure: (measureFilter && measureFilter !== 'undefined') ? measureFilter : 'suicidalityindex',
+            selectedScore: average,
+          }),
+        });
+    
+        if (response.status !== 200) {
+          throw new Error(`Internal Server Error`);
+        }
+    
+        const data = await response.json();
+        setDataIntrepretation(data.text);
+      } catch (error) {
+        return; 
+      }
     };
 
     const [trajectoryChartData, setTrajectoryChartData] = useState({
@@ -643,7 +699,6 @@ const Dashboard = () => {
                                 </div>
 
                                 <div className="selectedPatientInterpretationFlex">
-                                    <div className="patientBreakdownTitle">Average Outcomes Scores</div>
                                     <div className="trajectoryDoughnutContainer">
                                         <Doughnut className="outcomesDoughnutChart" data={gaugeChartData} options={gaugeChartOptions} />
                                         <div className="averageValueBlock">
@@ -652,6 +707,7 @@ const Dashboard = () => {
                                             <div className="averageMeasureTitle">{(selectedID && selectedID !== '') ? `${selectedName} - (${selectedID})` : "All Patients"}</div>
                                         </div>
                                     </div>
+                                    <div className='outcomesThresholdMainContainer'>{dataInterpretation}</div>
                                 </div>
                             </div>
 

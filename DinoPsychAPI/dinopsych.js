@@ -835,6 +835,8 @@ app.post('/pull-patient-analysis', authenticateToken, async (req, res) => {
     const { selectedPatient, selectedMeasure, selectedScore } = req.body;
 
     try {
+
+        console.log(generateText(selectedPatient, selectedMeasure, selectedScore)); 
         return res.status(200).json({ text: generateText(selectedPatient, selectedMeasure, selectedScore) });
     } catch (error) {
         return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
