@@ -555,16 +555,6 @@ app.post('/user-demographic-info', async (req, res) => {
         const { rows: ageRows } = await pool.query(ageDistributionQuery, [organizationID]);
         const ageDistribution = ageRows;
 
-        console.log({
-            maleCount,
-            femaleCount,
-            maleAvgWeight,
-            maleAvgHeight,
-            femaleAvgWeight,
-            femaleAvgHeight,
-            ageDistribution
-        }); 
-
         res.status(200).json({
             maleCount,
             femaleCount,
@@ -976,23 +966,6 @@ function measureSelectionParse(selectedMeasure, selectedScore) {
 
     var decidedMeasureAnalysis; 
     switch(selectedMeasure) {
-        case 'suicidalityindex': 
-            decidedMeasure = 'suicidality index'; 
-            decidedMeasureDescription = 'is a measure that determines the likelihood of an individual patient to die by suicide based on self-report psychiatric measures.';
-            if (selectedScore <= 12) {
-                decidedMeasureAnalysis = 'extremely low likelihood of suicide post-discharge.';
-            } else if (selectedScore >= 13 && selectedScore <= 30) {
-                decidedMeasureAnalysis = 'low likelihood of suicide post-discharge.';
-            } else if (selectedScore >= 31 && selectedScore <= 50) {
-                decidedMeasureAnalysis = 'mild likelihood of suicide post-discharge.';
-            } else if (selectedScore >= 51 && selectedScore <= 80) {
-                decidedMeasureAnalysis = 'moderate likelihood of suicide post-discharge.';
-            } else if (selectedScore >= 81 && selectedScore <= 90) {
-                decidedMeasureAnalysis = 'high likelihood of suicide post-discharge.';
-            } else {
-                decidedMeasureAnalysis = 'extremely high likelihood of suicide post-discharge.';
-            }
-            break; 
         case 'phq9': 
             decidedMeasure = 'PHQ-9 score'; 
             decidedMeasureDescription = 'is a self-report measure that determines the presence and severity of depression for an individual patient.';
@@ -1609,8 +1582,10 @@ function generateText(selectedPatient, selectedMeasure, selectedScore) {
 
     if (measureSelectionParse(selectedMeasure, selectedScore)[2].includes('extremely')) {
         selectedMeasureBuffer = ' A score of ' + `${selectedMeasure === 'suicidalityindex' ? selectedScore+'%' : selectedScore}` + ' indicates an ' + measureSelectionParse(selectedMeasure, selectedScore)[2]
-    } else {
+    } else if (measureSelectionParse(selectedMeasure, selectedScore)[2] !== "") {
         selectedMeasureBuffer = ' A score of ' + `${selectedMeasure === 'suicidalityindex' ? selectedScore+'%' : selectedScore}` + ' indicates a ' + measureSelectionParse(selectedMeasure, selectedScore)[2]
+    } else {
+        selectedMeasureBuffer = ''; 
     }
 
    
