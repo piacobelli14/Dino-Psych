@@ -501,53 +501,84 @@ app.post('/delete-user', async (req, res) => {
 app.post('/user-demographic-info', async (req, res) => {
     const { organizationID } = req.body;
     try {
-      const maleCountQuery = `
-          SELECT COUNT(*) AS malecount FROM patientinfo WHERE organizationid = $1 AND ptsex = 'M';
-      `;
-      
-      const femaleCountQuery = `
-          SELECT COUNT(*) AS femalecount FROM patientinfo WHERE organizationid = $1 AND ptsex = 'F';
-      `;
-  
-      const ageDistributionQuery = `
-          SELECT
-              COALESCE(COUNT(p.ptage), 0) AS count,
-              age_range
-          FROM (
-              SELECT unnest(ARRAY['0-17', '18-24', '25-34', '35-44', '45-54', '55-64', '65+']) AS age_range
-          ) AS ranges
-          LEFT JOIN patientinfo p ON
-              organizationid = $1 AND
-              CASE
-                  WHEN p.ptage BETWEEN 0 AND 17 THEN '0-17'
-                  WHEN p.ptage BETWEEN 18 AND 24 THEN '18-24'
-                  WHEN p.ptage BETWEEN 25 AND 34 THEN '25-34'
-                  WHEN p.ptage BETWEEN 35 AND 44 THEN '35-44'
-                  WHEN p.ptage BETWEEN 45 AND 54 THEN '45-54'
-                  WHEN p.ptage BETWEEN 55 AND 64 THEN '55-64'
-                  WHEN p.ptage >= 65 THEN '65+'
-              END = ranges.age_range
-          GROUP BY age_range;
-      `;
-  
-      const { rows: maleRows } = await pool.query(maleCountQuery, [organizationID]);
-      const maleCount = maleRows[0].malecount;
-  
-      const { rows: femaleRows } = await pool.query(femaleCountQuery, [organizationID]);
-      const femaleCount = femaleRows[0].femalecount;
-  
-      const { rows: ageRows } = await pool.query(ageDistributionQuery, [organizationID]);
-      const ageDistribution = ageRows;
+        const maleCountQuery = `
+            SELECT COUNT(*) AS malecount FROM patientinfo WHERE organizationid = $1 AND ptsex = 'M';
+        `;
 
-      res.status(200).json({
-        maleCount,
-        femaleCount,
-        ageDistribution
-      });
+        const femaleCountQuery = `
+            SELECT COUNT(*) AS femalecount FROM patientinfo WHERE organizationid = $1 AND ptsex = 'F';
+        `;
+
+        const maleAvgQuery = `
+            SELECT AVG(ptweight) AS male_avg_weight, AVG(ptheight) AS male_avg_height FROM patientinfo WHERE organizationid = $1 AND ptsex = 'M';
+        `;
+
+        const femaleAvgQuery = `
+            SELECT AVG(ptweight) AS female_avg_weight, AVG(ptheight) AS female_avg_height FROM patientinfo WHERE organizationid = $1 AND ptsex = 'F';
+        `;
+
+        const ageDistributionQuery = `
+            SELECT
+                COALESCE(COUNT(p.ptage), 0) AS count,
+                age_range
+            FROM (
+                SELECT unnest(ARRAY['0-17', '18-24', '25-34', '35-44', '45-54', '55-64', '65+']) AS age_range
+            ) AS ranges
+            LEFT JOIN patientinfo p ON
+                organizationid = $1 AND
+                CASE
+                    WHEN p.ptage BETWEEN 0 AND 17 THEN '0-17'
+                    WHEN p.ptage BETWEEN 18 AND 24 THEN '18-24'
+                    WHEN p.ptage BETWEEN 25 AND 34 THEN '25-34'
+                    WHEN p.ptage BETWEEN 35 AND 44 THEN '35-44'
+                    WHEN p.ptage BETWEEN 45 AND 54 THEN '45-54'
+                    WHEN p.ptage BETWEEN 55 AND 64 THEN '55-64'
+                    WHEN p.ptage >= 65 THEN '65+'
+                END = ranges.age_range
+            GROUP BY age_range;
+        `;
+
+        const { rows: maleRows } = await pool.query(maleCountQuery, [organizationID]);
+        const maleCount = maleRows[0].malecount;
+
+        const { rows: femaleRows } = await pool.query(femaleCountQuery, [organizationID]);
+        const femaleCount = femaleRows[0].femalecount;
+
+        const { rows: maleAvgRows } = await pool.query(maleAvgQuery, [organizationID]);
+        const maleAvgWeight = maleAvgRows[0].male_avg_weight;
+        const maleAvgHeight = maleAvgRows[0].male_avg_height;
+
+        const { rows: femaleAvgRows } = await pool.query(femaleAvgQuery, [organizationID]);
+        const femaleAvgWeight = femaleAvgRows[0].female_avg_weight;
+        const femaleAvgHeight = femaleAvgRows[0].female_avg_height;
+
+        const { rows: ageRows } = await pool.query(ageDistributionQuery, [organizationID]);
+        const ageDistribution = ageRows;
+
+        console.log({
+            maleCount,
+            femaleCount,
+            maleAvgWeight,
+            maleAvgHeight,
+            femaleAvgWeight,
+            femaleAvgHeight,
+            ageDistribution
+        }); 
+
+        res.status(200).json({
+            maleCount,
+            femaleCount,
+            maleAvgWeight,
+            maleAvgHeight,
+            femaleAvgWeight,
+            femaleAvgHeight,
+            ageDistribution
+        });
     } catch (error) {
-      res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+        res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
     }
 });
+
 
 app.post('/patient-search-options', authenticateToken, async (req, res) => {
     const { organizationID } = req.body; 

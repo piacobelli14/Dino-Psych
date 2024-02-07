@@ -21,6 +21,10 @@ const Manager = () => {
     const [selectedState, setSelectedState] = useState("enroll"); 
     const [maleCount, setMaleCount] = useState(0); 
     const [femaleCount, setFemaleCount] = useState(0); 
+    const [avgMaleHeight, setAvgMaleHeight] = useState(0); 
+    const [avgFemaleHeight, setAvgFemaleHeight] = useState(0); 
+    const [avgMaleWeight, setAvgMaleWeight] = useState(0); 
+    const [avgFemaleWeight, setAvgFemaleWeight] = useState(0);
     const [ageRangeCount, setAgeRangeCount] = useState([]); 
     const ageReordered = ['0-17', '18-24', '25-34', '35-44', '45-54', '55-64', '65+'];
     const sortedAgeRangeCount = ageReordered.map(orderItem => {
@@ -349,6 +353,10 @@ const Manager = () => {
             setMaleCount(data.maleCount);
             setFemaleCount(data.femaleCount);
             setAgeRangeCount(data.ageDistribution);
+            setAvgMaleHeight(data.maleAvgHeight); 
+            setAvgFemaleHeight(data.femaleAvgHeight); 
+            setAvgMaleWeight(data.maleAvgWeight); 
+            setAvgFemaleWeight(data.femaleAvgWeight); 
         } catch (error) {
             return;
         }        
@@ -390,6 +398,24 @@ const Manager = () => {
             backgroundColor: 'rgba(54, 162, 235, 0.6)',
             borderColor: 'rgba(54, 162, 235, 1)',
             borderWidth: 1,
+        }]
+    };
+
+    const heightChartData = {
+        labels: ["Avg. Male Height", "Avg. Female Height"],
+        datasets: [{
+            label: 'Average Heights',
+            data: [avgMaleHeight, avgFemaleHeight], 
+            backgroundColor: ['rgba(54, 162, 235, 0.6)', 'rgba(255, 99, 132, 0.6)'],
+        }]
+    };
+
+    const weightChartData = {
+        labels: ["Avg. Male Weight", "Avg. Female Weight"],
+        datasets: [{
+            label: 'Average Heights',
+            data: [avgMaleWeight, avgFemaleWeight], 
+            backgroundColor: ['rgba(54, 162, 235, 0.6)', 'rgba(255, 99, 132, 0.6)'],
         }]
     };
 
@@ -435,6 +461,90 @@ const Manager = () => {
           }
         }
     };
+
+    const heightChartOptions = {
+        indexAxis: 'y',
+        scales: {
+            y: {
+                grid: {
+                    display: false,
+                    drawBorder: false, 
+                },
+                ticks: {
+                    display: false, 
+                },
+                border: {
+                    lineWidth: 2,
+                    color: 'grey',
+                }
+            }, 
+            x: {
+                grid: {
+                    display: false,
+                    drawBorder: false, 
+                },
+                ticks: {
+                    display: false, 
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                display: false, 
+            }
+        },
+        elements: {
+            line: {
+                borderWidth: 0 
+            },
+            point: {
+                radius: 0 
+            }
+        }
+    };
+
+    const weightChartOptions = {
+        indexAxis: 'y',
+        scales: {
+            y: {
+                grid: {
+                    display: false,
+                    drawBorder: false, 
+                },
+                ticks: {
+                    display: false, 
+                },
+                border: {
+                    lineWidth: 2,
+                    color: 'grey',
+                }
+            }, 
+            x: {
+                grid: {
+                    display: false,
+                    drawBorder: false, 
+                },
+                ticks: {
+                    display: false, 
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                display: false, 
+            }
+        },
+        elements: {
+            line: {
+                borderWidth: 0 
+            },
+            point: {
+                radius: 0 
+            }
+        }
+    };
+    
+    
     
     return (
         <div> 
@@ -751,11 +861,52 @@ const Manager = () => {
                             </div>
                         </div>
 
-                        <div className="managerSummaryContainer">
+                        <div className="managerDemographicsBlock"> 
+                            <div className="managerSummaryContainer">
+                                <div className="demographicsAgeChartContainer"> 
+                                    <Bar data={heightChartData} options={heightChartOptions}/>
+                                </div>
+                                
+                                <div className="demographicsBreakdownListWrapper">
+                                    <th className="demographicsListHeader">Average Height</th>
 
-                            <label className="patientCountLabel">Total Patients</label>
-                            
+                                    <ul className="demographicsBreakdownList">
+                                        <li className="demographicsListItem">
+                                            {"Male"}: {parseFloat(avgMaleHeight).toFixed(1)} ins 
+                                        </li>
+
+                                        <li className="demographicsListItem">
+                                            {"Female"}: {parseFloat(avgFemaleHeight).toFixed(1)} ins
+                                        </li>
+                                    </ul>
+                                </div>
+
+                            </div>
+
+                            <div className="managerSummaryContainer">
+                                <div className="demographicsAgeChartContainer"> 
+                                    <Bar data={weightChartData} options={weightChartOptions}/>
+                                </div>
+
+                                <div className="demographicsBreakdownListWrapper">
+                                    <th className="demographicsListHeader">Average Weight</th>
+
+                                    <ul className="demographicsBreakdownList">
+                                        <li className="demographicsListItem">
+                                            {"Male"}: {parseFloat(avgMaleWeight).toFixed(1)} ins 
+                                        </li>
+
+                                        <li className="demographicsListItem">
+                                            {"Female"}: {parseFloat(avgFemaleWeight).toFixed(1)} ins
+                                        </li>
+                                    </ul>
+                                </div>
+
+                            </div>
+
                         </div>
+
+                        
                     </div>
                 )}
 

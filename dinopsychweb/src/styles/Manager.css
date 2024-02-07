@@ -194,13 +194,25 @@
     height: 46vh; 
 }
 
-.managerDemographicsContainerSex, 
-.managerDemographicsContainerAge, 
-.managerTableContainer, 
-.managerSummaryContainer {
+.managerTableContainer {
     display: flex; 
     justify-content: center;
     align-items: flex-start;
+}
+
+.managerDemographicsContainerSex, 
+.managerDemographicsContainerAge {
+    display: flex; 
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.managerSummaryContainer {
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center;
+    white-space: nowrap;
 }
 
 .managerDemographicsContainerAge, 
@@ -210,19 +222,30 @@
     overflow: scroll !important;
     padding: 1vh 0; 
     position: relative;
-    justify-content: flex-start;
 }
 
-.managerDemographicsContainerAge {
-    width: 50%; 
-}
-
-.managerDemographicsContainerSex {
-    width: 25%; 
+.managerDemographicsBlock {
+    display: flex;
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center; 
+    width: 30%; 
 }
 
 .managerSummaryContainer {
-    width: 20%; 
+    height: 13.5vh; 
+}
+
+.managerDemographicsContainerAge {
+    width: 35%; 
+}
+
+.managerDemographicsContainerSex {
+    width: 30%; 
+}
+
+.managerSummaryContainer {
+    width: 100%; 
 }
 
 .managerTableContainer {
@@ -599,7 +622,7 @@
 }
 
 .demographicsListHeader {
-    font-size: 0.6rem; 
+    font-size: 0.9vw; 
     font-weight: 700; 
     white-space: nowrap;
     color: black; 
@@ -607,27 +630,37 @@
 }
 
 .demographicsListItem {
-    font-size: 0.7rem;
+    font-size: 0.8vw;
     font-weight: 500;
     white-space: nowrap; 
     color: black;
     opacity: 0.8; 
 }
 
-.demographicsChartTitle {
-    font-size: 0.6rem; 
-    font-weight: 600; 
-    white-space: nowrap;
-    color: white; 
-    text-decoration: underline; 
-    padding: 2vw 0; 
-}
-
 .patientCountLabel {
     color: white; 
-    font-size: 0.8rem; 
+    opacity: 0.8; 
+    font-size: 1vw; 
     font-weight: 700; 
     text-align: center;
     width: 100%; 
+    text-decoration: underline;
+}
+
+.totalPatientCount {
+    color: white; 
+    opacity: 0.8; 
+    width: 100%; 
+    text-align: center; 
+}
+
+.patientCountBuffer {
+    font-size: 1vw;
+    font-weight: 500;
+}
+
+.patientCountNumber {
+    font-size: 1.2vw; 
+    font-weight: 800; 
     text-decoration: underline;
 }
