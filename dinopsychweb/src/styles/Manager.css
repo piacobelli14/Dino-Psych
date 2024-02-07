@@ -229,7 +229,7 @@
     flex-direction: column; 
     justify-content: center; 
     align-items: center; 
-    width: 30%; 
+    width: 25%; 
 }
 
 .managerSummaryContainer {
@@ -237,11 +237,11 @@
 }
 
 .managerDemographicsContainerAge {
-    width: 35%; 
+    width: 45%; 
 }
 
 .managerDemographicsContainerSex {
-    width: 30%; 
+    width: 25%; 
 }
 
 .managerSummaryContainer {
@@ -622,7 +622,7 @@
 }
 
 .demographicsListHeader {
-    font-size: 0.9vw; 
+    font-size: 0.7vw; 
     font-weight: 700; 
     white-space: nowrap;
     color: black; 
@@ -630,7 +630,7 @@
 }
 
 .demographicsListItem {
-    font-size: 0.8vw;
+    font-size: 0.6vw;
     font-weight: 500;
     white-space: nowrap; 
     color: black;

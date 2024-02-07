@@ -369,12 +369,12 @@ const Manager = () => {
                 label: 'Gender Distribution',
                 data: [maleCount, femaleCount],
                 backgroundColor: [
-                'rgba(54, 162, 235, 0.6)',
-                'rgba(255, 99, 132, 0.6)',
+                    '#5669CA',
+                    '#B557CD',
                 ],
                 borderColor: [
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 99, 132, 1)',
+                    '#5669CA',
+                    '#B557CD',
                 ],
                 borderWidth: 1,
             },
@@ -395,9 +395,7 @@ const Manager = () => {
         datasets: [{
             label: 'Age Range Distribution',
             data: sortedAgeRangeCount.map(item => parseInt(item.count, 10)), 
-            backgroundColor: 'rgba(54, 162, 235, 0.6)',
-            borderColor: 'rgba(54, 162, 235, 1)',
-            borderWidth: 1,
+            backgroundColor: '#5669CA',
         }]
     };
 
@@ -406,7 +404,7 @@ const Manager = () => {
         datasets: [{
             label: 'Average Heights',
             data: [avgMaleHeight, avgFemaleHeight], 
-            backgroundColor: ['rgba(54, 162, 235, 0.6)', 'rgba(255, 99, 132, 0.6)'],
+            backgroundColor: ['#5669CA', '#B557CD'],
         }]
     };
 
@@ -415,7 +413,7 @@ const Manager = () => {
         datasets: [{
             label: 'Average Heights',
             data: [avgMaleWeight, avgFemaleWeight], 
-            backgroundColor: ['rgba(54, 162, 235, 0.6)', 'rgba(255, 99, 132, 0.6)'],
+            backgroundColor: ['#5669CA', '#B557CD'],
         }]
     };
 
