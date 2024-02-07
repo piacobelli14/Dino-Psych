@@ -121,7 +121,7 @@ const Report = () => {
     const getReportTrajectoryData = async (selectedID) => {
         try {
           for (const measure of measureArray) {
-            const response = await fetch('http://10.111.26.70:3001/patient-outcomes-data', {
+            const response = await fetch('http://172.20.10.3:3001/patient-outcomes-data', {
               method: 'POST',
               headers: {
                 "Content-Type": "application/json",
@@ -152,7 +152,7 @@ const Report = () => {
     const getDataInterpretation = async (selectedID) => {
         try {
           for (const measure of measureArray) {
-            const response = await fetch('http://10.111.26.70:3001/pull-patient-analysis', {
+            const response = await fetch('http://172.20.10.3:3001/pull-patient-analysis', {
               method: 'POST',
               headers: {
                 "Content-Type": "application/json",
