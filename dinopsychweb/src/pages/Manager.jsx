@@ -399,24 +399,6 @@ const Manager = () => {
         }]
     };
 
-    const heightChartData = {
-        labels: ["Avg. Male Height", "Avg. Female Height"],
-        datasets: [{
-            label: 'Average Heights',
-            data: [avgMaleHeight, avgFemaleHeight], 
-            backgroundColor: ['#5669CA', '#B557CD'],
-        }]
-    };
-
-    const weightChartData = {
-        labels: ["Avg. Male Weight", "Avg. Female Weight"],
-        datasets: [{
-            label: 'Average Heights',
-            data: [avgMaleWeight, avgFemaleWeight], 
-            backgroundColor: ['#5669CA', '#B557CD'],
-        }]
-    };
-
     const ageChartOptions = {
         scales: {
         y: {
@@ -460,6 +442,15 @@ const Manager = () => {
         }
     };
 
+    const heightChartData = {
+        labels: ["Avg. Male Height", "Avg. Female Height"],
+        datasets: [{
+            label: 'Average Heights',
+            data: [avgMaleHeight, avgFemaleHeight], 
+            backgroundColor: ['#5669CA', '#B557CD'],
+        }]
+    };
+
     const heightChartOptions = {
         indexAxis: 'y',
         scales: {
@@ -499,6 +490,15 @@ const Manager = () => {
                 radius: 0 
             }
         }
+    };
+
+    const weightChartData = {
+        labels: ["Avg. Male Weight", "Avg. Female Weight"],
+        datasets: [{
+            label: 'Average Heights',
+            data: [avgMaleWeight, avgFemaleWeight], 
+            backgroundColor: ['#5669CA', '#B557CD'],
+        }]
     };
 
     const weightChartOptions = {
@@ -891,11 +891,11 @@ const Manager = () => {
 
                                     <ul className="demographicsBreakdownList">
                                         <li className="demographicsListItem">
-                                            {"Male"}: {parseFloat(avgMaleWeight).toFixed(1)} ins 
+                                            {"Male"}: {parseFloat(avgMaleWeight).toFixed(1)} lbs 
                                         </li>
 
                                         <li className="demographicsListItem">
-                                            {"Female"}: {parseFloat(avgFemaleWeight).toFixed(1)} ins
+                                            {"Female"}: {parseFloat(avgFemaleWeight).toFixed(1)} lbs
                                         </li>
                                     </ul>
                                 </div>
