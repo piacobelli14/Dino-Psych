@@ -750,6 +750,12 @@ const Manager = () => {
                                 </div>
                             </div>
                         </div>
+
+                        <div className="managerSummaryContainer">
+
+                            <label className="patientCountLabel">Total Patients</label>
+                            
+                        </div>
                     </div>
                 )}
 

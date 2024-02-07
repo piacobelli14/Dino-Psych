@@ -180,7 +180,8 @@
 .managerTableContainer, 
 .managerOperationsCard, 
 .managerDemographicsContainerSex, 
-.managerDemographicsContainerAge  {
+.managerDemographicsContainerAge, 
+.managerSummaryContainer  {
     border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: 0.4rem; 
     overflow: scroll;
@@ -195,14 +196,16 @@
 
 .managerDemographicsContainerSex, 
 .managerDemographicsContainerAge, 
-.managerTableContainer {
+.managerTableContainer, 
+.managerSummaryContainer {
     display: flex; 
     justify-content: center;
     align-items: flex-start;
 }
 
 .managerDemographicsContainerAge, 
-.managerDemographicsContainerSex {
+.managerDemographicsContainerSex, 
+.managerSummaryContainer {
     height: 32vh; 
     overflow: scroll !important;
     padding: 1vh 0; 
@@ -211,11 +214,15 @@
 }
 
 .managerDemographicsContainerAge {
-    width: 55%; 
+    width: 50%; 
 }
 
 .managerDemographicsContainerSex {
-    width: 40%; 
+    width: 25%; 
+}
+
+.managerSummaryContainer {
+    width: 20%; 
 }
 
 .managerTableContainer {
@@ -614,4 +621,13 @@
     color: white; 
     text-decoration: underline; 
     padding: 2vw 0; 
+}
+
+.patientCountLabel {
+    color: white; 
+    font-size: 0.8rem; 
+    font-weight: 700; 
+    text-align: center;
+    width: 100%; 
+    text-decoration: underline;
 }
