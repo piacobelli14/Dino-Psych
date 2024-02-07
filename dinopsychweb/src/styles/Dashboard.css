@@ -256,10 +256,6 @@
     margin-top: 1vw;
 }
 
-.timepointBarChart {
-    width: 100% !important; 
-}
-
 .outcomesTrajectoryChartContainer {
     display: flex; 
     flex-direction: column; 
@@ -267,12 +263,12 @@
     align-items: center; 
     text-align: center;
     overflow: scroll;
-    width: 55%; 
+    width: 50%; 
     border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: 0.4rem; 
-    height: 40vh;
-    padding: 1vh 0; 
+    height: 36vh;
     box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
+    padding: 2vh 0; 
 }
 
 .trajectoryLineContainer {
@@ -346,17 +342,17 @@
     font-weight: 500;
     letter-spacing: 0.05vw;
     overflow: scroll;
-    width: 40%; 
-    height: 40vh; 
-    border: 4px solid rgba(255, 255, 255, 0.2);
+    width: 45%; 
+    height: 36vh; 
+    border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: 0.4rem; 
-    padding: 1vh 0; 
     position: relative; 
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
+    padding: 2vh 0; 
 }
 
 .outcomesThresholdMainContainer {
     width: 80%; 
-    height: 25%; 
     overflow: visible; 
     text-align: center; 
     font-size: 0.7rem;
@@ -411,7 +407,7 @@
     justify-content: flex-start; 
     text-align: center;
     overflow: hidden;
-    width: 55%; 
+    width: 50%; 
     border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: 0.4rem; 
     height: 28vh; 
@@ -499,7 +495,7 @@
     letter-spacing: 0.05vw;
     overflow: visible;
     position: relative;
-    width: 40%; 
+    width: 45%; 
     height: 28vh; 
     border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: 0.4rem; 
