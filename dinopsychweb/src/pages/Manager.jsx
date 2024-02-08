@@ -586,7 +586,7 @@ const Manager = () => {
                             <div className="navigationButtonDivider"/>
                         </button>
 
-                        <button className="navigationButtonWrapper">
+                        <button className="navigationButtonWrapper" onClick={()=> navigate('/profile')}>
                             <div className="navigationButton">
                                 <FontAwesomeIcon icon={faPerson} className="navigationButtonIcon"/>
                                 My Account
