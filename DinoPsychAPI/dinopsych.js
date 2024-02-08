@@ -1439,7 +1439,7 @@ app.post('/user-usage-data', authenticateToken, async (req, res) => {
     }
 });  
 
-app.post('/organization-usage-data', async (req, res) => {
+app.post('/organization-usage-data', authenticateToken, async (req, res) => {
     const { organizationID } = req.body;
     try {
       const gatherOrganizationUsageQuery = `
@@ -1472,7 +1472,7 @@ app.post('/organization-usage-data', async (req, res) => {
     }
 });  
 
-app.post('/organization-signin-log', async (req, res) => {
+app.post('/organization-signin-log', authenticateToken, async (req, res) => {
     const { organizationID } = req.body; 
     try {
       const organizationLoginsQuery = 'SELECT username, signintimestamp FROM dinolabs_signintokens WHERE organizationid = $1 ORDER BY signintimestamp DESC;';
@@ -1506,7 +1506,7 @@ app.post('/organization-signin-log', async (req, res) => {
     }
 });
 
-app.post('/admin-data', async (req, res) => {
+app.post('/admin-data', authenticateToken, async (req, res) => {
     const {username, organizationID} = req.body; 
     try {
   
@@ -1529,7 +1529,7 @@ app.post('/admin-data', async (req, res) => {
     }
 });
 
-app.post('/pull-notifications', async (req, res) => {
+app.post('/pull-notifications', authenticateToken, async (req, res) => {
     const { organizationID } = req.body;
     try {
       const adminNotificationsQuery = 'SELECT request_username FROM dinolabs_accessrequests WHERE request_orgid = $1 AND request_status = \'Current\';';
@@ -1538,15 +1538,371 @@ app.post('/pull-notifications', async (req, res) => {
       if (adminNotificationsResult.error) {
         return res.status(500).json({ message: 'Unable to gather admin notifications at this time. Please try again.' });
       }
-  
       const requestUsernames = adminNotificationsResult.rows.map(row => row.request_username);
-      
-      console.log(requestUsernames); 
       return res.status(200).json({ requestUsernames });
     } catch (error) {
       return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
     }
 });
+
+app.post('/update-admin-users', authenticateToken, async (req, res) => {
+    const adminUsers = req.body.adminUsers;
+    const values = adminUsers.map(user => `('${user.isadmin}', '${user.username}')`).join(',');
+    try {
+      const updateAdminUsersQuery = `
+        UPDATE dinolabsusers
+        SET isadmin = data.isadmin
+        FROM (VALUES ${values}) AS data(isadmin, username)
+        WHERE dinolabsusers.username = data.username;
+      `;
+  
+      const updateAdminUsersResult = await pool.query(updateAdminUsersQuery);
+  
+      if (updateAdminUsersResult.error) {
+        return res.status(500).json({ message: 'Unable to update admin users at this time. Please try again.' });
+      }
+
+      return res.status(200).json({ message: 'success' });
+    } catch (error) {
+      return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+});
+
+app.post('/remove-admin-users', authenticateToken, async (req, res) => {
+    const { deletedUsernames } = req.body;
+    try {
+      if (!deletedUsernames || !Array.isArray(deletedUsernames)) {
+        return res.status(400).json({ message: 'unable to update admin users at this time. Please try again.' });
+      }
+  
+      const updateAdminUsersQuery = `
+          UPDATE dinolabsusers
+          SET organizationid = null, isadmin = 'no'
+          WHERE username IN (${deletedUsernames.map((_, index) => `$${index + 1}`).join(', ')});
+      `;
+  
+      const updateAdminUsersResult = await pool.query(updateAdminUsersQuery, deletedUsernames);
+  
+      if (updateAdminUsersResult.error) {
+        return res.status(500).json({ message: 'Unable to update admin users at this time. Please try again.' });
+      }
+      return res.status(200).json({ message: 'success' });
+    } catch (error) {
+      return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+});
+
+app.post('/edit-first-name', authenticateToken, async (req, res) => {
+    const { username, firstName } = req.body;
+    try {
+      const updateFirstNameQuery = `
+          UPDATE dinolabsusers
+          SET firstname = $1
+          WHERE username = $2;
+      `;
+  
+      const updateFirstNameResult = await pool.query(updateFirstNameQuery, [firstName, username]);
+  
+      if (updateFirstNameResult.error) {
+        return res.status(500).json({ message: 'Unable to update user info at this time. Please try again.' });
+      }
+  
+      return res.status(200).json({ message: 'success' });
+    } catch (error) {
+      return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+});
+  
+app.post('/edit-last-name', authenticateToken, async (req, res) => {
+    const { username, lastName } = req.body;
+    try {
+      const updateLastNameQuery = `
+          UPDATE dinolabsusers
+          SET lastname = $1
+          WHERE username = $2;
+      `;
+  
+      const updateLastNameResult = await pool.query(updateLastNameQuery, [lastName, username]);
+  
+      if (updateLastNameResult.error) {
+        return res.status(500).json({ message: 'Unable to update user info at this time. Please try again.' });
+      }
+  
+      return res.status(200).json({ message: 'success' });
+    } catch (error) {
+      return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+});  
+
+app.post('/edit-email', authenticateToken, async (req, res) => {
+    const { username, email } = req.body;
+    try {
+      const updateEmailQuery = `
+          UPDATE dinolabsusers
+          SET email = $1
+          WHERE username = $2;
+      `;
+  
+      const updateEmailResult = await pool.query(updateEmailQuery, [email, username]);
+      if (updateEmailResult.error) {
+        return res.status(500).json({ message: 'Unable to update user info at this time. Please try again.' });
+      }
+  
+      return res.status(200).json({ message: 'success' });
+    } catch (error) {
+      return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+});  
+
+app.post('/edit-phone', authenticateToken, async (req, res) => {
+    const { username, phone } = req.body;
+    try {
+      const updatePhoneQuery = `
+          UPDATE dinolabsusers
+          SET phone = $1
+          WHERE username = $2;
+      `;
+  
+      const updatePhoneResult = await pool.query(updatePhoneQuery, [phone, username]);
+      if (updatePhoneResult.error) {
+        return res.status(500).json({ message: 'Unable to update user info at this time. Please try again.' });
+      }
+  
+      return res.status(200).json({ message: 'success' });
+    } catch (error) {
+      return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+});  
+
+app.post('/edit-image', authenticateToken, async (req, res) => {
+    const { username, image } = req.body;
+    try {
+      const updateImageQuery = `
+          UPDATE dinolabsusers
+          SET image = $1
+          WHERE username = $2;
+      `;
+  
+      const updateImageResult = await pool.query(updateImageQuery, [image, username]);
+  
+      if (updateImageResult.error) {
+        return res.status(500).json({ message: 'failure' });
+      }
+  
+      return res.status(200).json({ message: 'success' });
+    } catch (error) {
+      console.error('Error connecting to the database:', error.message);
+      return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+});
+
+app.post('/confirm-access', authenticateToken, async (req, res) => {
+    const { notificationUsername, organizationID } = req.body;
+    try {
+      const updateAccessRequestsQuery = 'UPDATE dinolabs_accessrequests SET request_status = \'Confirmed\' WHERE request_username = $1 AND request_orgid = $2;';
+      const updateUsersQuery = 'UPDATE dinolabsusers SET organizationid = $1 WHERE username = $2;';
+  
+      const initialUpdateResult = await pool.query(updateAccessRequestsQuery, [notificationUsername, organizationID]);
+      if (initialUpdateResult.error) {
+        return res.status(500).json({ message: 'Unable to confirm access at this time. Please try again.' });
+      }
+  
+      const followupUpdateResult = await pool.query(updateUsersQuery, [organizationID, notificationUsername]);
+      if (followupUpdateResult.error) {
+        return res.status(500).json({ message: 'Unable to confirm access at this time. Please try again.' });
+      }
+  
+      return res.status(200).json({ message: 'success' });
+    } catch (error) {
+      return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+});
+  
+app.post('/deny-access', authenticateToken, async (req, res) => {
+    const { notificationUsername, organizationID } = req.body;
+    try {
+      const deleteUserQuery = `
+        UPDATE dinolabs_accessrequests
+        SET request_status = 'Denied'
+        WHERE request_username = $1 AND request_orgid = $2;
+      `;
+  
+      await pool.query(deleteUserQuery, [notificationUsername, organizationID]);
+      
+      res.status(200).json({ message: 'success' });
+    } catch (error) {
+      res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+});
+
+app.post('/create-team', authenticateToken, async (req, res) => {
+    try {
+      const { username, teamName } = req.body;
+  
+      const generateRandomOrgId = () => {
+        return Math.floor(100000 + Math.random() * 900000);
+      };
+  
+      const isOrgIdUnique = async (organizationID) => {
+        const organizationidVerificationQuery = 'SELECT COUNT(*) FROM dinolabsorganizations WHERE orgid = $1';
+        const organizationidVerificationResult = await pool.query(organizationidVerificationQuery, [organizationID]);
+        return parseInt(organizationidVerificationResult.rows[0].count) === 0;
+      };
+  
+      const isTeamNameUnique = async (teamName) => {
+        const teamNameVerificationQuery = 'SELECT COUNT(*) FROM dinolabsorganizations WHERE orgname = $1';
+        const teamNameVerificationResult = await pool.query(teamNameVerificationQuery, [teamName]);
+        return parseInt(teamNameVerificationResult.rows[0].count) === 0;
+      };
+  
+      const insertTeam = async (organizationID) => {
+        const teamCreationQuery = `
+            INSERT INTO dinolabsorganizations
+            (orgname, orgid)
+            VALUES ($1, $2);
+        `;
+        await pool.query(teamCreationQuery, [teamName, organizationID]);
+  
+        const teamUpdateQuery = `
+            UPDATE dinolabsusers
+            SET organizationid = $1, isadmin = 'admin'
+            WHERE username = $2;
+        `;
+        await pool.query(teamUpdateQuery, [organizationID, username]);
+
+        res.status(200).json({ message: "success" });
+      };
+  
+      let uniqueOrgId = generateRandomOrgId();
+      const checkAndInsert = async () => {
+        while (!(await isOrgIdUnique(uniqueOrgId))) {
+          uniqueOrgId = generateRandomOrgId();
+        }
+  
+        if (await isTeamNameUnique(teamName) && teamName !== '' && teamName !== null) {
+          await insertTeam(uniqueOrgId);
+        } else {
+          res.status(401).json({ message: 'Unable to create team at this time. Please try again.' });
+        }
+      };
+  
+      await checkAndInsert();
+    } catch (error) {
+      res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+});
+
+app.post('/join-team', authenticateToken, (req, res) => {
+    const { username, firstName, lastName, teamCode } = req.body;
+
+    const isCodeValid = (teamCode, callback) => {
+        const codeVerificationQuery = `SELECT orgname FROM dinolabsorganizations WHERE orgid = $1;`
+        pool.query(codeVerificationQuery, [teamCode], (error, cdoeVerificationResult) => {
+            if (error) {
+                return callback(error);
+            }
+
+            if (codeVerificationResult.rows.length === 0) {
+                callback(null, false);
+            } else {
+                callback(null, true);
+            }
+        });
+    };
+
+    const transporter = nodemailer.createTransport({
+        host: 'smtp-mail.outlook.com',
+        port: 587,
+        secure: false,
+        auth: {
+            user: 'dinolabsauthentication@outlook.com',
+            pass: 'PAiac14-',
+        },
+    });
+
+    const mailOptions = {
+        from: 'dinolabsauthentication@outlook.com', 
+        subject: 'Access Request',
+        text: `Hi! \n\n${firstName} ${lastName} (${username}) has requested access to your team. Please review this notification in your dashboard and take appropriate action.\n\nSincerely,\nThe DinoLabs Team`,
+    };
+
+    const requestAccess = () => {
+        isCodeValid(teamCode, (error, isValid) => {
+            if (error) {
+                return res.status(500).json({ message: 'Unable to request team access at this time. Please try again.' });
+            }
+    
+            if (isValid) {
+                const adminEmailQuery = `SELECT email FROM dinolabsusers WHERE organizationid = $1 AND isadmin = 'admin';`
+                pool.query(adminEmailQuery, [teamCode], (error, adminEmailResult) => {
+                    if (error) {
+                        return res.status(500).json({ message: 'Unable to request team access at this time. Please try again.' });
+                    }
+    
+                    const adminEmails = adminEmailResult.rows.map((row) => row.email);
+    
+                    const checkActiveRequestQuery = `
+                        SELECT * FROM dinolabs_accessrequests 
+                        WHERE request_username = $1 AND request_status = 'Current'
+                    `;
+    
+                    pool.query(checkActiveRequestQuery, [username], (error, checkActiveRequestResult) => {
+                        if (error) {
+                            return res.status(500).json({ message: 'Unable to request team access at this time. Please try again.' });
+                        }
+    
+                        if (checkActiveRequestResult.rows.length > 0) {
+                            const updateActiveRequestQuery = `
+                                UPDATE dinolabs_accessrequests
+                                SET request_timestamp = NOW()
+                                WHERE request_username = $1 AND request_orgid = $2 AND request_status = 'Current'
+                            `;
+    
+                            pool.query(updateActiveRequestQuery, [username, teamCode], (error, updateActiveRequestResult) => {
+                                if (error) {
+                                    return res.status(500).json({ message: 'Unable to request team access at this time. Please try again.' });
+                                }
+                            });
+                        } else {
+                            const requestLogQuery = `
+                                INSERT INTO dinolabs_accessrequests 
+                                (request_username, request_orgid, request_timestamp, request_status)
+                                VALUES ($1, $2, NOW(), 'Current')
+                            `;
+    
+                            pool.query(requestLogQuery, [username, teamCode], (error, requestLogResult) => {
+                                if (error) {
+                                    return res.status(500).json({ message: 'Unable to request team access at this time. Please try again.' });
+                                }
+                            });
+                        }
+
+                        adminEmails.forEach((email) => {
+                            mailOptions.to = email;
+    
+                            transporter.sendMail(mailOptions, (error, info) => {
+                                if (error) {
+                                    return res.status(500).json({ message: 'Unable to request team access at this time. Please try again.' });
+                                }
+                            });
+                        });
+                        res.status(200).json({ message: "success" });
+                    });
+                });
+            } else {
+                return res.status(401).json({ message: 'There are no teams associated with that code. Please try again or contact your admin to get the correct code.' });
+            }
+        });
+    };
+    requestAccess();
+});
+
+
+
+
+
+
+
 
 function capitalizeFirstLetter(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);

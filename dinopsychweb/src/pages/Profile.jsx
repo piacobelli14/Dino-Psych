@@ -558,6 +558,7 @@ const Profile = () => {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": `${token}`, 
                 },
                 body: JSON.stringify({ username, firstName, lastName, teamCode }),
             });
