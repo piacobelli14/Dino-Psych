@@ -53,7 +53,7 @@ app.post('/login', async (req, res) => {
     const { email, password } = req.body;
     try {
   
-      const passwordVerificationQuery = 'SELECT username, salt, hashedpassword FROM dinolabsusers WHERE email = $1;';
+      const passwordVerificationQuery = 'SELECT username, organizationid, salt, hashedpassword FROM dinolabsusers WHERE email = $1;';
       const passwordVerificationResult = await pool.query(passwordVerificationQuery, [email]);
   
       if (passwordVerificationResult.error) {
@@ -66,13 +66,17 @@ app.post('/login', async (req, res) => {
       }
 
       const username = row.username; 
+      const organizationID = row.organizationid; 
+      if (!organizationID || organizationID === "" || organizationID === null) {
+        organizationID = username
+      }
       const storedSalt = row.salt;
       const storedHashedPassword = row.hashedpassword;
       const hashedPasswordToCheck = hashPassword(password, storedSalt);
   
       if (hashedPasswordToCheck === storedHashedPassword) {
-        const createLoginTokenQuery = 'INSERT INTO dinolabs_signintokens (username, signintimestamp) VALUES ($1, NOW());';
-        const createLoginTokenResult = await pool.query(createLoginTokenQuery, [username]);
+        const createLoginTokenQuery = 'INSERT INTO dinolabs_signintokens (username, signintimestamp, organizationid) VALUES ($1, NOW(), $2);';
+        const createLoginTokenResult = await pool.query(createLoginTokenQuery, [username, organizationID]);
   
         if (createLoginTokenResult.error) {
             return res.status(401).json({ message: 'Unable to verify login innfo at this time. Please try again.' });
@@ -854,12 +858,10 @@ app.post('/patient-outcomes-data', authenticateToken, async (req, res) => {
 
 app.post('/pull-patient-analysis', authenticateToken, async (req, res) => {
     const { selectedPatient, selectedMeasure, selectedScore } = req.body;
-    console.log(req.body); 
 
     try {
         return res.status(200).json({ text: generateText(selectedPatient, selectedMeasure, selectedScore) });
     } catch (error) {
-        console.log(error);
         return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
     }
 });
@@ -1406,6 +1408,145 @@ app.post('/score-and-store', async (req, res) => {
     }
 });
 
+app.post('/user-usage-data', authenticateToken, async (req, res) => {
+    const { username } = req.body;
+    try {
+      const gatherUserUsageQuery = `
+        SELECT date_trunc('day', current_date - offs) AS day, COUNT(signintimestamp) AS count
+        FROM generate_series(0, 6) AS offs
+        LEFT JOIN dinolabs_signintokens ON date_trunc('day', signintimestamp) = date_trunc('day', current_date - offs)
+        AND username = $1
+        GROUP BY day
+        ORDER BY day;
+      `;
+  
+      const gatherUserUsageResult = await pool.query(gatherUserUsageQuery, [username]);
+      if (gatherUserUsageResult.error) {
+        return res.status(500).json({ message: 'Unable to gather usage data at this time. Please try again.' });
+      }
+  
+      const userData = gatherUserUsageResult.rows;
+      const timestamps = {};
+      userData.forEach(row => {
+        const isoTimestamp = row.day.toISOString();
+        const dateOnly = isoTimestamp.split('T')[0];
+        timestamps[dateOnly] = row.count;
+      }); 
+  
+      return res.status(200).json({ message: "success", timestamps });
+    } catch (error) {
+      return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+});  
+
+app.post('/organization-usage-data', async (req, res) => {
+    const { organizationID } = req.body;
+    try {
+      const gatherOrganizationUsageQuery = `
+        SELECT date_trunc('day', current_date - offs) AS day, COUNT(signintimestamp) AS count
+        FROM generate_series(0, 6) AS offs
+        LEFT JOIN dinolabs_signintokens ON date_trunc('day', signintimestamp) = date_trunc('day', current_date - offs)
+        AND organizationid = $1
+        GROUP BY day
+        ORDER BY day;
+      `;
+  
+      const gatherOrganizationUsageResult = await pool.query(gatherOrganizationUsageQuery, [organizationID]);
+  
+      if (gatherOrganizationUsageResult.error) {
+        return res.status(500).json({ message: 'Unable to gather organization usage info at this time. Please try again.' });
+      }
+  
+      const userData = gatherOrganizationUsageResult.rows;
+      const timestamps = {};
+  
+      userData.forEach(row => {
+        const isoTimestamp = row.day.toISOString();
+        const dateOnly = isoTimestamp.split('T')[0];
+        timestamps[dateOnly] = row.count;
+      });
+  
+      return res.status(200).json({ timestamps });
+    } catch (error) {
+      return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+});  
+
+app.post('/organization-signin-log', async (req, res) => {
+    const { organizationID } = req.body; 
+    try {
+      const organizationLoginsQuery = 'SELECT username, signintimestamp FROM dinolabs_signintokens WHERE organizationid = $1 ORDER BY signintimestamp DESC;';
+
+      const organizationLoginsResult = await pool.query(organizationLoginsQuery, [organizationID]);
+      if (organizationLoginsResult.error) {
+        return res.status(500).json({ message: 'Unable to gather organization usage info at this time. Please try again.' });
+      }
+  
+      const signInsData = [];
+      for (const row of organizationLoginsResult.rows) {
+        const userDetailsQuery = 'SELECT firstname, lastname FROM dinolabsusers WHERE username = $1;';
+        const userDetailsResult = await pool.query(userDetailsQuery, [row.username]);
+  
+        if (userDetailsResult.error) {
+          return res.status(500).json({ message: 'Unable to gather organization usage info at this time. Please try again.' });
+        }
+  
+        const userDetails = userDetailsResult.rows[0];
+        const signInData = {
+          timestamp: row.signintimestamp.toISOString(),
+          firstname: userDetails.firstname,
+          lastname: userDetails.lastname,
+        };
+  
+        signInsData.push(signInData);
+      }
+      return res.status(200).json({ signInsData });
+    } catch (error) {
+      return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+});
+
+app.post('/admin-data', async (req, res) => {
+    const {username, organizationID} = req.body; 
+    try {
+  
+      const isAdminQuery = 'SELECT isadmin FROM dinolabsusers WHERE username = $1';
+      const gatherAdminInfoQuery = 'SELECT u.firstname, u.lastname, u.username, u.email, u.isadmin FROM dinolabsusers u WHERE u.organizationid = $1;';
+  
+      const isAdminResult = await pool.query(isAdminQuery, [username]);
+      if (isAdminResult.error || isAdminResult.rows.length === 0 || isAdminResult.rows[0].isadmin !== 'admin') {
+        return res.status(200).json([]);
+      }
+
+      const gatherAdminInfoResult = await pool.query(gatherAdminInfoQuery, [organizationID]);
+      if (gatherAdminInfoResult.error) {
+        return res.status(500).json({ message: 'Unable to gather admin info at this time. Please try again.' });
+      }
+      const users = gatherAdminInfoResult.rows;
+      return res.status(200).json({ users });
+    } catch (error) {
+      return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+});
+
+app.post('/pull-notifications', async (req, res) => {
+    const { organizationID } = req.body;
+    try {
+      const adminNotificationsQuery = 'SELECT request_username FROM dinolabs_accessrequests WHERE request_orgid = $1 AND request_status = \'Current\';';
+  
+      const adminNotificationsResult = await pool.query(adminNotificationsQuery, [organizationID]);
+      if (adminNotificationsResult.error) {
+        return res.status(500).json({ message: 'Unable to gather admin notifications at this time. Please try again.' });
+      }
+  
+      const requestUsernames = adminNotificationsResult.rows.map(row => row.request_username);
+      
+      console.log(requestUsernames); 
+      return res.status(200).json({ requestUsernames });
+    } catch (error) {
+      return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+});
 
 function capitalizeFirstLetter(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);

@@ -9,7 +9,6 @@ const Profile = () => {
     const [username, setUsername] = useState('');
     const [selectedRows, setSelectedRows] = useState([]);
     const [notifications, setNotifications] = useState([]);
-    const [myRequests, setMyRequests] = useState(null); 
     const [isAdmin, setIsAdmin] = useState('');
     const [email, setEmail] = useState('');
     const [firstName, setFirstName] = useState('');
@@ -61,14 +60,12 @@ const Profile = () => {
     useEffect(() => {
         if (isAdmin || organizationID !== null) {
             fetchNotifications();
-        } else {
-            fetchMyRequests();
-        }
+        } 
     }, [isAdmin, organizationID])
 
     const fetchUserInfo = async () => {
         try {
-            const response = await fetch('http://172.20.10.3:3000/user-info', {
+            const response = await fetch('http://172.20.10.3:3001/user-info', {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -98,7 +95,7 @@ const Profile = () => {
 
     const fetchUserUsageData = async () => {
         try {
-            const response = await fetch('http://172.20.10.3:3000/user-usage-data', {
+            const response = await fetch('http://172.20.10.3:3001/user-usage-data', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -122,7 +119,7 @@ const Profile = () => {
 
     const fetchOrganizationInfo = async () => {
         try {
-            const response = await fetch('http://172.20.10.3:3000/organization-info', {
+            const response = await fetch('http://172.20.10.3:3001/organization-info', {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -149,7 +146,7 @@ const Profile = () => {
 
     const fetchOrganizationUsageData = async () => {
         try {
-            const response = await fetch('http://172.20.10.3:3000/organization-usage-data', {
+            const response = await fetch('http://172.20.10.3:3001/organization-usage-data', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -173,7 +170,7 @@ const Profile = () => {
 
     const fetchOrganizationSignInLog = async () => {
         try {
-            const response = await fetch('http://172.20.10.3:3000/organization-signin-log', {
+            const response = await fetch('http://172.20.10.3:3001/organization-signin-log', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -197,7 +194,7 @@ const Profile = () => {
 
     const fetchAdminData = async () => {
         try {
-            const response = await fetch('http://172.20.10.3:3000/admin-data', {
+            const response = await fetch('http://172.20.10.3:3001/admin-data', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -222,7 +219,7 @@ const Profile = () => {
 
     const fetchNotifications = async () => {
         try {
-            const response = await fetch('http://172.20.10.3:3000/pull-notifications', {
+            const response = await fetch('http://172.20.10.3:3001/pull-notifications', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -243,31 +240,7 @@ const Profile = () => {
             return;
         }
     };
-
-    const fetchMyRequests = async () => {
-        try {
-            const response = await fetch('http://172.20.10.3:3000/pull-my-requests', {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `${token}`, 
-                },
-                body: JSON.stringify({
-                    username,
-                }),
-            });
     
-            if (response.status !== 200) {
-                throw new Error(`Internal Server Error`);
-            }
-    
-            const data = await response.json();
-            setMyRequests(data.orgName);
-        } catch (error) {
-            return; 
-        }
-    };
-
     const handleCheckboxChange = (username) => {
         const updatedSelectedRows = selectedRows.includes(username)
             ? selectedRows.filter((user) => user !== username)
@@ -313,7 +286,7 @@ const Profile = () => {
         setAdminUsers(updatedAdminUsers);
     
         try {
-            const response = await fetch('http://172.20.10.3:3000/remove-admin-users', {
+            const response = await fetch('http://172.20.10.3:3001/remove-admin-users', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -348,7 +321,7 @@ const Profile = () => {
 
     const handleSaveClickFirstName = async () => {
         try {
-            const response = await fetch('http://172.20.10.3:3000/edit-first-name', {
+            const response = await fetch('http://172.20.10.3:3001/edit-first-name', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -368,7 +341,7 @@ const Profile = () => {
 
     const handleSaveClickLastName = async () => {
         try {
-            const response = await fetch('http://172.20.10.3:3000/edit-last-name', {
+            const response = await fetch('http://172.20.10.3:3001/edit-last-name', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -388,7 +361,7 @@ const Profile = () => {
 
     const handleSaveClickEmail = async () => {
         try {
-            const response = await fetch('http://172.20.10.3:3000/edit-email', {
+            const response = await fetch('http://172.20.10.3:3001/edit-email', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -408,7 +381,7 @@ const Profile = () => {
 
     const handleSaveClickPhone = async () => {
         try {
-            const response = await fetch('http://172.20.10.3:3000/edit-phone', {
+            const response = await fetch('http://172.20.10.3:3001/edit-phone', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -437,7 +410,7 @@ const Profile = () => {
                 setImage(base64Data);
     
                 try {
-                    const response = await fetch('http://172.20.10.3:3000/edit-image', {
+                    const response = await fetch('http://172.20.10.3:3001/edit-image', {
                         method: 'POST',
                         headers: {
                             "Content-Type": "application/json",
@@ -488,7 +461,7 @@ const Profile = () => {
         const updatedAdminUsers = adminUsers;
     
         try {
-            const response = await fetch('http://172.20.10.3:3000/update-admin-users', {
+            const response = await fetch('http://172.20.10.3:3001/update-admin-users', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -508,7 +481,7 @@ const Profile = () => {
 
     const handleConfirm = async (notificationUsername) => {
         try {
-            const response = await fetch('http://172.20.10.3:3000/confirm-access', {
+            const response = await fetch('http://172.20.10.3:3001/confirm-access', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -527,7 +500,7 @@ const Profile = () => {
 
     const handleDeny = async (notificationUsername) => {
         try {
-            const response = await fetch('http://172.20.10.3:3000/deny-access', {
+            const response = await fetch('http://172.20.10.3:3001/deny-access', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -552,7 +525,7 @@ const Profile = () => {
 
     const handleTeamCreation = async () => {
         try {
-            const response = await fetch('http://172.20.10.3:3000/create-team', {
+            const response = await fetch('http://172.20.10.3:3001/create-team', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -581,7 +554,7 @@ const Profile = () => {
     
     const handleTeamJoin = async () => {
         try {
-            const response = await fetch('http://172.20.10.3:3000/join-team', {
+            const response = await fetch('http://172.20.10.3:3001/join-team', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -621,10 +594,6 @@ const Profile = () => {
         timestamp: date,
         count: organizationTimestampCounts[date] || 0,
     }));
-
-
-
-
 
 
     return (
