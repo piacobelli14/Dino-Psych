@@ -151,3 +151,19 @@
     margin-right: 0.6rem; 
 }
 
+
+.userControlBlock {
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    width: 100vw; 
+}
+
+.userControlFlex {
+    width: 97%; 
+    height: 40vh; 
+    display: flex; 
+    justify-content: center;
+    align-items: center; 
+    background-color: purple;
+}
