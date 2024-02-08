@@ -181,7 +181,7 @@
 .managerOperationsCard, 
 .managerDemographicsContainerSex, 
 .managerDemographicsContainerAge, 
-.managerSummaryContainer  {
+.managerBodyContainer  {
     border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: 0.4rem; 
     overflow: scroll;
@@ -207,17 +207,17 @@
     align-items: flex-start;
 }
 
-.managerSummaryContainer {
+.managerBodyContainer {
     display: flex; 
     flex-direction: column; 
     justify-content: center; 
-    align-items: center;
+    align-items: flex-start;
     white-space: nowrap;
 }
 
 .managerDemographicsContainerAge, 
 .managerDemographicsContainerSex, 
-.managerSummaryContainer {
+.managerBodyContainer {
     height: 32vh; 
     overflow: scroll !important;
     padding: 1vh 0; 
@@ -229,22 +229,22 @@
     flex-direction: column; 
     justify-content: center; 
     align-items: center; 
-    width: 25%; 
+    width: 30%; 
 }
 
-.managerSummaryContainer {
+.managerBodyContainer {
     height: 13.5vh; 
 }
 
 .managerDemographicsContainerAge {
-    width: 40%; 
+    width: 35%; 
 }
 
 .managerDemographicsContainerSex {
     width: 28%; 
 }
 
-.managerSummaryContainer {
+.managerBodyContainer {
     width: 100%; 
 }
 
@@ -576,6 +576,11 @@
     height: 95%;
 }
 
+.demographicsBodyChartContainer {
+    width: 80%; 
+    height: 80%; 
+}
+
 .demographicsCountWrapper {
     height: 24vh; 
     margin-top: 4vh; 
@@ -611,17 +616,16 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    margin-left: 2vw; 
-    margin-top: 1vh; 
     position: absolute; 
     right: 2%;
-    top: 1%;  
+    top: 2%;  
     background-color: #003;
     opacity: 0.9;  
-    padding: 0.8vw; 
+    padding: 1vw 1.5vw; 
     border: 0.5px solid white; 
     border-radius: 0.2rem; 
     box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
+    overflow: scroll; 
 }
 
 .demographicsBreakdownListWrapper:hover {
@@ -634,7 +638,7 @@
 }
 
 .demographicsListHeader {
-    font-size: 0.7vw; 
+    font-size: 0.8vw; 
     font-weight: 700; 
     white-space: nowrap;
     color: white; 
@@ -642,37 +646,9 @@
 }
 
 .demographicsListItem {
-    font-size: 0.6vw;
+    font-size: 0.7vw;
     font-weight: 500;
     white-space: nowrap; 
     color: white;
     opacity: 0.8; 
-}
-
-.patientCountLabel {
-    color: white; 
-    opacity: 0.8; 
-    font-size: 1vw; 
-    font-weight: 700; 
-    text-align: center;
-    width: 100%; 
-    text-decoration: underline;
-}
-
-.totalPatientCount {
-    color: white; 
-    opacity: 0.8; 
-    width: 100%; 
-    text-align: center; 
-}
-
-.patientCountBuffer {
-    font-size: 1vw;
-    font-weight: 500;
-}
-
-.patientCountNumber {
-    font-size: 1.2vw; 
-    font-weight: 800; 
-    text-decoration: underline;
 }
