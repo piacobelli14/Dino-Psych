@@ -555,16 +555,16 @@ const Manager = () => {
             <div className="managerHeaderContainer">
                 <div className="managerTopNavBarContainer"> 
 
-                <a className="managerSkipToContent"> 
-                    <img className="managerLogo" src={DinoLabsLogoWhite} alt="Dino Labs Logo"/>
-                    <label className="managerHeader">
-                        Dino Psych
-                    </label> 
-                </a>
+                    <a className="managerSkipToContent"> 
+                        <img className="managerLogo" src={DinoLabsLogoWhite} alt="Dino Labs Logo"/>
+                        <label className="managerHeader">
+                            Dino Psych
+                        </label> 
+                    </a>
 
-                <button className="managerHamburgerCircle" onClick={()=> setIsHamburger(!isHamburger)}>
-                    <FontAwesomeIcon icon={isHamburger ? faX : faBars} className="managerHamburgerIcon" />
-                </button>
+                    <button className="managerHamburgerCircle" onClick={()=> setIsHamburger(!isHamburger)}>
+                        <FontAwesomeIcon icon={isHamburger ? faX : faBars} className="managerHamburgerIcon" />
+                    </button>
                 </div>
 
                 {!isHamburger && (
