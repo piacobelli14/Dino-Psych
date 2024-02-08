@@ -1,7 +1,7 @@
 import {useState, useEffect} from "react"; 
 import { useNavigate } from "react-router-dom"; 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faX, faBars, faRightFromBracket, faPerson, faFile } from "@fortawesome/free-solid-svg-icons";
+import { faX, faBars, faRightFromBracket, faPerson, faFile, faPeopleLine } from "@fortawesome/free-solid-svg-icons";
 
 import '../styles/Profile.css'
 
@@ -634,43 +634,46 @@ const Profile = () => {
                 </div>
 
                 <div className="profileHeaderDivider"/>
+
+                {isHamburger && (
+                    <div className="managerHamburgerContent">
+
+                        <br/>
+                        <br/>
+
+                        <button className="navigationButtonWrapper" onClick={()=> navigate('/manager')}>
+                            <div className="navigationButton">
+                                <FontAwesomeIcon icon={faPeopleLine} className="navigationButtonIcon"/>
+                                Patients
+                            </div>
+
+                            <div className="navigationButtonDivider"/>
+                        </button>
+
+                        <button className="navigationButtonWrapper" onClick={()=> navigate('/dashboard')}>
+                            <div className="navigationButton">
+                                <FontAwesomeIcon icon={faFile} className="navigationButtonIcon"/>
+                                Dashboard
+                            </div>   
+
+                            <div className="navigationButtonDivider"/>
+                        </button>
+                        
+
+                        <button className="navigationButtonWrapper" onClick={()=> navigate('/login')}>
+                            <div className="navigationButton">
+                                <FontAwesomeIcon icon={faRightFromBracket} className="navigationButtonIcon"/>
+                                Sign Out
+                            </div>
+
+                            <div className="navigationButtonDivider"/>
+                        </button>
+                    </div>
+                )}
+
             </div>
 
-            {isHamburger && (
-                <div className="profileHamburgerContent">
-
-                    <br/>
-                    <br/>
-                    
-                    <button className="navigationButtonWrapper" onClick={()=> navigate('/dashboard')}>
-                        <div className="navigationButton">
-                            <FontAwesomeIcon icon={faFile} className="navigationButtonIcon"/>
-                            Dashboard
-                        </div>   
-
-                        <div className="navigationButtonDivider"/>
-                    </button>
-
-                    <button className="navigationButtonWrapper">
-                        <div className="navigationButton">
-                            <FontAwesomeIcon icon={faPerson} className="navigationButtonIcon"/>
-                            My Account
-                        </div>
-
-                        <div className="navigationButtonDivider"/>
-                    </button>
-
-                    <button className="navigationButtonWrapper" onClick={()=> navigate('/login')}>
-                        <div className="navigationButton">
-                            <FontAwesomeIcon icon={faRightFromBracket} className="navigationButtonIcon"/>
-                            Sign Out
-                        </div>
-
-                        <div className="navigationButtonDivider"/>
-                    </button>
-                </div>
-            )}
-
+            
             
 
 

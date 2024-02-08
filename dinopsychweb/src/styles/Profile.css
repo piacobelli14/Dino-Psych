@@ -38,8 +38,8 @@
 }
 
 .userImage {
-    width: 5rem; 
-    height: 5rem;
+    width: 6rem; 
+    height: 6rem;
     border: 2px solid grey;
     border-radius: 10%;
     box-shadow: 0 0 5px grey;
@@ -63,15 +63,18 @@
 }
 
 .profileName {
-    font-size: 1rem; 
-    font-weight: 600;
+    font-size: 1.8rem; 
+    font-weight: 800;
+    color: white; 
 }
 
 .profileEmail, 
 .profilePhoneNumber {
-    font-size: 0.5rem; 
+    font-size: 0.8rem; 
     font-weight: 400; 
     padding: 0.1rem; 
+    color: white; 
+    opacity: 0.8
 }
 
 .profileHamburgerCircle {
