@@ -882,168 +882,6 @@ app.post('/pull-patient-timepoint-data', authenticateToken, async (req, res) => 
     }
 }); 
 
-function capitalizeFirstLetter(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-function hashPassword(enteredPassword, storedSalt) {
-    if (!enteredPassword || !storedSalt) {
-        return null;
-    }
-
-    const saltedPasswordToCheck = storedSalt + enteredPassword; 
-    const hash = crypto.createHash('sha256');   
-    const hashedPassword = hash.update(saltedPasswordToCheck).digest('hex'); 
-    return hashedPassword;
-}
-
-function generateSaltedPassword(password) {
-    const salt = crypto.randomBytes(16).toString('hex'); 
-    const saltedPassword = salt + password; 
-    const hash = crypto.createHash('sha256');
-    const hashedPassword = hash.update(saltedPassword).digest('hex'); 
-    return { salt, hashedPassword };
-}
-
-const calculateHoursInBed = (bedtime, waketime) => {
-    let [bedHours, bedMinutes] = bedtime.split(':').map(str => parseInt(str, 10));
-    let [wakeHours, wakeMinutes] = waketime.split(':').map(str => parseInt(str, 10));
-
-    const isBedtimePM = /pm/i.test(bedtime);
-
-    if (isBedtimePM && bedHours !== 12) {
-        bedHours += 12;
-    }
-
-    if (/pm/i.test(waketime) && wakeHours !== 12) {
-        wakeHours += 12;
-    }
-
-    let hoursInBed = wakeHours - bedHours;
-    let minutesInBed = wakeMinutes - bedMinutes;
-
-    if (minutesInBed < 0) {
-        hoursInBed -= 1;
-        minutesInBed += 60;
-    }
-
-    return hoursInBed;
-};
-
-function groupByTimepoint(rows) {
-    const groups = {};
-    rows.forEach(row => {
-        const timepoint = row.timepoint;
-        if (!groups[timepoint]) {
-        groups[timepoint] = [];
-        }
-        groups[timepoint].push(row);
-    }); 
-    return groups;
-}
-
-function calculateAverageForGroup(group) {
-    const measureAverages = {};
-    const measures = ['phq9', 'phq15', 'gad7', 'psqi', 'sbqr']; 
-
-    measures.forEach(measure => {
-        const values = group.map(data => data[measure]);
-        measureAverages[measure] = calculateAverage(values);
-    });
-
-    return measureAverages;
-}
-
-function calculateAverage(values) {
-    const sum = values.reduce((acc, value) => acc + value, 0);
-    return sum / values.length;
-}
-
-function measureSelectionParse(selectedMeasure, selectedScore) {
-    selectedScore = parseFloat(selectedScore); 
-    selectedScore = selectedScore; 
-    selectedScore = selectedScore.toString()
-
-    var decidedMeasureAnalysis; 
-    switch(selectedMeasure) {
-        case 'phq9': 
-            decidedMeasure = 'PHQ-9 score'; 
-            decidedMeasureDescription = 'is a self-report measure that determines the presence and severity of depression for an individual patient.';
-            if (selectedScore <= 4) {
-                decidedMeasureAnalysis = 'low likelihood for the presence of clinical depression or depressive symptoms.';
-            } else if (selectedScore >= 5 && selectedScore <= 14) {
-                decidedMeasureAnalysis = 'mild likelihood for the presence of clinical depression or depressive symptoms.';
-            } else if (selectedScore >= 15 && selectedScore <= 19) {
-                decidedMeasureAnalysis = 'moderate likelihood for the presence of clinical depression or depressive symptoms.';
-            } else {
-                decidedMeasureAnalysis = 'high likelihood for the presence of clinical depression or depressive symptoms.';
-            }
-            break; 
-        case 'phq15': 
-            decidedMeasure = 'PHQ-15 score'; 
-            decidedMeasureDescription = 'is a self-report measure that screens and rates the physical health of an individual patient and their consequent risk for somatic disorders.';
-            decidedMeasureAnalysis = '';
-            break; 
-        case 'gad7': 
-            decidedMeasure = 'GAD-7 score'; 
-            decidedMeasureDescription = 'is a self-report measure that determines the presence and severity of anxiety for an individual patient.';
-            if (selectedScore <= 4) {
-                decidedMeasureAnalysis = 'low likelihood for the presence of clinical anxiety or anxiety symptoms.';
-            } else if (selectedScore >= 5 && selectedScore <= 9) {
-                decidedMeasureAnalysis = 'mild likelihood for the presence of clinical anxiety or anxiety symptoms.';
-            } else if (selectedScore >= 10 && selectedScore <= 14) {
-                decidedMeasureAnalysis = 'moderate likelihood for the presence of clinical anxiety or anxiety symptoms.';
-            } else {
-                decidedMeasureAnalysis = 'high likelihood for the presence of clinical anxiety or anxiety symptoms.';
-            }
-            break; 
-        case 'sbqr': 
-            decidedMeasure = 'SBQ-R score'; 
-            decidedMeasureDescription = 'is a self-report measure that screens an individual patient for the presence and severity of suicidal ideation.';
-            if (selectedScore <= 3) {
-                decidedMeasureAnalysis = 'low likelihood for the existence of suicidal ideation.';
-            } else if (selectedScore == 4) {
-                decidedMeasureAnalysis = 'mild likelihood for the existence of suicidal ideation.';
-            } else if (selectedScore >= 5 && selectedScore <= 7) {
-                decidedMeasureAnalysis = 'moderate likelihood for the existence of suicidal ideation.';
-            } else {
-                decidedMeasureAnalysis = 'high likelihood for the existence of suicidal ideation.';
-            }
-            break; 
-        case 'psqi': 
-            decidedMeasure = 'PSQI score'; 
-            decidedMeasureDescription = 'is a self-report measure that screens and rates the quality of sleep for an individual patient.';
-            if (selectedScore <= 4) {
-                decidedMeasureAnalysis = 'low likelihood for the existence of sleep problems.';
-            } else if (selectedScore >= 5 && selectedScore <= 9) {
-                decidedMeasureAnalysis = 'mild likelihood for the existence of sleep problems.';
-            } else if (selectedScore >= 10 && selectedScore <= 14) {
-                decidedMeasureAnalysis = 'moderate likelihood for the existence of sleep problems.';
-            } else {
-                decidedMeasureAnalysis = 'high likelihood for the existence of sleep problems.';
-            }
-            break; 
-        default: 
-            decidedMeasure = 'suicidality index'
-            decidedMeasureDescription = 'is a measure that determines the likelihood of an individual patient to die by suicide based on self-report psychiatric measures.'
-            if (selectedScore <= 12) {
-                decidedMeasureAnalysis = 'extremely low likelihood of suicide post-discharge.';
-            } else if (selectedScore >= 13 && selectedScore <= 30) {
-                decidedMeasureAnalysis = 'low likelihood of suicide post-discharge.';
-            } else if (selectedScore >= 31 && selectedScore <= 50) {
-                decidedMeasureAnalysis = 'mild likelihood of suicide post-discharge.';
-            } else if (selectedScore >= 51 && selectedScore <= 80) {
-                decidedMeasureAnalysis = 'moderate likelihood of suicide post-discharge.';
-            } else if (selectedScore >= 81 && selectedScore <= 90) {
-                decidedMeasureAnalysis = 'high likelihood of suicide post-discharge.';
-            } else {
-                decidedMeasureAnalysis = 'extremely high likelihood  of suicide post-discharge.';
-            }
-            break;
-    }
-    return [decidedMeasure, decidedMeasureDescription, decidedMeasureAnalysis, selectedScore];
-}
-
 app.post('/check-access-key', async (req, res) => {
     const { surveyKey } = req.body;
     try {
@@ -1567,6 +1405,169 @@ app.post('/score-and-store', async (req, res) => {
         return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
     }
 });
+
+
+function capitalizeFirstLetter(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function hashPassword(enteredPassword, storedSalt) {
+    if (!enteredPassword || !storedSalt) {
+        return null;
+    }
+
+    const saltedPasswordToCheck = storedSalt + enteredPassword; 
+    const hash = crypto.createHash('sha256');   
+    const hashedPassword = hash.update(saltedPasswordToCheck).digest('hex'); 
+    return hashedPassword;
+}
+
+function generateSaltedPassword(password) {
+    const salt = crypto.randomBytes(16).toString('hex'); 
+    const saltedPassword = salt + password; 
+    const hash = crypto.createHash('sha256');
+    const hashedPassword = hash.update(saltedPassword).digest('hex'); 
+    return { salt, hashedPassword };
+}
+
+const calculateHoursInBed = (bedtime, waketime) => {
+    let [bedHours, bedMinutes] = bedtime.split(':').map(str => parseInt(str, 10));
+    let [wakeHours, wakeMinutes] = waketime.split(':').map(str => parseInt(str, 10));
+
+    const isBedtimePM = /pm/i.test(bedtime);
+
+    if (isBedtimePM && bedHours !== 12) {
+        bedHours += 12;
+    }
+
+    if (/pm/i.test(waketime) && wakeHours !== 12) {
+        wakeHours += 12;
+    }
+
+    let hoursInBed = wakeHours - bedHours;
+    let minutesInBed = wakeMinutes - bedMinutes;
+
+    if (minutesInBed < 0) {
+        hoursInBed -= 1;
+        minutesInBed += 60;
+    }
+
+    return hoursInBed;
+};
+
+function groupByTimepoint(rows) {
+    const groups = {};
+    rows.forEach(row => {
+        const timepoint = row.timepoint;
+        if (!groups[timepoint]) {
+        groups[timepoint] = [];
+        }
+        groups[timepoint].push(row);
+    }); 
+    return groups;
+}
+
+function calculateAverageForGroup(group) {
+    const measureAverages = {};
+    const measures = ['phq9', 'phq15', 'gad7', 'psqi', 'sbqr']; 
+
+    measures.forEach(measure => {
+        const values = group.map(data => data[measure]);
+        measureAverages[measure] = calculateAverage(values);
+    });
+
+    return measureAverages;
+}
+
+function calculateAverage(values) {
+    const sum = values.reduce((acc, value) => acc + value, 0);
+    return sum / values.length;
+}
+
+function measureSelectionParse(selectedMeasure, selectedScore) {
+    selectedScore = parseFloat(selectedScore); 
+    selectedScore = selectedScore; 
+    selectedScore = selectedScore.toString()
+
+    var decidedMeasureAnalysis; 
+    switch(selectedMeasure) {
+        case 'phq9': 
+            decidedMeasure = 'PHQ-9 score'; 
+            decidedMeasureDescription = 'is a self-report measure that determines the presence and severity of depression for an individual patient.';
+            if (selectedScore <= 4) {
+                decidedMeasureAnalysis = 'low likelihood for the presence of clinical depression or depressive symptoms.';
+            } else if (selectedScore >= 5 && selectedScore <= 14) {
+                decidedMeasureAnalysis = 'mild likelihood for the presence of clinical depression or depressive symptoms.';
+            } else if (selectedScore >= 15 && selectedScore <= 19) {
+                decidedMeasureAnalysis = 'moderate likelihood for the presence of clinical depression or depressive symptoms.';
+            } else {
+                decidedMeasureAnalysis = 'high likelihood for the presence of clinical depression or depressive symptoms.';
+            }
+            break; 
+        case 'phq15': 
+            decidedMeasure = 'PHQ-15 score'; 
+            decidedMeasureDescription = 'is a self-report measure that screens and rates the physical health of an individual patient and their consequent risk for somatic disorders.';
+            decidedMeasureAnalysis = '';
+            break; 
+        case 'gad7': 
+            decidedMeasure = 'GAD-7 score'; 
+            decidedMeasureDescription = 'is a self-report measure that determines the presence and severity of anxiety for an individual patient.';
+            if (selectedScore <= 4) {
+                decidedMeasureAnalysis = 'low likelihood for the presence of clinical anxiety or anxiety symptoms.';
+            } else if (selectedScore >= 5 && selectedScore <= 9) {
+                decidedMeasureAnalysis = 'mild likelihood for the presence of clinical anxiety or anxiety symptoms.';
+            } else if (selectedScore >= 10 && selectedScore <= 14) {
+                decidedMeasureAnalysis = 'moderate likelihood for the presence of clinical anxiety or anxiety symptoms.';
+            } else {
+                decidedMeasureAnalysis = 'high likelihood for the presence of clinical anxiety or anxiety symptoms.';
+            }
+            break; 
+        case 'sbqr': 
+            decidedMeasure = 'SBQ-R score'; 
+            decidedMeasureDescription = 'is a self-report measure that screens an individual patient for the presence and severity of suicidal ideation.';
+            if (selectedScore <= 3) {
+                decidedMeasureAnalysis = 'low likelihood for the existence of suicidal ideation.';
+            } else if (selectedScore == 4) {
+                decidedMeasureAnalysis = 'mild likelihood for the existence of suicidal ideation.';
+            } else if (selectedScore >= 5 && selectedScore <= 7) {
+                decidedMeasureAnalysis = 'moderate likelihood for the existence of suicidal ideation.';
+            } else {
+                decidedMeasureAnalysis = 'high likelihood for the existence of suicidal ideation.';
+            }
+            break; 
+        case 'psqi': 
+            decidedMeasure = 'PSQI score'; 
+            decidedMeasureDescription = 'is a self-report measure that screens and rates the quality of sleep for an individual patient.';
+            if (selectedScore <= 4) {
+                decidedMeasureAnalysis = 'low likelihood for the existence of sleep problems.';
+            } else if (selectedScore >= 5 && selectedScore <= 9) {
+                decidedMeasureAnalysis = 'mild likelihood for the existence of sleep problems.';
+            } else if (selectedScore >= 10 && selectedScore <= 14) {
+                decidedMeasureAnalysis = 'moderate likelihood for the existence of sleep problems.';
+            } else {
+                decidedMeasureAnalysis = 'high likelihood for the existence of sleep problems.';
+            }
+            break; 
+        default: 
+            decidedMeasure = 'suicidality index'
+            decidedMeasureDescription = 'is a measure that determines the likelihood of an individual patient to die by suicide based on self-report psychiatric measures.'
+            if (selectedScore <= 12) {
+                decidedMeasureAnalysis = 'extremely low likelihood of suicide post-discharge.';
+            } else if (selectedScore >= 13 && selectedScore <= 30) {
+                decidedMeasureAnalysis = 'low likelihood of suicide post-discharge.';
+            } else if (selectedScore >= 31 && selectedScore <= 50) {
+                decidedMeasureAnalysis = 'mild likelihood of suicide post-discharge.';
+            } else if (selectedScore >= 51 && selectedScore <= 80) {
+                decidedMeasureAnalysis = 'moderate likelihood of suicide post-discharge.';
+            } else if (selectedScore >= 81 && selectedScore <= 90) {
+                decidedMeasureAnalysis = 'high likelihood of suicide post-discharge.';
+            } else {
+                decidedMeasureAnalysis = 'extremely high likelihood  of suicide post-discharge.';
+            }
+            break;
+    }
+    return [decidedMeasure, decidedMeasureDescription, decidedMeasureAnalysis, selectedScore];
+}
 
 function generateText(selectedPatient, selectedMeasure, selectedScore) {
     var decidedPatient;
