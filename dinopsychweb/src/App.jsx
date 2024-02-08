@@ -5,7 +5,8 @@ import Reset from "./pages/Reset";
 import Manager from "./pages/Manager";
 import Dashboard from "./pages/Dashboard";
 import Report from "./pages/Report"; 
-import Survey from "./pages/Survey"; 
+import Survey from "./pages/Survey";
+import Profile from "./pages/Profile";  
 
 import './styles/App.css'; 
 
@@ -20,6 +21,7 @@ export default function App() {
         <Route path="dashboard" element={<Dashboard/>}/>
         <Route path="report" element={<Report/>}/>
         <Route path="/survey/:surveyKey" element={<Survey/>}/>
+        <Route path="/profile" element={<Profile/>}/> 
 
         <Route index element={<Navigate to="login" replace />} />
       </Routes>

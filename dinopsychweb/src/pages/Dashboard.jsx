@@ -713,8 +713,6 @@ const Dashboard = () => {
                                         
                                     </div>
                                     <div className='outcomesThresholdMainContainer'>{dataInterpretation}</div>
-
-                                   
                                 </div>
                             </div>
 
