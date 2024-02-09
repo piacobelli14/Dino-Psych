@@ -335,7 +335,6 @@ app.post('/user-info', authenticateToken, async (req, res) => {
         organizationid: row.organizationid,
         isadmin: row.isadmin,
       })); 
-  
       return res.status(200).json(formattedResult);
     } catch (error) {
       return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });

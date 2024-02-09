@@ -171,6 +171,7 @@
     display: flex; 
     justify-content: space-evenly; 
     align-items: center;
+    overflow: hidden; 
 }
 
 .managerTableContainer {
@@ -196,8 +197,9 @@
 
 .managerTableContainer {
     display: flex; 
-    justify-content: center;
-    align-items: flex-start;
+    flex-direction: column; 
+    justify-content: flex-start;
+    align-items: center;
 }
 
 .managerDemographicsContainerSex, 
@@ -296,6 +298,7 @@
 
 .managerControlTable thead {
     font-size: 0.8rem; 
+    background-color: #001; 
 }
 
 .managerControlCheckbox {
@@ -313,7 +316,7 @@
 }
 
 .managerControlTableNavBar {
-    position: absolute; 
+    position: sticky; 
     display: flex; 
     justify-content: flex-end;
     align-items: center;
@@ -322,6 +325,7 @@
     padding: 0 1rem; 
     background-color: #2D3436; 
     border-top: 2px solid rgba(255, 255, 255, 0.2);
+    
 }
 
 .managerControlTableNavBarButton {

@@ -1,7 +1,7 @@
 import {useState, useEffect} from "react"; 
 import { useNavigate } from "react-router-dom"; 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faX, faBars, faRightFromBracket, faPerson, faFile, faPeopleLine } from "@fortawesome/free-solid-svg-icons";
+import { faX, faBars, faRightFromBracket, faPerson, faFile, faPeopleLine, faPencil } from "@fortawesome/free-solid-svg-icons";
 
 import '../styles/Profile.css'
 
@@ -69,7 +69,7 @@ const Profile = () => {
 
     const fetchUserInfo = async () => {
         try {
-            const response = await fetch('http://10.111.26.70:3001/user-info', {
+            const response = await fetch('http://172.20.10.3:3001/user-info', {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -99,7 +99,7 @@ const Profile = () => {
 
     const fetchUserUsageData = async () => {
         try {
-            const response = await fetch('http://10.111.26.70:3001/user-usage-data', {
+            const response = await fetch('http://172.20.10.3:3001/user-usage-data', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -123,7 +123,7 @@ const Profile = () => {
 
     const fetchOrganizationInfo = async () => {
         try {
-            const response = await fetch('http://10.111.26.70:3001/organization-info', {
+            const response = await fetch('http://172.20.10.3:3001/organization-info', {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -150,7 +150,7 @@ const Profile = () => {
 
     const fetchOrganizationUsageData = async () => {
         try {
-            const response = await fetch('http://10.111.26.70:3001/organization-usage-data', {
+            const response = await fetch('http://172.20.10.3:3001/organization-usage-data', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -174,7 +174,7 @@ const Profile = () => {
 
     const fetchOrganizationSignInLog = async () => {
         try {
-            const response = await fetch('http://10.111.26.70:3001/organization-signin-log', {
+            const response = await fetch('http://172.20.10.3:3001/organization-signin-log', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -198,7 +198,7 @@ const Profile = () => {
 
     const fetchAdminData = async () => {
         try {
-            const response = await fetch('http://10.111.26.70:3001/admin-data', {
+            const response = await fetch('http://172.20.10.3:3001/admin-data', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -223,7 +223,7 @@ const Profile = () => {
 
     const fetchNotifications = async () => {
         try {
-            const response = await fetch('http://10.111.26.70:3001/pull-notifications', {
+            const response = await fetch('http://172.20.10.3:3001/pull-notifications', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -290,7 +290,7 @@ const Profile = () => {
         setAdminUsers(updatedAdminUsers);
     
         try {
-            const response = await fetch('http://10.111.26.70:3001/remove-admin-users', {
+            const response = await fetch('http://172.20.10.3:3001/remove-admin-users', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -325,7 +325,7 @@ const Profile = () => {
 
     const handleSaveClickFirstName = async () => {
         try {
-            const response = await fetch('http://10.111.26.70:3001/edit-first-name', {
+            const response = await fetch('http://172.20.10.3:3001/edit-first-name', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -345,7 +345,7 @@ const Profile = () => {
 
     const handleSaveClickLastName = async () => {
         try {
-            const response = await fetch('http://10.111.26.70:3001/edit-last-name', {
+            const response = await fetch('http://172.20.10.3:3001/edit-last-name', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -365,7 +365,7 @@ const Profile = () => {
 
     const handleSaveClickEmail = async () => {
         try {
-            const response = await fetch('http://10.111.26.70:3001/edit-email', {
+            const response = await fetch('http://172.20.10.3:3001/edit-email', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -385,7 +385,7 @@ const Profile = () => {
 
     const handleSaveClickPhone = async () => {
         try {
-            const response = await fetch('http://10.111.26.70:3001/edit-phone', {
+            const response = await fetch('http://172.20.10.3:3001/edit-phone', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -414,7 +414,7 @@ const Profile = () => {
                 setImage(base64Data);
     
                 try {
-                    const response = await fetch('http://10.111.26.70:3001/edit-image', {
+                    const response = await fetch('http://172.20.10.3:3001/edit-image', {
                         method: 'POST',
                         headers: {
                             "Content-Type": "application/json",
@@ -465,7 +465,7 @@ const Profile = () => {
         const updatedAdminUsers = adminUsers;
     
         try {
-            const response = await fetch('http://10.111.26.70:3001/update-admin-users', {
+            const response = await fetch('http://172.20.10.3:3001/update-admin-users', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -485,7 +485,7 @@ const Profile = () => {
 
     const handleConfirm = async (notificationUsername) => {
         try {
-            const response = await fetch('http://10.111.26.70:3001/confirm-access', {
+            const response = await fetch('http://172.20.10.3:3001/confirm-access', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -504,7 +504,7 @@ const Profile = () => {
 
     const handleDeny = async (notificationUsername) => {
         try {
-            const response = await fetch('http://10.111.26.70:3001/deny-access', {
+            const response = await fetch('http://172.20.10.3:3001/deny-access', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -529,7 +529,7 @@ const Profile = () => {
 
     const handleTeamCreation = async () => {
         try {
-            const response = await fetch('http://10.111.26.70:3001/create-team', {
+            const response = await fetch('http://172.20.10.3:3001/create-team', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -558,7 +558,7 @@ const Profile = () => {
     
     const handleTeamJoin = async () => {
         try {
-            const response = await fetch('http://10.111.26.70:3001/join-team', {
+            const response = await fetch('http://172.20.10.3:3001/join-team', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -674,18 +674,74 @@ const Profile = () => {
                 {!isHamburger && (
                     <div className="userControlBlock">
                     
-                    <div className="userControlFlex"> 
+                        <div className="userControlFlex"> 
 
-                        <div className="userEditBlock">
+                            <div className="userEditBlock">
 
-                            <div className="userNameInputFlex"> 
+                                <div className="userNameInputFlex"> 
+                                    <div className="userInputBlock">
+                                        <label className="userInputHeader">First Name</label>
+                                        <input className="userInput" placeholder={firstName}/> 
+                                        <button className="editButton"> 
+                                            <FontAwesomeIcon icon={faPencil} className="editButtonIcon"/> 
+                                        </button>
+                                    </div>
 
+                                    <div className="userInputBlock">
+                                        <label className="userInputHeader">Last Name</label>
+                                        <input className="userInput" placeholder={lastName}/> 
+                                        <button className="editButton"> 
+                                            <FontAwesomeIcon icon={faPencil} className="editButtonIcon"/> 
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="userNameInputFlex"> 
+                                    <div className="userInputBlock">
+                                        <label className="userInputHeader">Email</label>
+                                        <input className="userInput" placeholder={email}/> 
+                                        <button className="editButton"> 
+                                            <FontAwesomeIcon icon={faPencil} className="editButtonIcon"/> 
+                                        </button>
+                                    </div>
+
+                                    <div className="userInputBlock">
+                                        <label className="userInputHeader">Phone</label>
+                                        <input className="userInput" placeholder={formatPhoneNumber(phone)}/> 
+                                        <button className="editButton"> 
+                                            <FontAwesomeIcon icon={faPencil} className="editButtonIcon"/> 
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="userNameInputFlex"> 
+                                    <div className="userInputBlock">
+                                        <div className="userPictureUpload">
+                                            <label className="userImageText" htmlFor="imageUpload">Choose a Photo</label>
+                                            <input
+                                                className="Picture"
+                                                type="file"
+                                                id="imageUpload"
+                                                accept="image/*"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="userInputBlock">
+                                        <label className="userInputHeader">Username</label>
+                                        <input className="userInput" placeholder={username} disabled={true}/> 
+                                        <button className="editButton"> 
+                                            <FontAwesomeIcon icon={faPencil} className="editButtonIcon"/> 
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
 
+                            <div className="userEditBlock">
 
+                                
+                            </div>
                         </div>
-
-                    </div>
                     </div>
                     
                 )}
