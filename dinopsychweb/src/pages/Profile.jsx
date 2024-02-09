@@ -800,6 +800,25 @@ const Profile = () => {
                                 </div>
                             </div>
 
+                            <div className="userEditBlock">
+                                <div className="personalSignInBarChartWrapper">
+                                    <label className="loginChartTitle">{firstName} {lastName} - Logins</label>
+                                    <label className="loginChartSubtitle">Last Seven Days</label>
+                                    <Bar className="personalSigninBarChart" data={personalLoginsData} options={personalLoginsOptions} />
+                                </div>
+                                
+                            </div>
+
+                            
+
+                        </div>
+                    </div>
+                )}
+
+                {!isHamburger && isAdmin && (
+
+                    <div className="userControlBlock">
+
                             <div className="organizationInformationBlock">
                                 <div className="profileOrganizationName">{organizationName}</div>
                                 <div className="profileOrganizationID">Org ID: {organizationID}</div>
@@ -835,22 +854,16 @@ const Profile = () => {
                                 </div>
                             </div>
 
-                        </div>
-                    </div>
-                )}
-
-                {!isHamburger && isAdmin && (
-
-                    <div className="userControlBlock">
-
-                        {/*<div className="userEditBlock">
+                            <div className="userEditBlock">
                                 <div className="personalSignInBarChartWrapper">
-                                    <label className="loginChartTitle">{firstName} {lastName} - Logins</label>
+                                    <label className="loginChartTitle">{organizationName} (ID: {organizationID}) - Logins</label>
                                     <label className="loginChartSubtitle">Last Seven Days</label>
                                     <Bar className="personalSigninBarChart" data={personalLoginsData} options={personalLoginsOptions} />
                                 </div>
                                 
-                </div>*/}
+                            </div>
+
+                        
                         
 
                     </div>
