@@ -1,5 +1,7 @@
 import {useState, useEffect} from "react"; 
 import { useNavigate } from "react-router-dom"; 
+import Chart from "chart.js/auto"; 
+import { Bar } from 'react-chartjs-2';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX, faBars, faRightFromBracket, faPerson, faFile, faPeopleLine, faPencil } from "@fortawesome/free-solid-svg-icons";
 
@@ -589,16 +591,80 @@ const Profile = () => {
         });
         return dateArray.reverse();
     };
-
+    
     const userBarChartData = getLastSevenDays().map(date => ({
-        timestamp: date,
+        timestamp: date.split('-').slice(1).join('-'), 
         count: userTimestampCounts[date] || 0,
     }));
-
+    
     const organizationBarChartData = getLastSevenDays().map(date => ({
-        timestamp: date,
+        timestamp: date.split('-').slice(1).join('-'),
         count: organizationTimestampCounts[date] || 0,
     }));
+    
+
+    const personalLoginsOptions = {
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    precision: 0,
+                    stepSize: 1,
+                },
+                grid: {
+                    display: false,
+                    drawBorder: true,
+                },
+                border: {
+                    lineWidth: 2,
+                    color: 'grey',
+                }
+            },
+            x: {
+                grid: {
+                    display: false,
+                    drawBorder: false,
+                },
+                border: {
+                    lineWidth: 2,
+                    color: 'grey',
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                display: false,
+            },
+            datalabels: {
+                display: true,
+                align: 'center',
+                anchor: 'center',
+                formatter: (value) => value || '',
+                font: {
+                    size: 10
+                }
+            }
+        },
+        elements: {
+            line: {
+                borderWidth: 0
+            },
+            point: {
+                radius: 0
+            }
+        }
+    };
+
+    const personalLoginsData = {
+        labels: userBarChartData.map(dataPoint => dataPoint.timestamp),
+        datasets: [{
+            label: `${firstName} ${lastName} - Logins`,
+            data: userBarChartData.map(dataPoint => dataPoint.count),
+            backgroundColor: '#8884d8'
+        }]
+    };
+
+    
 
 
     return (
@@ -738,7 +804,11 @@ const Profile = () => {
                             </div>
 
                             <div className="userEditBlock">
-
+                                <div className="personalSignInBarChartWrapper">
+                                    <label className="loginChartTitle">{firstName} {lastName} - Logins</label>
+                                    <label className="loginChartSubtitle">Last Seven Days</label>
+                                    <Bar className="personalSigninBarChart" data={personalLoginsData} options={personalLoginsOptions} />
+                                </div>
                                 
                             </div>
                         </div>
