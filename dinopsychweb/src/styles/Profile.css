@@ -165,23 +165,19 @@
     align-items: center; 
 }
 
-.userEditBlock, 
 .userEditInfoBlock {
-    width: 45%; 
+    width: 50%; 
     padding: 1vh 0; 
     display: flex; 
     flex-direction: column; 
     justify-content: center;
     align-items: flex-start;
     overflow: scroll;
-}
-
-.userEditInfoBlock {
-    margin-right: 5%; 
+    height: 32vh; 
     border: 1px solid #2D3436; 
     border-radius: 0.4rem;
     box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
-    padding: 0.5rem; 
+    padding: 0.5rem
 }
 
 .userNameInputFlex {
@@ -219,16 +215,19 @@
 .userInput:hover {
     opacity: 0.6; 
 }
-
 .editButton {
     position: absolute; 
     border: none; 
     outline: none; 
     color: grey; 
-    bottom: 8%; 
-    right: 2%; 
-    background-color: rgba(255,255,255,0.0);
+    bottom: 20%; 
+    right: 5%; 
+    background-color: #002;
+    padding: 0.2rem; 
+    width: auto; 
+    height: auto; 
 }
+
 
 .editButton:hover {
     opacity: 0.6; 
@@ -253,7 +252,7 @@
     color: grey;
     width: 100%;
     margin-bottom: 0.5rem; 
-    text-shadow: 0 0 1px rgba(255, 255, 255, 0.8);
+    text-shadow: 0 0 0.5px rgba(255, 255, 255, 0.8);
 }
 
 
@@ -293,6 +292,7 @@
 
 .personalSignInBarChartWrapper {
     width: 30rem; 
+    height: 80%; 
     display: flex; 
     flex-direction: column;
     justify-content: flex-start;
@@ -314,7 +314,52 @@
     margin-bottom: 1rem; 
 }
 
-.personalSigninBarChart {
+
+.organizationInformationBlock {
+    display: flex; 
+    flex-direction: column;
+    justify-content: flex-start; 
+    align-items: center;
+    width: 30%; 
+    overflow: scroll;
+    border: 1px solid #2D3436; 
+    border-radius: 0.4rem;
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
+    padding: 0.5rem; 
+    height: 28vh; 
+    padding: 0.5rem; 
 }
 
+.profileOrganizationName {
+    font-size: 0.8rem; 
+    font-weight: 600; 
+    color: white; 
+    opacity: 0.8; 
+    margin-top: 1rem; 
+}
 
+.profileOrganizationID {
+    font-size: 0.6rem; 
+    font-weight: 500; 
+    color: white; 
+    opacity: 0.6; 
+    margin-bottom: 1rem; 
+}
+
+.profileOrganizationCountLabel {
+    font-size: 0.7rem; 
+    font-weight: 500; 
+    text-decoration: underline; 
+    color: white; 
+    opacity: 0.8; 
+    margin-top: 0.2rem;
+}
+
+.profileOrganizationCount {
+    font-size: 0.9rem; 
+    font-weight: 600; 
+    color: white; 
+    opacity: 0.6; 
+    
+}
+  
