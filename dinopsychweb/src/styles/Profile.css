@@ -204,7 +204,7 @@
     background-color: rgba(255, 255, 255, 0); 
     border: none; 
     outline: none; 
-    border-bottom: 0.2px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 0.2px solid rgba(255, 255, 255, 0.4);
     cursor: pointer; 
     color: white; 
     font-size: 0.7rem; 
@@ -242,6 +242,8 @@
 .editButtonIcon {
     width: 0.7rem; 
     height: 0.7rem; 
+    color: white; 
+    opacity: 0.8; 
     text-shadow: 0 0 1px rgba(255, 255, 255, 0.8);
 }
 
@@ -250,12 +252,11 @@
     font-weight: 600;
     text-align: center; 
     opacity: 0.8; 
-    color: grey;
+    color: white;
     width: 100%;
     margin-bottom: 0.5rem; 
     text-shadow: 0 0 0.5px rgba(255, 255, 255, 0.8);
 }
-
 
 .userPictureUpload {
     padding: 0.5rem; 
@@ -270,7 +271,7 @@
     background: rgba(255,255,255,0.0);
     border: 1px solid #2D3436; 
     border-radius: 0.4rem;
-    color: grey; 
+    color: white; 
     font-size: 0.65rem;
     font-weight: regular;  
     cursor: pointer; 
@@ -332,7 +333,7 @@
 
 
 .profileOrganizationName {
-    font-size: 0.7rem; 
+    font-size: 1.5vw; 
     font-weight: 600; 
     color: white; 
     opacity: 0.8; 
@@ -341,7 +342,7 @@
 }
 
 .profileOrganizationID {
-    font-size: 0.6rem; 
+    font-size: 0.8vw; 
     font-weight: 500; 
     color: white; 
     opacity: 0.6; 
@@ -350,7 +351,7 @@
 }
 
 .profileOrganizationCountLabel {
-    font-size: 0.6rem; 
+    font-size: 0.8vw; 
     font-weight: 500; 
     text-decoration: underline; 
     color: white; 
@@ -360,7 +361,7 @@
 }
 
 .profileOrganizationCount {
-    font-size: 0.9rem; 
+    font-size: 1.2vw; 
     font-weight: 600; 
     color: white; 
     opacity: 0.6; 
@@ -377,6 +378,7 @@
     text-align: center; 
     white-space: nowrap; 
     overflow: scroll; 
+    margin-top: 0.4 rem; 
 }
 
 .signinLogHeaders {
@@ -384,7 +386,8 @@
     opacity: 0.8; 
     position: sticky;
     top: 0;
-    background-color: #001; 
+    background-color: #002; 
+    font-size: 1.5vw;
 } 
 
 .signinLogContent {
@@ -400,6 +403,7 @@
 .userEditBlock {
     width:40%; 
     margin-left: 5%; 
+    overflow: scroll; 
 }
 
 

@@ -664,6 +664,13 @@ const Profile = () => {
         }]
     };
 
+    useEffect(() => {
+        document.body.classList.add('profilePageBody');
+        return () => {
+          document.body.classList.remove('profilePageBody');
+        };
+    }, []);
+
     
 
 

@@ -21,7 +21,8 @@ body {
   background: transparent; 
 }
 
-body.reportPageBody {
+body.reportPageBody, 
+body.profilePageBody {
   background: #002;
 }
 
