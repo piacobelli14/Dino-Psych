@@ -166,11 +166,11 @@
 }
 
 .userEditInfoBlock {
-    width: 50%; 
+    width: 40%; 
     padding: 1vh 0; 
     display: flex; 
     flex-direction: column; 
-    justify-content: center;
+    justify-content: flex-start;
     align-items: flex-start;
     overflow: scroll;
     height: 32vh; 
@@ -215,6 +215,7 @@
 .userInput:hover {
     opacity: 0.6; 
 }
+
 .editButton {
     position: absolute; 
     border: none; 
@@ -227,7 +228,6 @@
     width: auto; 
     height: auto; 
 }
-
 
 .editButton:hover {
     opacity: 0.6; 
@@ -314,20 +314,20 @@
     margin-bottom: 1rem; 
 }
 
-
-.organizationInformationBlock {
+.organizationInformationBlock, 
+.siginLogTableContainer {
     display: flex; 
     flex-direction: column;
-    justify-content: flex-start; 
+    justify-content: center; 
     align-items: center;
-    width: 30%; 
+    width: 25%; 
     overflow: scroll;
     border: 1px solid #2D3436; 
     border-radius: 0.4rem;
     box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
     padding: 0.5rem; 
-    height: 28vh; 
-    padding: 0.5rem; 
+    height: 32vh; 
+    padding: 0.5rem 0; 
 }
 
 .profileOrganizationName {
@@ -335,7 +335,8 @@
     font-weight: 600; 
     color: white; 
     opacity: 0.8; 
-    margin-top: 1rem; 
+    margin-top: 1rem;
+    white-space: nowrap;  
 }
 
 .profileOrganizationID {
@@ -344,6 +345,7 @@
     color: white; 
     opacity: 0.6; 
     margin-bottom: 1rem; 
+    white-space: nowrap; 
 }
 
 .profileOrganizationCountLabel {
@@ -353,6 +355,7 @@
     color: white; 
     opacity: 0.8; 
     margin-top: 0.2rem;
+    white-space: nowrap; 
 }
 
 .profileOrganizationCount {
@@ -360,6 +363,37 @@
     font-weight: 600; 
     color: white; 
     opacity: 0.6; 
-    
+    white-space: nowrap; 
 }
   
+.scrollableTableWrapper {
+    overflow: auto;
+    height: 100%; 
+}
+
+.signinLogTable {
+    border-spacing: 1vw;
+    text-align: center; 
+    white-space: nowrap; 
+    overflow: scroll; 
+}
+
+.signinLogHeaders, 
+.userControlHeaders {
+color: grey; 
+position: sticky;
+top: 0;
+background-color: #333; 
+} 
+
+.signinLogContent,
+.userControlContent {
+color: grey;
+white-space: nowrap;
+}
+
+.signinLogContent {
+  font-size: 0.8vw; 
+}
+
+

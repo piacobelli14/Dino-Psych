@@ -813,7 +813,28 @@ const Profile = () => {
                         
                             </div>
 
-                            
+                            <div className="siginLogTableContainer">
+                                <div className="scrollableTableWrapper">
+                                    <table className="signinLogTable">
+                                        <thead className="signinLogHeaders">
+                                            <tr>
+                                                <th>Login</th>
+                                                <th>Time</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            {signInLog.map((item, index) => (
+                                                <tr className="signinLogContent" key={index}>
+                                                    <td>{item.firstname} {item.lastname}</td>
+                                                    <td>{formatDate(item.timestamp)}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 )}
