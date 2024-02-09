@@ -740,7 +740,7 @@ const Profile = () => {
                 {!isHamburger && (
                     <div className="userControlBlock">
                         <div className="userControlFlex"> 
-                            <div className="userEditBlock">
+                            <div className="userEditInfoBlock">
                                 <div className="userNameInputFlex"> 
                                     <div className="userInputBlock">
                                         <label className="userInputHeader">First Name</label>
@@ -812,9 +812,14 @@ const Profile = () => {
                     </div>
                 )}
 
-                {!isHamburger && (
+                {!isHamburger && isAdmin && (
 
-                    <div className="profileHeaderDivider"/>
+                    <div className="userControlBlock">
+                        
+
+                    </div>
+
+                    
                 )}
 
 
