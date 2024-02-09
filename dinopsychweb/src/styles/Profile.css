@@ -165,13 +165,18 @@
     align-items: center; 
 }
 
-.userEditBlock {
-    width: 48%; 
+.userEditBlock, 
+.userEditInfoBlock {
     padding: 1vh 0; 
     display: flex; 
     flex-direction: column; 
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
+    overflow: scroll;
+}
+
+.userEditInfoBlock {
+    width: 48%; 
 }
 
 .userNameInputFlex {
@@ -280,10 +285,10 @@
 }
 
 .personalSignInBarChartWrapper {
-    width: 36vw; 
+    width: 30rem; 
     display: flex; 
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
 }
 

@@ -609,7 +609,7 @@ const Manager = () => {
                 {!isHamburger && (
                     <div className="managerTableWrapper">
                         <div className="managerTableContainer">
-                            <table className="managerControlTable">
+                            <table className="managerControlTable" style={{"overflow": "scroll"}}>
                                 <thead className="managerControlHeaders">
                                     <tr>
                                     <th></th>
@@ -619,6 +619,7 @@ const Manager = () => {
                                     <th>Age</th>
                                     </tr>
                                 </thead>
+                              
                                 <tbody>
                                     {patientList.filter(item => item !== '').map((patient, index) => (
                                     <tr className="managerControlContent" key={index}>
@@ -637,6 +638,7 @@ const Manager = () => {
                                     </tr>
                                     ))}
                                 </tbody>
+                                
                             </table>
 
                             <div className="managerControlTableNavBar">

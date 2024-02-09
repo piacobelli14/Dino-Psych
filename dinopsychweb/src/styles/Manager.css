@@ -176,6 +176,7 @@
 
 .managerTableContainer {
     position: relative; 
+    overflow: scroll;
 }
 
 .managerTableContainer, 
@@ -276,21 +277,23 @@
 }
 
 .managerControlTable {
-    width: 85%; 
+    width: 85%;
     list-style: none;
-    table-layout: fixed; 
-    text-align: center; 
-    padding:  1.5rem 0; 
+    table-layout: fixed;
+    text-align: center;
+    padding: 1.5rem 0;
 }
+
+
+
 
 .managerControlTable th,
 .managerControlTable td {
-    width: auto; 
-    padding-top: 0.4rem;
-    padding-bottom: 0.4rem;
-    white-space: nowrap;
-    overflow: scroll;
+    min-width: 20%; 
+    padding-top: 0.8rem;
+    padding-bottom: 0.8rem;
 }
+
 
 .managerControlTable tr {
     font-size: 0.6rem; 
@@ -299,6 +302,10 @@
 .managerControlTable thead {
     font-size: 0.8rem; 
     background-color: #001; 
+}
+
+.managerControlTable tbody {
+    overflow: scroll !important;
 }
 
 .managerControlCheckbox {
@@ -317,15 +324,16 @@
 
 .managerControlTableNavBar {
     position: sticky; 
-    display: flex; 
-    justify-content: flex-end;
-    align-items: center;
     bottom: 0; 
-    width: 100%; 
-    padding: 0 1rem; 
-    background-color: #2D3436; 
+    width: 100%;
+    padding: 0 1rem;
+    background-color: #2D3436;
     border-top: 2px solid rgba(255, 255, 255, 0.2);
-    
+    z-index: 1000;
+}
+
+.managerControlTableNavBar {
+    position: -webkit-sticky;
 }
 
 .managerControlTableNavBarButton {
