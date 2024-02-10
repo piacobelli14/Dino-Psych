@@ -58,6 +58,9 @@ const Manager = () => {
     const [editSex, setEditSex] = useState(""); 
     const [editAge, setEditAge] = useState("");
 
+    const [isDistribution, setIsDistribution] = useState(false);
+    const [isSendSurvey, setIsSendSurvey] = useState(false);
+
     const [managerError, setManagerError] = useState(); 
 
     useEffect(() => {
@@ -542,6 +545,33 @@ const Manager = () => {
         }
     };
     
+    const handleSurveyDistribution = async () => {
+        if (selectedPatientIDs.length >= 1) {
+          try {
+            const response = await fetch('http://172.20.10.3:3001/distribute-survey', {
+              method: 'POST',
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": `${token}`,
+              },
+              body: JSON.stringify({
+                organizationID,
+                patientIDs: selectedPatientIDs,
+              }),
+            });
+      
+            if (response.status !== 200) {
+              throw new Error(`Internal Server Error`);
+            } else {
+              setIsDistribution(false);
+              setIsSendSurvey(false);
+              window.location.reload();
+            }
+          } catch (error) {
+            return; 
+          }
+        }
+    };
     
     
     return (
@@ -654,23 +684,12 @@ const Manager = () => {
                                 }}> 
                                         <FontAwesomeIcon icon={faPersonCircleMinus} className="managerControlTableNavBarIconLeading" style={{'opacity': selectedPatientIDs.length > 0 ? 1 : 0.6}}/> 
                                 </button>
-
-
-
-
-
                                 <button className="managerControlTableNavBarButton"  disabled={selectedPatientIDs.length > 0 ? false : true} onClick={()=> {
                                     setSelectedState("distribution"); 
                                     setManagerError("");
                                 }}> 
                                         <FontAwesomeIcon icon={faFile} className="managerControlTableNavBarIconLeading" style={{'opacity': selectedPatientIDs.length > 0 ? 1 : 0.6}}/> 
                                 </button>
-
-
-
-
-
-
                                 <button className="managerControlTableNavBarButton" disabled={selectedPatientIDs.length === 1 ? false : true}  onClick={()=> {
                                     getSelectedUserPlaceholders();
                                     setSelectedState("edit");
@@ -700,6 +719,12 @@ const Manager = () => {
                                 {selectedState === "discharge" && (
                                     <label className="operationsHeader"> 
                                         Discharge Patients
+                                    </label> 
+                                )}
+
+                                {selectedState === "distribution" && (
+                                    <label className="operationsHeader"> 
+                                        Distribute Surveys
                                     </label> 
                                 )}
 
@@ -796,6 +821,28 @@ const Manager = () => {
                                     </div>
                                 )}
 
+                                {selectedState === "distribution" && (
+                                    <div className="operationsRemovalListWrapper">
+                                            <button className="distributionBackButton" onClick={() => handleDistributionCancel()}>
+                                                <span>&times;</span>
+                                            </button>
+
+                                            <br />
+                                            <div className="distributionHeader">Distribute surveys to the following patients?</div>
+
+                                            <ul className="distributionListWrapper">
+                                                {selectedPatientInfo.map((patient, index) => (
+                                                    <li key={index}>
+                                                    <div className="dischargeListItemHeader">{patient.name}</div>
+                                                    <div className="dischargeListItemSubheader">{`ID: ${patient.id}`}</div>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                            <button className="distributionSaveButton" onClick={handleSurveyDistribution} style={{ 'opacity': selectedPatientIDs.length > 0 ? 1 : 0.6 }}>Send</button>
+                              
+                                    </div>
+                                )}
+
                                 {selectedState === "enroll" && (
                                     <button className="enrollPatientButton" onClick={handleEnroll}> 
                                         Confirm Enrollment 
@@ -805,6 +852,12 @@ const Manager = () => {
                                 {selectedState === "discharge" && (
                                     <button className="enrollPatientButton" onClick={handleDischarge}> 
                                         Confirm Discharge 
+                                    </button>
+                                )}
+
+                                {selectedState === "distribution" && (
+                                    <button className="enrollPatientButton"> 
+                                        Confirm Distribution 
                                     </button>
                                 )}
 
