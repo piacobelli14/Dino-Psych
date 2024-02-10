@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Chart from "chart.js/auto"; 
 import { Bar } from 'react-chartjs-2';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faX, faBars, faRightFromBracket, faPerson, faFile, faPeopleLine, faPencil, faTrashCan, faRegistered } from "@fortawesome/free-solid-svg-icons";
+import { faX, faBars, faRightFromBracket, faPerson, faFile, faPeopleLine, faPencil, faTrashCan, faRegistered, faBookmark } from "@fortawesome/free-solid-svg-icons";
 
 import '../styles/Profile.css'
 
@@ -812,17 +812,17 @@ const Profile = () => {
                                 <div className="userNameInputFlex"> 
                                     <div className="userInputBlock">
                                         <label className="userInputHeader">First Name</label>
-                                        <input className="userInput" placeholder={firstName}/> 
-                                        <button className="editButton"> 
-                                            <FontAwesomeIcon icon={faPencil} className="editButtonIcon"/> 
+                                        <input className="userInput" placeholder={firstName} disabled={editModeFirstName ? false : true} onChange={(e)=>setFirstName(e.target.value)}/> 
+                                        <button className="editButton" onClick={editModeFirstName ? handleSaveClickFirstName : handleEditClickFirstName}> 
+                                            <FontAwesomeIcon icon={editModeFirstName ? faBookmark : faPencil} className="editButtonIcon"/> 
                                         </button>
                                     </div>
 
                                     <div className="userInputBlock">
                                         <label className="userInputHeader">Last Name</label>
-                                        <input className="userInput" placeholder={lastName}/> 
-                                        <button className="editButton"> 
-                                            <FontAwesomeIcon icon={faPencil} className="editButtonIcon"/> 
+                                        <input className="userInput" placeholder={lastName} disabled={editModeLastName ? false : true} onChange={(e)=>setLastName(e.target.value)}/> 
+                                        <button className="editButton" onClick={editModeLastName ? handleSaveClickLastName : handleEditClickLastName}> 
+                                            <FontAwesomeIcon icon={editModeLastName ? faBookmark : faPencil} className="editButtonIcon"/> 
                                         </button>
                                     </div>
                                 </div>
@@ -830,17 +830,17 @@ const Profile = () => {
                                 <div className="userNameInputFlex"> 
                                     <div className="userInputBlock">
                                         <label className="userInputHeader">Email</label>
-                                        <input className="userInput" placeholder={email}/> 
-                                        <button className="editButton"> 
-                                            <FontAwesomeIcon icon={faPencil} className="editButtonIcon"/> 
+                                        <input className="userInput" placeholder={email} disabled={editModeEmail ? false : true} onChange={(e)=>setEmail(e.target.value)}/> 
+                                        <button className="editButton" onClick={editModeEmail ? handleSaveClickEmail : handleEditClickEmail}> 
+                                            <FontAwesomeIcon icon={editModeEmail ? faBookmark : faPencil} className="editButtonIcon"/> 
                                         </button>
                                     </div>
 
                                     <div className="userInputBlock">
                                         <label className="userInputHeader">Phone</label>
-                                        <input className="userInput" placeholder={formatPhoneNumber(phone)}/> 
-                                        <button className="editButton"> 
-                                            <FontAwesomeIcon icon={faPencil} className="editButtonIcon"/> 
+                                        <input className="userInput" placeholder={formatPhoneNumber(phone)} disabled={editModePhone ? false : true} onChange={(e)=>setPhone(e.target.value)}/> 
+                                        <button className="editButton" onClick={editModePhone ? handleSaveClickPhone : handleEditClickPhone}> 
+                                            <FontAwesomeIcon icon={editModePhone ? faBookmark : faPencil} className="editButtonIcon"/> 
                                         </button>
                                     </div>
                                 </div>
@@ -854,6 +854,7 @@ const Profile = () => {
                                                 type="file"
                                                 id="imageUpload"
                                                 accept="image/*"
+                                                onChange={handleImageChange}
                                             />
                                         </div>
                                     </div>
@@ -861,9 +862,7 @@ const Profile = () => {
                                     <div className="userInputBlock">
                                         <label className="userInputHeader">Username</label>
                                         <input className="userInput" placeholder={username} disabled={true}/> 
-                                        <button className="editButton"> 
-                                            <FontAwesomeIcon icon={faPencil} className="editButtonIcon"/> 
-                                        </button>
+                                        
                                     </div>
                                 </div>
                             </div>

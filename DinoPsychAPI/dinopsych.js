@@ -66,7 +66,7 @@ app.post('/login', async (req, res) => {
       }
 
       const username = row.username; 
-      const organizationID = row.organizationid; 
+      let organizationID = row.organizationid; 
       if (!organizationID || organizationID === "" || organizationID === null) {
         organizationID = username
       }
@@ -93,6 +93,8 @@ app.post('/login', async (req, res) => {
               }
             );
 
+            console.log(username, token); 
+
             return res.status(200).json({ token, username });
         } else {
             return res.status(401).json({ message: 'These login credentials are incorrect. Please try again.' });
@@ -101,6 +103,7 @@ app.post('/login', async (req, res) => {
         return res.status(401).json({ message: 'These login credentials are incorrect. Please try again.' });
         }
     } catch (error) {
+        console.log(error); 
       return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
     }
 });  
