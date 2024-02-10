@@ -32,3 +32,7 @@ This prototype model is currently designed to distribute outcomes to patients on
 # Team/Account Management 
 
 ![Image](OutcomesManager)
+
+# Self-Report Outcomes Measures
+
+![Image]
