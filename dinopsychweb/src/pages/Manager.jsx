@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Chart } from "chart.js/auto"; 
 import { Pie, Bar } from "react-chartjs-2";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faX, faFile, faPerson, faRightFromBracket, faPersonCirclePlus, faPersonCircleMinus, faEdit, faTrash, faStopwatch, faDeleteLeft, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faX, faFile, faPerson, faRightFromBracket, faPersonCirclePlus, faPersonCircleMinus, faEdit, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 
 import DinoLabsLogoWhite from "../assets/dinoLabsLogo_white.png"; 
 
@@ -654,6 +654,23 @@ const Manager = () => {
                                 }}> 
                                         <FontAwesomeIcon icon={faPersonCircleMinus} className="managerControlTableNavBarIconLeading" style={{'opacity': selectedPatientIDs.length > 0 ? 1 : 0.6}}/> 
                                 </button>
+
+
+
+
+
+                                <button className="managerControlTableNavBarButton"  disabled={selectedPatientIDs.length > 0 ? false : true} onClick={()=> {
+                                    setSelectedState("distribution"); 
+                                    setManagerError("");
+                                }}> 
+                                        <FontAwesomeIcon icon={faFile} className="managerControlTableNavBarIconLeading" style={{'opacity': selectedPatientIDs.length > 0 ? 1 : 0.6}}/> 
+                                </button>
+
+
+
+
+
+
                                 <button className="managerControlTableNavBarButton" disabled={selectedPatientIDs.length === 1 ? false : true}  onClick={()=> {
                                     getSelectedUserPlaceholders();
                                     setSelectedState("edit");
@@ -667,7 +684,6 @@ const Manager = () => {
                                 }}> 
                                         <FontAwesomeIcon icon={faTrashCan} className="managerControlTableNavBarIconTrailing" style={{'opacity': selectedPatientIDs.length > 0 ? 1 : 0.6}}/> 
                                 </button>
-                                
                             </div>
                         </div>
 

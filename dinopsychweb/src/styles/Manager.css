@@ -285,9 +285,6 @@
     padding: 1.5rem 0;
 }
 
-
-
-
 .managerControlTable th,
 .managerControlTable td {
     min-width: 20%; 
@@ -325,6 +322,8 @@
 
 .managerControlTableNavBar {
     position: sticky; 
+    display: flex; 
+    justify-content: flex-end; 
     bottom: 0; 
     width: 100%;
     padding: 0 1rem;
