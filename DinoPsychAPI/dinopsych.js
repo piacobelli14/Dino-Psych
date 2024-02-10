@@ -5,11 +5,13 @@ const { Pool } = require('pg');
 const crypto = require('crypto'); 
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken'); 
+const { v4: uuidv4 } = require('uuid');
 
 const secretKey = process.env.JWT_SECRET_KEY || 'your-secret-key'
 
 const app = express(); 
 const port = 3001; 
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 app.use(cors());
 app.use(bodyParser.json({ limit: '1gb' }));
@@ -1914,6 +1916,71 @@ app.post('/pull-my-requests', authenticateToken, async (req, res) => {
     }
 });
 
+app.post('/distribute-survey', authenticateToken, async (req, res) => {
+    const { organizationID, patientIDs } = req.body;
+    console.log(req.body); 
+    try {
+      if (organizationID === 'null' || organizationID === null || organizationID === '') {
+        organizationID = username;
+      }
+  
+      for (const patientID of patientIDs) {
+        const getEmailQuery = `SELECT ptemail FROM patientinfo WHERE ptid = $1 AND organizationid = $2`;
+        const getEmailResult = await pool.query(getEmailQuery, [patientID, organizationID]);
+  
+        if (getEmailResult.rows.length === 0) {
+          continue; 
+        }
+  
+        const patientEmail = getEmailResult.rows[0].ptemail;
+
+        let surveyKey;
+        let keyExists = true;
+  
+        while (keyExists) {
+          surveyKey = uuidv4();
+  
+          const keyCheckResult = await pool.query('SELECT surveykey FROM dinopsych_distributionkeys WHERE organizationid = $1 AND surveykey = $2', [organizationID, surveyKey]);
+          if (keyCheckResult.rows.length === 0) {
+            keyExists = false;
+          }
+        }
+  
+        await pool.query('INSERT INTO dinopsych_distributionkeys (ptid, organizationid, surveykey) VALUES ($1, $2, $3)', [patientID, organizationID, surveyKey]);
+  
+        const surveyLink = `http://localhost:5173/survey/${surveyKey}`;
+        const transporter = nodemailer.createTransport({
+          host: 'smtp-mail.outlook.com',
+          port: 587,
+          secure: false,
+          auth: {
+            user: 'dinolabsauthentication@outlook.com',
+            pass: 'PAiac14-',
+          },
+        });
+  
+        const mailOptions = {
+          from: 'dinolabsauthentication@outlook.com',
+          to: patientEmail,
+          subject: 'Survey Link',
+          text: `Hi!,\n\nIt's time to fill out another survey. Click the link below to get started.\n\n${surveyLink}\n\nThans for your time!\n\nSincerely,\nThe DinoLabs Team`,
+        };
+  
+        await delay(1000);
+  
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            return;
+          } 
+        });
+      }
+  
+      return res.status(200).json();
+    } catch (error) {
+        console.log(error);
+      return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
+});
 
 
 

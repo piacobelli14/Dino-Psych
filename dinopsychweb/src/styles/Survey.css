@@ -144,6 +144,7 @@
     border: none; 
     border-radius: 0.5vw; 
     outline: none; 
+    color: black; 
   }
   
   .squareSurveyButtonGAD7 {
@@ -193,9 +194,11 @@
     height: 3vw ;
     background-color: white; 
     z-index: 10000;
-  
+    cursor: pointer; 
   }
-  
+
+
+
   .surveyNextButton, 
   .surveyPreviousButton {
     position: fixed; 
@@ -236,6 +239,7 @@
   .navigationTextPrevious {
     margin-right: 0.5vw; 
     font-size: 0.6vw; 
+    cursor: pointer;
   }
   
   .navigationTextNext {
@@ -269,6 +273,13 @@
     width: 15vw; 
     margin-bottom: 1.5vw; 
   }
+
+  .timeframeSelectFlex {
+    display: flex; 
+    justify-content: space-between; 
+    width: 15vw; 
+    margin-bottom: 0.5rem; 
+  }
   
   .timeframeSelect {
     width: 8vw; 
@@ -276,6 +287,8 @@
     font-weight: 600;
     cursor: pointer; 
     padding: 0.5vw; 
+    background-color: #F5F5F5; 
+    color: black; 
   }
   
   .timeframeSelect:hover {
@@ -294,6 +307,7 @@
     color: black; 
     font-size: 0.8vw; 
     font-weight: 600; 
+    margin-right: 2vw; 
   }
   
   .timeframeInput {
@@ -309,6 +323,7 @@
     font-size: 1vw; 
     font-weight: 600;
     padding: 0.5vw; 
+    color: black; 
   
   }
   

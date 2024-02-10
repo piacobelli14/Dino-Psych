@@ -909,7 +909,7 @@ const Survey = () => {
               <>
                 <div className="surveyTitle">Pittsburgh Sleep Quality Index (PSQI)</div>
                 <div className="surveyPromptInstructions">
-                  The following questions_psqi relate to your usual sleep habits During the past week only. Your answers should indicate the most accurate reply for the majority of days and nights dring the past week. Please answer all questions.
+                  The following questions relate to your usual sleep habits During the past week only. Your answers should indicate the most accurate reply for the majority of days and nights dring the past week. Please answer all questions.
                 </div>
 
                 <div className="surveyPromptQuestion">

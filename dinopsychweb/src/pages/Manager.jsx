@@ -126,7 +126,9 @@ const Manager = () => {
     }; 
 
     const handleCheckboxChange = (patient) => {
-        setSelectedState("enroll"); 
+        if (selectedState !== "discharge" && selectedState !== "distribution" && selectedState !== "delete") {
+            setSelectedState("enroll");    
+        }
         setManagerError(""); 
         const isSelected = selectedPatientIDs.includes(patient.ptid);
 
@@ -823,23 +825,18 @@ const Manager = () => {
 
                                 {selectedState === "distribution" && (
                                     <div className="operationsRemovalListWrapper">
-                                            <button className="distributionBackButton" onClick={() => handleDistributionCancel()}>
-                                                <span>&times;</span>
-                                            </button>
+                                        <button className="distributeXButton" onClick={() => handleDistributionCancel()}>
+                                            <span>&times;</span>
+                                        </button>
 
-                                            <br />
-                                            <div className="distributionHeader">Distribute surveys to the following patients?</div>
-
-                                            <ul className="distributionListWrapper">
-                                                {selectedPatientInfo.map((patient, index) => (
-                                                    <li key={index}>
-                                                    <div className="dischargeListItemHeader">{patient.name}</div>
-                                                    <div className="dischargeListItemSubheader">{`ID: ${patient.id}`}</div>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                            <button className="distributionSaveButton" onClick={handleSurveyDistribution} style={{ 'opacity': selectedPatientIDs.length > 0 ? 1 : 0.6 }}>Send</button>
-                              
+                                        <ul className="distributionListWrapper">
+                                            {selectedPatientInfo.map((patient, index) => (
+                                                <li key={index}>
+                                                <div className="dischargeListItemHeader">{patient.name}</div>
+                                                <div className="dischargeListItemSubheader">{`ID: ${patient.id}`}</div>
+                                                </li>
+                                            ))}
+                                        </ul>
                                     </div>
                                 )}
 
@@ -856,7 +853,7 @@ const Manager = () => {
                                 )}
 
                                 {selectedState === "distribution" && (
-                                    <button className="enrollPatientButton"> 
+                                    <button className="enrollPatientButton" onClick={handleSurveyDistribution}> 
                                         Confirm Distribution 
                                     </button>
                                 )}

@@ -518,12 +518,13 @@
 
 .operationsRemovalListWrapper {
     width: 90%;
-    height: 60%;
+    height: 24vh;
     border: 0.5px solid white;
     box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
     border-radius: 0.5rem;
     margin-top: 1rem;
     overflow: auto; 
+    position: relative; 
 }
 
 .operationsRemovalList {
@@ -661,4 +662,48 @@
     white-space: nowrap; 
     color: white;
     opacity: 0.8; 
+}
+
+
+.distributeXButton {
+    position: sticky; 
+    top: 0; 
+    left: 2%;
+    background-color: rgba(255, 255, 255, 0);  
+    outline: none; 
+    cursor: pointer;
+    padding: 0; 
+    border: none; 
+
+}
+
+.distributeXButton:hover {
+    opacity: 0.6;
+    outline: none; 
+}
+
+.distributeXButton:focus {
+    outline: none; 
+}
+
+
+.distributionListWrapper {
+    width: 100%; 
+    list-style: none;
+    text-align: center;
+    padding: 0; 
+}
+
+.dischargeListItemHeader {
+    font-size: 0.8rem; 
+    font-weight: 600; 
+}
+
+.dischargeListItemSubheader {
+    font-size: 0.6rem; 
+    font-weight: 500; 
+    text-decoration: underline; 
+    color: white; 
+    opacity: 0.8; 
+    margin-bottom: 0.5rem; 
 }
