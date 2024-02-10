@@ -934,91 +934,152 @@ const Profile = () => {
                 )}
 
 
-                {!isHamburger && organizationID !== username && isAdmin && organizationID && (
+                
+                {!isHamburger && (
                     <div className="userControlBlock">
                         <div className="profileSectionDivider"/>
-                        <div className="userControlFlex">
-                            <div className="userControlTableContainer">
-                                <div className="deleteButtonContainer">
-                                    <button className="deleteButton" onClick={handleDelete}>
-                                        <FontAwesomeIcon icon={faTrashCan} className="deleteButtonIcon"/>
-                                    </button>
-                                    <button className="saveChangesButton" onClick={handleSaveChanges}>
-                                        Save Changes
-                                    </button>
-                                </div>
+                        {organizationID !== username && isAdmin && organizationID ? (
+                            <div className="userControlFlex">
+                                <div className="userControlTableContainer">
+                                    <div className="deleteButtonContainer">
+                                        <button className="deleteButton" onClick={handleDelete}>
+                                            <FontAwesomeIcon icon={faTrashCan} className="deleteButtonIcon"/>
+                                        </button>
+                                        <button className="saveChangesButton" onClick={handleSaveChanges}>
+                                            Save Changes
+                                        </button>
+                                    </div>
 
-                                <div className="scrollableTableWrapperAdmin">
-                                    <table className="userControlTable">
-                                        <thead className="signinLogHeaders">
-                                            <tr>
-                                                <th></th>
-                                                <th>Name</th>
-                                                <th>Email</th>
-                                                <th>Username</th>
-                                                <th>Role</th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody>
-                                            {adminUsers.map((item, index) => (
-                                                <tr className="signinLogContent" key={index}>
-                                                    <td>
-                                                    <input
-                                                        className="userControlCheckbox"
-                                                        type="checkbox"
-                                                        onChange={() => handleCheckboxChange(item.username)}
-                                                        checked={selectedRows.includes(item.username)}
-                                                        disabled={item.username === localStorage.getItem('username') || ''}
-                                                    />
-
-                                                    </td>
-                                                    <td>{item.firstname} {item.lastname}</td>
-                                                    <td>{item.email}</td>
-                                                    <td>{item.username}</td>
-                                                    <td>
-                                                        <select
-                                                            className="selectAdmin"
-                                                            value={item.isadmin}
-                                                            onChange={(e) => handleRoleChange(item.username, e.target.value)}
-                                                            disabled={item.username === localStorage.getItem('username') || ''}
-                                                        >
-                                                            <option className="selectAdmin" value="no">Team Member</option>
-                                                            <option className="selectAdmin" value="admin">Administrator</option>
-                                                        </select>
-                                                    </td>
+                                    <div className="scrollableTableWrapperAdmin">
+                                        <table className="userControlTable">
+                                            <thead className="signinLogHeaders">
+                                                <tr>
+                                                    <th></th>
+                                                    <th>Name</th>
+                                                    <th>Email</th>
+                                                    <th>Username</th>
+                                                    <th>Role</th>
                                                 </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                {adminUsers.map((item, index) => (
+                                                    <tr className="signinLogContent" key={index}>
+                                                        <td>
+                                                        <input
+                                                            className="userControlCheckbox"
+                                                            type="checkbox"
+                                                            onChange={() => handleCheckboxChange(item.username)}
+                                                            checked={selectedRows.includes(item.username)}
+                                                            disabled={item.username === localStorage.getItem('username') || ''}
+                                                        />
+
+                                                        </td>
+                                                        <td>{item.firstname} {item.lastname}</td>
+                                                        <td>{item.email}</td>
+                                                        <td>{item.username}</td>
+                                                        <td>
+                                                            <select
+                                                                className="selectAdmin"
+                                                                value={item.isadmin}
+                                                                onChange={(e) => handleRoleChange(item.username, e.target.value)}
+                                                                disabled={item.username === localStorage.getItem('username') || ''}
+                                                            >
+                                                                <option className="selectAdmin" value="no">Team Member</option>
+                                                                <option className="selectAdmin" value="admin">Administrator</option>
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div className="accessRequestTableContainer" style={{ 'borderColor': requestAccessBorderColor }}>
+                                    {notifications.length > 0 && (
+                                        <ul className="accessRequestListWrapper">
+                                            {notifications.map((notificationUsername, index) => (
+                                            <li className="accessRequestList" key={index}>
+                                                <div className="accessRequestDisplayWrapper">
+                                                    <span className="accessNotification">User {notificationUsername} is requesting access to {organizationName}.</span>
+                                                    <div className="accessRequestFlexWrapper">
+                                                        <button className="accessButton" onClick={() => handleConfirm(notificationUsername)}>Confirm</button>
+                                                        <button className="accessButton" onClick={() => handleDeny(notificationUsername)}>Deny</button>
+                                                    </div>
+                                                </div>
+                                            </li>
                                             ))}
-                                        </tbody>
-                                    </table>
+                                        </ul>
+                                    )}
+
+                                    {notifications.length === 0 && (
+                                        <label className="userControlHeaders">No Access Requests</label>
+                                        
+                                    )}
                                 </div>
                             </div>
+                        ) : (
+                            <div className="teamControlButtonsWrapper"> 
 
-                            <div className="accessRequestTableContainer" style={{ 'borderColor': requestAccessBorderColor }}>
-                                {notifications.length > 0 && (
-                                    <ul className="accessRequestListWrapper">
-                                        {notifications.map((notificationUsername, index) => (
-                                        <li className="accessRequestList" key={index}>
-                                            <div className="accessRequestDisplayWrapper">
-                                                <span className="accessNotification">User {notificationUsername} is requesting access to {organizationName}.</span>
-                                                <div className="accessRequestFlexWrapper">
-                                                    <button className="accessButton" onClick={() => handleConfirm(notificationUsername)}>Confirm</button>
-                                                    <button className="accessButton" onClick={() => handleDeny(notificationUsername)}>Deny</button>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        ))}
-                                    </ul>
+                                {!createTeamMode && !joinTeamMode && (
+                                    <button className="joinTeamButton" style={{'backgroundColor': '#8884d8'}} onClick={()=> setJoinTeamMode(!joinTeamMode)}>
+                                         Join a Team
+                                    </button>
                                 )}
 
-                                {notifications.length === 0 && (
-                                    <label className="userControlHeaders">No Access Requests</label>
-                                    
+                                {!createTeamMode && !joinTeamMode && (
+                                    <button className="createTeamButton" style={{'backgroundColor': '#2D3436'}} onClick={()=> setCreateTeamMode(!createTeamMode)}>
+                                        Create a Team
+                                    </button>
                                 )}
+
+                                {joinTeamMode && (
+                                    <div className="joinTeamBlock">
+
+                                        <label className="teamControlHeader">Enter Your Team Code</label>
+
+                                        <input className="teamControlInput"/>
+
+                                        <button className="joinTeamButton" style={{'backgroundColor': '#8884d8'}}> 
+                                            Request Access
+                                        </button> 
+
+                                        <button className="teamControlCancelButton">
+                                            Cancel
+                                        </button>
+                                    </div>
+                                )}
+
+                                {createTeamMode && (
+                                    <div className="joinTeamBlock">
+
+                                        <label className="teamControlHeader">Name Your Team</label>
+
+                                        <input className="teamControlInput"/>
+
+                                        <button className="joinTeamButton" style={{'backgroundColor': '#8884d8'}}> 
+                                            Create New Team
+                                        </button> 
+
+                                        <button className="teamControlCancelButton" onClick={()=>window.location.reload()}>
+                                            Cancel
+                                        </button>
+
+                                        <label className="teamControlError">{teamMessage}</label>
+                                    </div>
+                                )}
+
+                                <br/>
+                                <br/>
+                                <br/>
+
+
                             </div>
-                        </div>
+                        )}
                     </div>
                 )}
+                
 
 
                 

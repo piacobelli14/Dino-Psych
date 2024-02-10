@@ -561,15 +561,95 @@
     height: 1.5vw;
     cursor: pointer; 
     accent-color: #8884d8;
-  }
+}
 
-  .selectAdmin {
+.selectAdmin {
     font-size: 0.8vw;
     cursor: pointer; 
-  }
-  
-  
-  .selectAdmin:hover {
+}
+
+
+.selectAdmin:hover {
     background-color: #8884d8;
     color: white; 
-  }
+}
+
+.teamControlButtonsWrapper, 
+.joinTeamBlock, 
+.createTeamBlock {
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center;
+    width: 22rem; 
+    margin-top: 2rem; 
+}
+
+.joinTeamButton, 
+.createTeamButton {
+    display: flex; 
+    align-items: center;
+    justify-content: center; 
+    border: 2px solid #2D3436; 
+    outline: black;
+    cursor: pointer;  
+    width: 100%; 
+    padding: 0.6rem 0; 
+    border-radius: 0.4rem; 
+    font-size: 0.6rem; 
+    font-weight: 600;
+}
+
+.joinTeamButton:hover, 
+.createTeamButton:hover {
+    opacity: 0.7;
+}
+
+.teamControlHeader {
+    font-size: 0.8rem; 
+    font-weight: 600; 
+    margin-bottom: 0.4rem; 
+}
+
+.teamControlInput {
+    width: 100%; 
+    padding: 0.6rem 0; 
+    border-radius: 0.4rem; 
+    font-size: 0.6rem; 
+    color: black; 
+    font-weight: 500; 
+    box-shadow: 0 0 3px rgba(255, 255, 255, 0.8);
+    background: #f5f5f8; 
+    border: 2px solid grey; 
+    outline: black; 
+    text-indent: 0.8rem;
+    margin-bottom: 0.6rem; 
+    text-align: center;
+}
+
+.teamControlInput:hover {
+    opacity: 0.8;
+}
+
+.teamControlCancelButton {
+    background-color: rgba(255,255,255,0.0);
+    outline: none; 
+    font-size: 0.5rem; 
+    font-size: 500; 
+    text-decoration: underline; 
+    cursor: pointer;
+    border: none; 
+    outline: none; 
+}
+
+.teamControlCancelButton:hover {
+    opacity: 0.6
+}
+
+.teamControlCancelButton:focus {
+    outline: none; 
+}
+
+
+
+
