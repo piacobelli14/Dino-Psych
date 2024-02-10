@@ -370,9 +370,14 @@
     white-space: nowrap; 
 }
   
-.scrollableTableWrapper {
+.scrollableTableWrapperSignins, 
+.scrollableTableWrapperAdmin {
     overflow: auto;
     height: 100%; 
+}
+
+.scrollableTableWrapperAdmin {
+    margin-top: 1rem; 
 }
 
 .signinLogTable {
@@ -380,7 +385,7 @@
     text-align: center; 
     white-space: nowrap; 
     overflow: scroll; 
-    margin-top: 0.4 rem; 
+    margin-top: 0.4rem; 
 }
 
 .signinLogHeaders {
@@ -408,4 +413,141 @@
     overflow: scroll; 
 }
 
+.userControlTableContainer {
+    display: flex; 
+    flex-direction: column;
+    justify-content: flex-start; 
+    align-items: center;
+    width: 50%; 
+    overflow: scroll;
+    border: 1px solid #2D3436; 
+    border-radius: 0.4rem;
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
+    padding: 0.5rem; 
+    height: 44vh; 
+    padding: 0.5rem 0; 
+    margin-bottom: 2rem; 
+    position: relative; 
+}
 
+.deleteButtonContainer {
+    position: absolute;
+    display: flex;
+    justify-content: flex-end;
+    width: 100%; 
+    top: 0;
+}
+  
+.deleteButton, 
+.saveChangesButton {
+    background-color: rgba(255,255,255,0.2); 
+    border: none;
+    outline: none; 
+    cursor: pointer; 
+    padding: 0.4rem 0.8rem; 
+    margin-right: 1.5vw; 
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+    border-bottom-right-radius: 0.2rem;
+    border-bottom-left-radius: 0.2rem;
+    color: rgba(255,255,255,0.8); 
+}
+
+.deleteButton {
+    font-size: 1.2vw; 
+}
+
+.saveChangesButton {
+    font-size: 0.8vw; 
+}
+
+.deleteButton:hover, 
+.saveChangesButton:hover {
+    outline: none; 
+    opacity: 0.6; 
+}
+
+.deleteButton:focus, 
+.saveChangesButton:focus {
+    outline: none; 
+}
+  
+.deleteButtonIcon {
+    display: flex; 
+    justify-content: center;
+    align-items: center; 
+    text-align: center; 
+    position: sticky;
+    width: 0.6rem; 
+    background-color: rgba(255, 255, 255, 0.0); 
+    outline: none; 
+    border: none;
+    cursor: pointer; 
+}
+
+.userControlTable {
+    border-spacing: 1vw;
+    text-align: center; 
+    margin-top: 1rem; 
+    width: 100%; 
+    white-space: nowrap; 
+    overflow: scroll;
+}
+  
+.userControlTable thead {
+    position: relative; 
+}
+  
+.userControlTable thead::after {
+    content: ''; 
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    top: 0;
+    width: 100%;
+    border-bottom: 0.5px solid grey; 
+    z-index: 1; 
+}
+  
+
+.userControlHeaders {
+  color: grey; 
+  position: sticky;
+  top: 0;
+} 
+
+.userControlHeaders {
+  margin-top: 8vw;
+  font-weight: bold;
+}
+
+.userControlHeaders {
+  font-size: 1vw; 
+}
+
+.userControlContent {
+  color: grey;
+  white-space: nowrap;
+}
+
+.userControlContent {
+  font-size: 0.8vw;
+}
+
+.userControlCheckbox {
+    width: 1.5vw; 
+    height: 1.5vw;
+    cursor: pointer; 
+    accent-color: #8884d8;
+  }
+
+  .selectAdmin {
+    font-size: 0.8vw;
+    cursor: pointer; 
+  }
+  
+  
+  .selectAdmin:hover {
+    background-color: #8884d8;
+    color: white; 
+  }

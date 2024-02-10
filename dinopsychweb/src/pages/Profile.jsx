@@ -840,7 +840,7 @@ const Profile = () => {
                         </div>
 
                         <div className="siginLogTableContainer">
-                            <div className="scrollableTableWrapper">
+                            <div className="scrollableTableWrapperSignins">
                                 <table className="signinLogTable">
                                     <thead className="signinLogHeaders">
                                         <tr>
@@ -874,64 +874,63 @@ const Profile = () => {
 
                 {!isHamburger && isAdmin && (
                     <div className="userControlBlock">
-
                         <div className="userControlTableContainer">
-                        <div className="deleteButtonContainer">
-                            <button className="deleteButton" onClick={handleDelete}>
-                                <FontAwesomeIcon icon={faTrashCan} className="deleteButtonIcon"/>
-                            </button>
-                            <button className="saveChangesButton" onClick={handleSaveChanges}>
-                                Save Changes
-                            </button>
-                        </div>
-                        <div className="scrollableTableWrapper">
-                            <table className="userControlTable">
-                                <thead className="userControlHeaders">
-                                    <tr>
-                                        <th></th>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Username</th>
-                                        <th>Role</th>
-                                    </tr>
-                                </thead>
+                            <div className="deleteButtonContainer">
+                                <button className="deleteButton" onClick={handleDelete}>
+                                    <FontAwesomeIcon icon={faTrashCan} className="deleteButtonIcon"/>
+                                </button>
+                                <button className="saveChangesButton" onClick={handleSaveChanges}>
+                                    Save Changes
+                                </button>
+                            </div>
 
-                                <tbody>
-                                    {adminUsers.map((item, index) => (
-                                        <tr className="userControlContent" key={index}>
-                                            <td>
-                                            <input
-                                                className="userControlCheckbox"
-                                                type="checkbox"
-                                                onChange={() => handleCheckboxChange(item.username)}
-                                                checked={selectedRows.includes(item.username)}
-                                                disabled={item.username === localStorage.getItem('username') || ''}
-                                            />
-
-                                            </td>
-                                            <td>{item.firstname} {item.lastname}</td>
-                                            <td>{item.email}</td>
-                                            <td>{item.username}</td>
-                                            <td>
-                                                <select
-                                                    className="selectAdmin"
-                                                    value={item.isadmin}
-                                                    onChange={(e) => handleRoleChange(item.username, e.target.value)}
-                                                    disabled={item.username === localStorage.getItem('username') || ''}
-                                                >
-                                                    <option className="selectAdmin" value="no">Team Member</option>
-                                                    <option className="selectAdmin" value="admin">Administrator</option>
-                                                </select>
-                                            </td>
+                            <div className="scrollableTableWrapperAdmin">
+                                <table className="userControlTable">
+                                    <thead className="signinLogHeaders">
+                                        <tr>
+                                            <th></th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Username</th>
+                                            <th>Role</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                    </thead>
+
+                                    <tbody>
+                                        {adminUsers.map((item, index) => (
+                                            <tr className="signinLogContent" key={index}>
+                                                <td>
+                                                <input
+                                                    className="userControlCheckbox"
+                                                    type="checkbox"
+                                                    onChange={() => handleCheckboxChange(item.username)}
+                                                    checked={selectedRows.includes(item.username)}
+                                                    disabled={item.username === localStorage.getItem('username') || ''}
+                                                />
+
+                                                </td>
+                                                <td>{item.firstname} {item.lastname}</td>
+                                                <td>{item.email}</td>
+                                                <td>{item.username}</td>
+                                                <td>
+                                                    <select
+                                                        className="selectAdmin"
+                                                        value={item.isadmin}
+                                                        onChange={(e) => handleRoleChange(item.username, e.target.value)}
+                                                        disabled={item.username === localStorage.getItem('username') || ''}
+                                                    >
+                                                        <option className="selectAdmin" value="no">Team Member</option>
+                                                        <option className="selectAdmin" value="admin">Administrator</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
-                </div>
                 )}
-
 
 
                 
