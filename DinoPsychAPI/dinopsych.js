@@ -1982,12 +1982,6 @@ app.post('/distribute-survey', authenticateToken, async (req, res) => {
     }
 });
 
-
-
-
-
-
-
 function capitalizeFirstLetter(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
