@@ -21,10 +21,15 @@ body {
   background: transparent; 
 }
 
-body.reportPageBody, 
-body.profilePageBody {
+body.reportPageBody {
   background: #002;
 }
+
+body.profilePageBody {
+  height: 100vh; /* Set the container height to fill the viewport */
+  background: #002; 
+}
+
 
 body.surveyPageBody {
   background: white;

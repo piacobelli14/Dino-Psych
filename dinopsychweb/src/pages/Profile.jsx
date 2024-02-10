@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Chart from "chart.js/auto"; 
 import { Bar } from 'react-chartjs-2';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faX, faBars, faRightFromBracket, faPerson, faFile, faPeopleLine, faPencil } from "@fortawesome/free-solid-svg-icons";
+import { faX, faBars, faRightFromBracket, faPerson, faFile, faPeopleLine, faPencil, faTrashCan, faRegistered } from "@fortawesome/free-solid-svg-icons";
 
 import '../styles/Profile.css'
 
@@ -39,7 +39,7 @@ const Profile = () => {
     const [teamCode, setTeamCode] = useState(''); 
     const [teamMessage, setTeamMessage] = useState(''); 
     const requestAccessBorderColor = notifications.length > 0 ? '#E54B4B' : 'grey';
-
+    
     useEffect(() => {
         setUsername(localStorage.getItem('username') || '');
     }, [])
@@ -675,7 +675,7 @@ const Profile = () => {
 
 
     return (
-        <div>
+        <div id="profilePageContainer" class="profilePageBody">
 
             {isHamburger && (
                 <div className="loginHamburgerPopout"> 
@@ -822,60 +822,114 @@ const Profile = () => {
                     </div>
                 )}
 
-                {!isHamburger && isAdmin && (
+                {!isHamburger && organizationID !== username && (
 
                     <div className="userControlBlock">
 
-                            <div className="organizationInformationBlock">
-                                <div className="profileOrganizationName">{organizationName}</div>
-                                <div className="profileOrganizationID">Org ID: {organizationID}</div>
-                                
-                                <div className="profileOrganizationCountLabel">Current Team Members</div>
-                                <div className="profileOrganizationCount">{organizationUserCount}</div>
-    
-                        
-                                <div className="profileOrganizationCountLabel">Current Wearers</div>
-                                <div className="profileOrganizationCount">{organizationPatientCount}</div>
-                        
-                            </div>
-
-                            <div className="siginLogTableContainer">
-                                <div className="scrollableTableWrapper">
-                                    <table className="signinLogTable">
-                                        <thead className="signinLogHeaders">
-                                            <tr>
-                                                <th>Login</th>
-                                                <th>Time</th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody>
-                                            {signInLog.map((item, index) => (
-                                                <tr className="signinLogContent" key={index}>
-                                                    <td>{item.firstname} {item.lastname}</td>
-                                                    <td>{formatDate(item.timestamp)}</td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                            <div className="userEditBlock">
-                                <div className="personalSignInBarChartWrapper">
-                                    <label className="loginChartTitle">{organizationName} (ID: {organizationID}) - Logins</label>
-                                    <label className="loginChartSubtitle">Last Seven Days</label>
-                                    <Bar className="personalSigninBarChart" data={personalLoginsData} options={personalLoginsOptions} />
-                                </div>
-                                
-                            </div>
-
-                        
-                        
-
-                    </div>
+                        <div className="organizationInformationBlock">
+                            <div className="profileOrganizationName">{organizationName}</div>
+                            <div className="profileOrganizationID">Org ID: {organizationID}</div>
+                            
+                            <div className="profileOrganizationCountLabel">Current Team Members</div>
+                            <div className="profileOrganizationCount">{organizationUserCount}</div>
 
                     
+                            <div className="profileOrganizationCountLabel">Current Wearers</div>
+                            <div className="profileOrganizationCount">{organizationPatientCount}</div>
+                    
+                        </div>
+
+                        <div className="siginLogTableContainer">
+                            <div className="scrollableTableWrapper">
+                                <table className="signinLogTable">
+                                    <thead className="signinLogHeaders">
+                                        <tr>
+                                            <th>Login</th>
+                                            <th>Time</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        {signInLog.map((item, index) => (
+                                            <tr className="signinLogContent" key={index}>
+                                                <td>{item.firstname} {item.lastname}</td>
+                                                <td>{formatDate(item.timestamp)}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div className="userEditBlock">
+                            <div className="personalSignInBarChartWrapper">
+                                <label className="loginChartTitle">{organizationName} (ID: {organizationID}) - Logins</label>
+                                <label className="loginChartSubtitle">Last Seven Days</label>
+                                <Bar className="personalSigninBarChart" data={personalLoginsData} options={personalLoginsOptions} />
+                            </div>
+                            
+                        </div>
+                    </div>
+                )}
+
+                {!isHamburger && isAdmin && (
+                    <div className="userControlBlock">
+
+                        <div className="userControlTableContainer">
+                        <div className="deleteButtonContainer">
+                            <button className="deleteButton" onClick={handleDelete}>
+                                <FontAwesomeIcon icon={faTrashCan} className="deleteButtonIcon"/>
+                            </button>
+                            <button className="saveChangesButton" onClick={handleSaveChanges}>
+                                Save Changes
+                            </button>
+                        </div>
+                        <div className="scrollableTableWrapper">
+                            <table className="userControlTable">
+                                <thead className="userControlHeaders">
+                                    <tr>
+                                        <th></th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Username</th>
+                                        <th>Role</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {adminUsers.map((item, index) => (
+                                        <tr className="userControlContent" key={index}>
+                                            <td>
+                                            <input
+                                                className="userControlCheckbox"
+                                                type="checkbox"
+                                                onChange={() => handleCheckboxChange(item.username)}
+                                                checked={selectedRows.includes(item.username)}
+                                                disabled={item.username === localStorage.getItem('username') || ''}
+                                            />
+
+                                            </td>
+                                            <td>{item.firstname} {item.lastname}</td>
+                                            <td>{item.email}</td>
+                                            <td>{item.username}</td>
+                                            <td>
+                                                <select
+                                                    className="selectAdmin"
+                                                    value={item.isadmin}
+                                                    onChange={(e) => handleRoleChange(item.username, e.target.value)}
+                                                    disabled={item.username === localStorage.getItem('username') || ''}
+                                                >
+                                                    <option className="selectAdmin" value="no">Team Member</option>
+                                                    <option className="selectAdmin" value="admin">Administrator</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
                 )}
 
 
