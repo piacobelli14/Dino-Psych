@@ -335,9 +335,11 @@ app.post('/user-info', authenticateToken, async (req, res) => {
         lastname: row.lastname,
         image: row.image,
         phone: row.phone,
-        organizationid: row.organizationid,
+        organizationid: row.organizationid || username,
         isadmin: row.isadmin,
       })); 
+
+      console.log(formattedResult); 
       return res.status(200).json(formattedResult);
     } catch (error) {
       return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });

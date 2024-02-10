@@ -15,13 +15,13 @@ const Profile = () => {
     const [username, setUsername] = useState('');
     const [selectedRows, setSelectedRows] = useState([]);
     const [notifications, setNotifications] = useState([]);
-    const [isAdmin, setIsAdmin] = useState('');
+    const [isAdmin, setIsAdmin] = useState();
     const [email, setEmail] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [image, setImage] = useState('');
     const [phone, setPhone] = useState('');
-    const [organizationID, setOrganizationID] = useState(null);
+    const [organizationID, setOrganizationID] = useState();
     const [organizationName, setOrganizationName] = useState('');
     const [organizationUserCount, setOrganizationUserCount] = useState('');
     const [organizationPatientCount, setOrganizationPatientCount] = useState('');
@@ -50,7 +50,7 @@ const Profile = () => {
     }, [username]);
 
     useEffect(() => {
-        if (organizationID) {
+        if (organizationID !== username) {
             fetchOrganizationInfo();
             fetchOrganizationUsageData();
             fetchOrganizationSignInLog();
@@ -875,15 +875,12 @@ const Profile = () => {
                                 </div>
                                 
                             </div>
-
-                            
-
                         </div>
                     </div>
                 )}
 
 
-                {!isHamburger && organizationID !== username && (
+                {!isHamburger && organizationID !== username && organizationID && (
 
                     <div className="userControlBlock">
                         <div className="profileSectionDivider"/>
@@ -928,7 +925,7 @@ const Profile = () => {
                                 <div className="personalSignInBarChartWrapper">
                                     <label className="loginChartTitle">{organizationName} (ID: {organizationID}) - Logins</label>
                                     <label className="loginChartSubtitle">Last Seven Days</label>
-                                    <Bar className="personalSigninBarChart" data={personalLoginsData} options={personalLoginsOptions} />
+                                    <Bar className="personalSigninBarChart" data={organizationLoginsData} options={organizationLoginsOptions} />
                                 </div>
                                 
                             </div>
@@ -937,7 +934,7 @@ const Profile = () => {
                 )}
 
 
-                {!isHamburger && isAdmin && (
+                {!isHamburger && organizationID !== username && isAdmin && organizationID && (
                     <div className="userControlBlock">
                         <div className="profileSectionDivider"/>
                         <div className="userControlFlex">
