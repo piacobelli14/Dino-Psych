@@ -413,12 +413,12 @@
     overflow: scroll; 
 }
 
-.userControlTableContainer {
+.userControlTableContainer, 
+.accessRequestTableContainer {
     display: flex; 
     flex-direction: column;
     justify-content: flex-start; 
     align-items: center;
-    width: 50%; 
     overflow: scroll;
     border: 1px solid #2D3436; 
     border-radius: 0.4rem;
@@ -430,12 +430,22 @@
     position: relative; 
 }
 
+.userControlTableContainer {
+    width: 55%; 
+}
+
+.accessRequestTableContainer {
+    width: 40%;
+    margin-left: 1%; 
+}
+
 .deleteButtonContainer {
     position: absolute;
     display: flex;
     justify-content: flex-end;
-    width: 100%; 
     top: 0;
+    right: 5%; 
+    background-color: #002; 
 }
   
 .deleteButton, 
