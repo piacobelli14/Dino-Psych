@@ -17,7 +17,7 @@ This prototype model is currently designed to distribute outcomes to patients on
 
 # Patient Management Dashboard
 
-(./PatientDashboard)
+![Example Image](PatientDashboard)
 
 # Outcomes Interpretation Dashboard
 
