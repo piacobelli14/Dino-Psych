@@ -15,12 +15,20 @@ This prototype model is currently designed to distribute outcomes to patients on
 - Add in more self-rpeort measures including the Epworth Sleepiness Scale, Difficulties in Emotion Regulation Scale, Disturbig Dreams and Nightmares Severity Index, PTSD Checklist for DSM-5, and several others.
 
 
+
+
 # Patient Management Dashboard
 
-![Example Image](PatientDashboard)
+![Image](PatientDashboard)
 
 # Outcomes Interpretation Dashboard
 
+![Image](OutcomesDashboard)
+
 # Exportable Outcomes Report
 
+![Image](OutcomesReport)
+
 # Team/Account Management 
+
+![Image](OutcomesManager)
