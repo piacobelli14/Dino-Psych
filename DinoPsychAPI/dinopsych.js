@@ -23,7 +23,6 @@ function authenticateToken(req, res, next) {
   
     jwt.verify(token, secretKey, (err, user) => {
       if (err) {
-        console.error('JWT Verification Error:', err);
         return res.status(403).json({ message: 'Unauthorized: Invalid token.' });
       }
       req.user = user;
@@ -45,7 +44,6 @@ const pool = new Pool({
 
 module.exports = pool;
 pool.on('error', (err) => {
-    console.error('Unexpected error on idle client', err); 
     process.exit(-1)
 });
 
@@ -101,7 +99,6 @@ app.post('/login', async (req, res) => {
         return res.status(401).json({ message: 'These login credentials are incorrect. Please try again.' });
         }
     } catch (error) {
-        console.log(error); 
       return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
     }
 });  
@@ -336,8 +333,6 @@ app.post('/user-info', authenticateToken, async (req, res) => {
         organizationid: row.organizationid || username,
         isadmin: row.isadmin,
       })); 
-
-      console.log(formattedResult); 
       return res.status(200).json(formattedResult);
     } catch (error) {
       return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
@@ -419,7 +414,6 @@ app.post('/enroll-user', async (req, res) => {
   
       return res.status(200).json({});
     } catch (error) {
-      console.error('Error:', error);
       return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
     }
 });
@@ -1693,7 +1687,6 @@ app.post('/edit-image', authenticateToken, async (req, res) => {
   
       return res.status(200).json({ message: 'success' });
     } catch (error) {
-      console.error('Error connecting to the database:', error.message);
       return res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
     }
 });
@@ -1801,7 +1794,6 @@ app.post('/join-team', authenticateToken, (req, res) => {
         const codeVerificationQuery = `SELECT orgname FROM dinolabsorganizations WHERE orgid = $1;`
         pool.query(codeVerificationQuery, [teamCode], (error, codeVerificationResult) => {
             if (error) {
-                console.error("Error while verifying code:", error);
                 return callback(error);
             }
 
@@ -1832,7 +1824,6 @@ app.post('/join-team', authenticateToken, (req, res) => {
     const requestAccess = () => {
         isCodeValid(teamCode, (error, isValid) => {
             if (error) {
-                console.error("Error while checking code validity:", error);
                 return res.status(500).json({ message: 'Unable to request team access at this time. Please try again.' });
             }
     
@@ -1840,7 +1831,6 @@ app.post('/join-team', authenticateToken, (req, res) => {
                 const adminEmailQuery = `SELECT email FROM dinolabsusers WHERE organizationid = $1 AND isadmin = 'admin';`
                 pool.query(adminEmailQuery, [teamCode], (error, adminEmailResult) => {
                     if (error) {
-                        console.error("Error while fetching admin emails:", error);
                         return res.status(500).json({ message: 'Unable to request team access at this time. Please try again.' });
                     }
     
@@ -1853,7 +1843,6 @@ app.post('/join-team', authenticateToken, (req, res) => {
     
                     pool.query(checkActiveRequestQuery, [username], (error, checkActiveRequestResult) => {
                         if (error) {
-                            console.error("Error while checking active requests:", error);
                             return res.status(500).json({ message: 'Unable to request team access at this time. Please try again.' });
                         }
     
@@ -1864,15 +1853,14 @@ app.post('/join-team', authenticateToken, (req, res) => {
                                 WHERE request_username = $1 AND request_orgid = $2 AND request_status = 'Current'
                             `;
     
-                            let updateActiveRequestResult; // Declare the variable in the outer scope
+                            let updateActiveRequestResult; 
 
                             pool.query(updateActiveRequestQuery, [username, teamCode], (error, result) => {
                                 if (error) {
-                                    console.error("Error while updating active request:", error);
                                     return res.status(500).json({ message: 'Unable to request team access at this time. Please try again.' });
                                 }
                                 
-                                updateActiveRequestResult = result; // Assign the result inside the callback
+                                updateActiveRequestResult = result;
                             });
                         } else {
                             const requestLogQuery = `
@@ -1883,7 +1871,6 @@ app.post('/join-team', authenticateToken, (req, res) => {
     
                             pool.query(requestLogQuery, [username, teamCode], (error, requestLogResult) => {
                                 if (error) {
-                                    console.error("Error while logging request:", error);
                                     return res.status(500).json({ message: 'Unable to request team access at this time. Please try again.' });
                                 }
                             });
@@ -1894,7 +1881,6 @@ app.post('/join-team', authenticateToken, (req, res) => {
     
                             transporter.sendMail(mailOptions, (error, info) => {
                                 if (error) {
-                                    console.error("Error while sending email:", error);
                                     return res.status(500).json({ message: 'Unable to request team access at this time. Please try again.' });
                                 }
                             });
@@ -1903,12 +1889,29 @@ app.post('/join-team', authenticateToken, (req, res) => {
                     });
                 });
             } else {
-                console.log("Code is not valid. Rejecting access request...");
                 return res.status(401).json({ message: 'There are no teams associated with that code. Please try again or contact your admin to get the correct code.' });
             }
         });
     };
     requestAccess();
+});
+
+app.post('/pull-my-requests', authenticateToken, async (req, res) => {
+    const { username } = req.body; 
+    console.log(req.body); 
+    try {
+        const accessRequestQuery = `SELECT request_username, request_status FROM dinolabs_accessrequests WHERE request_username = $1 AND request_status = 'Current';`;
+
+        const { rows } = await pool.query(accessRequestQuery, [username]);
+
+        if (rows.length > 0) {
+            res.status(200).json({ orgRequest: rows });
+        } else {
+            res.status(404).json({ message: 'No active access requests found for the user.' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Error connecting to the database. Please try again later.' });
+    }
 });
 
 

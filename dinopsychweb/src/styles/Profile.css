@@ -650,11 +650,21 @@
     outline: none; 
 }
 
-.teamControlError {
+.teamControlError, 
+.requestsNotification {
     font-size: 0.5rem;
     font-weight: 400;
     width: 80%; 
     text-align: center; 
+    margin-top: 1rem; 
+}
+
+.teamControlError {
+    font-size: 0.5rem; 
+}
+
+.requestsNotification {
+    font-size: 0.7rem; 
 }
 
 .accessNotification {

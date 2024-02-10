@@ -38,6 +38,7 @@ const Profile = () => {
     const [teamName, setTeamName] = useState('');
     const [teamCode, setTeamCode] = useState(''); 
     const [teamMessage, setTeamMessage] = useState(''); 
+    const [myRequests, setMyRequests] = useState(null); 
     const requestAccessBorderColor = notifications.length > 0 ? '#E54B4B' : 'grey';
     
     useEffect(() => {
@@ -64,10 +65,13 @@ const Profile = () => {
     }, [isAdmin])
 
     useEffect(() => {
-        if (isAdmin || organizationID !== null) {
+        if (organizationID !== null && organizationID !== username) {
             fetchNotifications();
-        } 
+        } else {
+            fetchMyRequests();
+        }
     }, [isAdmin, organizationID])
+
 
     const fetchUserInfo = async () => {
         try {
@@ -581,6 +585,31 @@ const Profile = () => {
             setTeamMessage(error.message);
         }
     };
+
+    const fetchMyRequests = async () => {
+        try {
+            const response = await fetch('http://172.20.10.3:3001/pull-my-requests', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `${token}`, 
+                },
+                body: JSON.stringify({
+                    username,
+                }),
+            });
+    
+            if (response.status !== 200) {
+                throw new Error(`Internal Server Error`);
+            }
+    
+            const data = await response.json();
+            setMyRequests(data.orgRequest);
+        } catch (error) {
+            return; 
+        }
+    };
+
     
     const getLastSevenDays = () => {
         const today = new Date();
@@ -1022,19 +1051,19 @@ const Profile = () => {
                         ) : (
                             <div className="teamControlButtonsWrapper"> 
 
-                                {!createTeamMode && !joinTeamMode && (
+                                {!createTeamMode && !joinTeamMode && myRequests === null && (
                                     <button className="joinTeamButton" style={{'backgroundColor': '#8884d8'}} onClick={()=> setJoinTeamMode(!joinTeamMode)}>
                                          Join a Team
                                     </button>
                                 )}
 
-                                {!createTeamMode && !joinTeamMode && (
+                                {!createTeamMode && !joinTeamMode && myRequests === null && (
                                     <button className="createTeamButton" style={{'backgroundColor': '#2D3436', 'marginTop': '1rem'}} onClick={()=> setCreateTeamMode(!createTeamMode)}>
                                         Create a Team
                                     </button>
                                 )}
 
-                                {joinTeamMode && (
+                                {joinTeamMode && myRequests === null && (
                                     <div className="joinTeamBlock">
 
                                         <label className="teamControlHeader">Enter Your Team Code</label>
@@ -1053,7 +1082,7 @@ const Profile = () => {
                                     </div>
                                 )}
 
-                                {createTeamMode && (
+                                {createTeamMode && myRequests === null && (
                                     <div className="joinTeamBlock">
 
                                         <label className="teamControlHeader">Name Your Team</label>
@@ -1070,6 +1099,10 @@ const Profile = () => {
 
                                         <label className="teamControlError">{teamMessage}</label>
                                     </div>
+                                )}
+
+                                {myRequests !== null && (
+                                    <div className="requestsNotification">You have an active request to join an existing team. We are still awaiting admin approval.</div>
                                 )}
 
                                 <br/>
