@@ -48,6 +48,10 @@ pool.on('error', (err) => {
     process.exit(-1)
 });
 
+app.get('/', (req, res) => {
+    res.send('Express JS on Vercel')
+})
+
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
