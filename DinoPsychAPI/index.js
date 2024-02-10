@@ -10,6 +10,7 @@ const { v4: uuidv4 } = require('uuid');
 const secretKey = process.env.JWT_SECRET_KEY || 'your-secret-key'
 
 const app = express(); 
+const port = 3001; 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 app.use(cors());
@@ -48,17 +49,8 @@ pool.on('error', (err) => {
     process.exit(-1)
 });
 
-app.post('/', (req, res) => {
-    res.send('Express JS on Vercel')
-})
-
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
-
-    if (req.method !== 'POST') {
-        // If not, respond with "Method Not Allowed" error
-        return res.status(405).json({ message: 'Method Not Allowed: Use POST method for login.' });
-      }
     try {
   
       const passwordVerificationQuery = 'SELECT username, organizationid, salt, hashedpassword FROM dinolabsusers WHERE email = $1;';
@@ -2180,5 +2172,11 @@ function generateText(selectedPatient, selectedMeasure, selectedScore) {
     }
     return calculatedDescription;
 }
+
+
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+});
+
 
 module.exports = app;

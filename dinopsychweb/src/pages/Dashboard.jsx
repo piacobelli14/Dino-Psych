@@ -624,7 +624,7 @@ const Dashboard = () => {
                             <div className="navigationButtonDivider"/>
                         </button>
 
-                        <button className="navigationButtonWrapper" onClick={()=> navigate('/dashboard')}>
+                        <button className="navigationButtonWrapper" onClick={()=> navigate('/profile')}>
                             <div className="navigationButton">
                                 <FontAwesomeIcon icon={faPerson} className="navigationButtonIcon"/>
                                 My Account
