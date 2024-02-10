@@ -3,7 +3,7 @@
     "builds": [
       {
         "src": "dinopsych.js",
-        "use": "@now/node"
+        "use": "@vercel/node"
       }
     ], 
     "routes": [
