@@ -1029,7 +1029,7 @@ const Profile = () => {
                                 )}
 
                                 {!createTeamMode && !joinTeamMode && (
-                                    <button className="createTeamButton" style={{'backgroundColor': '#2D3436'}} onClick={()=> setCreateTeamMode(!createTeamMode)}>
+                                    <button className="createTeamButton" style={{'backgroundColor': '#2D3436', 'marginTop': '1rem'}} onClick={()=> setCreateTeamMode(!createTeamMode)}>
                                         Create a Team
                                     </button>
                                 )}
@@ -1039,15 +1039,17 @@ const Profile = () => {
 
                                         <label className="teamControlHeader">Enter Your Team Code</label>
 
-                                        <input className="teamControlInput"/>
+                                        <input className="teamControlInput" onChange={(e) => setTeamCode(e.target.value)}/>
 
-                                        <button className="joinTeamButton" style={{'backgroundColor': '#8884d8'}}> 
+                                        <button className="joinTeamButton" style={{'backgroundColor': '#8884d8'}} onClick={handleTeamJoin}> 
                                             Request Access
                                         </button> 
 
-                                        <button className="teamControlCancelButton">
+                                        <button className="teamControlCancelButton" onClick={()=> window.location.reload()}>
                                             Cancel
                                         </button>
+
+                                        <label className="teamControlError">{teamMessage}</label>
                                     </div>
                                 )}
 
@@ -1056,13 +1058,13 @@ const Profile = () => {
 
                                         <label className="teamControlHeader">Name Your Team</label>
 
-                                        <input className="teamControlInput"/>
+                                        <input className="teamControlInput" onChange={(e) => setTeamName(e.target.value)}/>
 
-                                        <button className="joinTeamButton" style={{'backgroundColor': '#8884d8'}}> 
+                                        <button className="joinTeamButton" style={{'backgroundColor': '#8884d8'}} onClick={handleTeamCreation}> 
                                             Create New Team
                                         </button> 
 
-                                        <button className="teamControlCancelButton" onClick={()=>window.location.reload()}>
+                                        <button className="teamControlCancelButton" onClick={()=> window.location.reload()}>
                                             Cancel
                                         </button>
 

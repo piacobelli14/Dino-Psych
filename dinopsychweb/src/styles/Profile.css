@@ -650,6 +650,45 @@
     outline: none; 
 }
 
+.teamControlError {
+    font-size: 0.5rem;
+    font-weight: 400;
+    width: 80%; 
+    text-align: center; 
+}
+
+.accessNotification {
+    font-size: 0.8rem; 
+    font-weight: 600;
+    color: white; 
+    opacity: 0.8;
+}
+
+.accessRequestFlexWrapper {
+    display: 100%; 
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+}
+
+.accessButton {
+    background-color: rgba(255,255,255,0.0);
+    border: none; 
+    outline: none; 
+    font-size: 0.8rem; 
+    font-weight: 600;
+    opacity: 0.8; 
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.accessButton:hover {
+    opacity: 0.6;
+}
+
+.accessButton:focus {
+    outline: none; 
+}
 
 
 

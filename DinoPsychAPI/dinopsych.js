@@ -93,8 +93,6 @@ app.post('/login', async (req, res) => {
               }
             );
 
-            console.log(username, token); 
-
             return res.status(200).json({ token, username });
         } else {
             return res.status(401).json({ message: 'These login credentials are incorrect. Please try again.' });
@@ -1798,11 +1796,12 @@ app.post('/create-team', authenticateToken, async (req, res) => {
 
 app.post('/join-team', authenticateToken, (req, res) => {
     const { username, firstName, lastName, teamCode } = req.body;
-
+    
     const isCodeValid = (teamCode, callback) => {
         const codeVerificationQuery = `SELECT orgname FROM dinolabsorganizations WHERE orgid = $1;`
-        pool.query(codeVerificationQuery, [teamCode], (error, cdoeVerificationResult) => {
+        pool.query(codeVerificationQuery, [teamCode], (error, codeVerificationResult) => {
             if (error) {
+                console.error("Error while verifying code:", error);
                 return callback(error);
             }
 
@@ -1833,6 +1832,7 @@ app.post('/join-team', authenticateToken, (req, res) => {
     const requestAccess = () => {
         isCodeValid(teamCode, (error, isValid) => {
             if (error) {
+                console.error("Error while checking code validity:", error);
                 return res.status(500).json({ message: 'Unable to request team access at this time. Please try again.' });
             }
     
@@ -1840,6 +1840,7 @@ app.post('/join-team', authenticateToken, (req, res) => {
                 const adminEmailQuery = `SELECT email FROM dinolabsusers WHERE organizationid = $1 AND isadmin = 'admin';`
                 pool.query(adminEmailQuery, [teamCode], (error, adminEmailResult) => {
                     if (error) {
+                        console.error("Error while fetching admin emails:", error);
                         return res.status(500).json({ message: 'Unable to request team access at this time. Please try again.' });
                     }
     
@@ -1852,6 +1853,7 @@ app.post('/join-team', authenticateToken, (req, res) => {
     
                     pool.query(checkActiveRequestQuery, [username], (error, checkActiveRequestResult) => {
                         if (error) {
+                            console.error("Error while checking active requests:", error);
                             return res.status(500).json({ message: 'Unable to request team access at this time. Please try again.' });
                         }
     
@@ -1862,10 +1864,15 @@ app.post('/join-team', authenticateToken, (req, res) => {
                                 WHERE request_username = $1 AND request_orgid = $2 AND request_status = 'Current'
                             `;
     
-                            pool.query(updateActiveRequestQuery, [username, teamCode], (error, updateActiveRequestResult) => {
+                            let updateActiveRequestResult; // Declare the variable in the outer scope
+
+                            pool.query(updateActiveRequestQuery, [username, teamCode], (error, result) => {
                                 if (error) {
+                                    console.error("Error while updating active request:", error);
                                     return res.status(500).json({ message: 'Unable to request team access at this time. Please try again.' });
                                 }
+                                
+                                updateActiveRequestResult = result; // Assign the result inside the callback
                             });
                         } else {
                             const requestLogQuery = `
@@ -1876,6 +1883,7 @@ app.post('/join-team', authenticateToken, (req, res) => {
     
                             pool.query(requestLogQuery, [username, teamCode], (error, requestLogResult) => {
                                 if (error) {
+                                    console.error("Error while logging request:", error);
                                     return res.status(500).json({ message: 'Unable to request team access at this time. Please try again.' });
                                 }
                             });
@@ -1886,6 +1894,7 @@ app.post('/join-team', authenticateToken, (req, res) => {
     
                             transporter.sendMail(mailOptions, (error, info) => {
                                 if (error) {
+                                    console.error("Error while sending email:", error);
                                     return res.status(500).json({ message: 'Unable to request team access at this time. Please try again.' });
                                 }
                             });
@@ -1894,6 +1903,7 @@ app.post('/join-team', authenticateToken, (req, res) => {
                     });
                 });
             } else {
+                console.log("Code is not valid. Rejecting access request...");
                 return res.status(401).json({ message: 'There are no teams associated with that code. Please try again or contact your admin to get the correct code.' });
             }
         });
