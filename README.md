@@ -17,6 +17,8 @@ This prototype model is currently designed to distribute outcomes to patients on
 
 # Patient Management Dashboard
 
+[Read more words!](Screen Shot 2024-02-10 at 4.32.31 PM.png)
+
 # Outcomes Interpretation Dashboard
 
 # Exportable Outcomes Report
