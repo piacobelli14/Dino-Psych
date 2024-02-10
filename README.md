@@ -35,4 +35,4 @@ This prototype model is currently designed to distribute outcomes to patients on
 
 # Self-Report Outcomes Measures
 
-![Image]
+![Image](OutcomesMeasures)
