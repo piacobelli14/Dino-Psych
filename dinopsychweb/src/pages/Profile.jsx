@@ -664,6 +664,67 @@ const Profile = () => {
         }]
     };
 
+    const organizationLoginsOptions = {
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    precision: 0,
+                    stepSize: 1,
+                },
+                grid: {
+                    display: false,
+                    drawBorder: true,
+                },
+                border: {
+                    lineWidth: 2,
+                    color: 'grey',
+                }
+            },
+            x: {
+                grid: {
+                    display: false,
+                    drawBorder: false,
+                },
+                border: {
+                    lineWidth: 2,
+                    color: 'grey',
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                display: false,
+            },
+            datalabels: {
+                display: true,
+                align: 'center',
+                anchor: 'center',
+                formatter: (value) => value || '',
+                font: {
+                    size: 10
+                }
+            }
+        },
+        elements: {
+            line: {
+                borderWidth: 0
+            },
+            point: {
+                radius: 0
+            }
+        }
+    };
+
+    const organizationLoginsData = {
+        labels: organizationBarChartData.map(dataPoint => dataPoint.timestamp),
+        datasets: [{
+            label: `${organizationName} (ID: ${organizationID}) - Logins`,
+            data: organizationBarChartData.map(dataPoint => dataPoint.count),
+            backgroundColor: '#8884d8'
+        }]
+    };
+
     useEffect(() => {
         document.body.classList.add('profilePageBody');
         return () => {
