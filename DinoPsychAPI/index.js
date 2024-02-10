@@ -48,7 +48,7 @@ pool.on('error', (err) => {
     process.exit(-1)
 });
 
-app.get('/', (req, res) => {
+app.post('/', (req, res) => {
     res.send('Express JS on Vercel')
 })
 
