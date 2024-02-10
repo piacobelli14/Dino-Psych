@@ -6,8 +6,19 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken'); 
 const { v4: uuidv4 } = require('uuid');
+require('dotenv').config();
 
-const secretKey = process.env.JWT_SECRET_KEY || 'your-secret-key'
+const secretKey = process.env.JWT_SECRET_KEY || 'secret-key'; 
+
+const smtpHost =  process.env.SMTP_HOST || 'host'; 
+const smtpPort = process.env.SMTP_PORT || 800; 
+const smtpUser = process.env.SMTP_USER || 'user'; 
+const smtpPassword = process.env.SMTP_PASSWORD || 'password'; 
+const dbUser =  process.env.DB_USER || 'user'; 
+const dbHost = process.env.DB_HOST || 'host'; 
+const dbName = process.env.DB_NAME || 'name';
+const dbPassword = process.env.DB_PASSWORD || 'password';
+const dbPort = process.env.DB_PORT || 1;
 
 const app = express(); 
 const port = 3001; 
@@ -32,21 +43,19 @@ function authenticateToken(req, res, next) {
     });
 }
 
-const username = 'piacobelli'
-const password = 'PAiac14-'
 const pool = new Pool({
-    user: username, 
-    host: 'localhost', 
-    database: 'dinolabs', 
-    password: password, 
-    port: '5551', 
+    user: dbUser, 
+    host: dbHost, 
+    database: dbName, 
+    password: dbPassword, 
+    port: dbPort.toString(), 
     max: 6, 
     idleTimeoutMillis: 1000, 
 }); 
 
-module.exports = pool;
 pool.on('error', (err) => {
-    process.exit(-1)
+    console.error('Unexpected error on idle client', err);
+    process.exit(-1);
 });
 
 app.post('/login', async (req, res) => {
@@ -215,17 +224,17 @@ app.post('/reset-password', async (req, res) => {
       }
   
       const transporter = nodemailer.createTransport({
-        host: 'smtp-mail.outlook.com',
-        port: 587,
+        host: smtpHost,
+        port: smtpPort,
         secure: false,
         auth: {
-          user: 'dinolabsauthentication@outlook.com',
-          pass: 'PAiac14-',
+          user: smtpUser,
+          pass: smtpPassword,
         },
       });
   
       const mailOptions = {
-        from: 'dinolabsauthentication@outlook.com',
+        from: smtpUser,
         to: email,
         subject: 'Password Reset Code',
         text: `Your password reset code is: ${resetCode}`,
@@ -1808,17 +1817,17 @@ app.post('/join-team', authenticateToken, (req, res) => {
     };
 
     const transporter = nodemailer.createTransport({
-        host: 'smtp-mail.outlook.com',
-        port: 587,
+        host: smtpHost,
+        port: smtpPort,
         secure: false,
         auth: {
-            user: 'dinolabsauthentication@outlook.com',
-            pass: 'PAiac14-',
+            user: smtpUser,
+            pass: smtpPassword,
         },
     });
 
     const mailOptions = {
-        from: 'dinolabsauthentication@outlook.com', 
+        from: smtpUser, 
         subject: 'Access Request',
         text: `Hi! \n\n${firstName} ${lastName} (${username}) has requested access to your team. Please review this notification in your dashboard and take appropriate action.\n\nSincerely,\nThe DinoLabs Team`,
     };
@@ -1950,17 +1959,17 @@ app.post('/distribute-survey', authenticateToken, async (req, res) => {
   
         const surveyLink = `http://localhost:5173/survey/${surveyKey}`;
         const transporter = nodemailer.createTransport({
-          host: 'smtp-mail.outlook.com',
-          port: 587,
+          host: smtpHost,
+          port: smtpPort,
           secure: false,
           auth: {
-            user: 'dinolabsauthentication@outlook.com',
-            pass: 'PAiac14-',
+            user: smtpUser,
+            pass: smtpPassword,
           },
         });
   
         const mailOptions = {
-          from: 'dinolabsauthentication@outlook.com',
+          from: smtpUser,
           to: patientEmail,
           subject: 'Survey Link',
           text: `Hi!,\n\nIt's time to fill out another survey. Click the link below to get started.\n\n${surveyLink}\n\nThans for your time!\n\nSincerely,\nThe DinoLabs Team`,
