@@ -822,9 +822,11 @@ const Profile = () => {
                     </div>
                 )}
 
+
                 {!isHamburger && organizationID !== username && (
 
                     <div className="userControlBlock">
+                        <div className="profileSectionDivider"/>
                         <div className="userControlFlex">
 
                             <div className="organizationInformationBlock">
@@ -874,8 +876,10 @@ const Profile = () => {
                     </div>
                 )}
 
+
                 {!isHamburger && isAdmin && (
                     <div className="userControlBlock">
+                        <div className="profileSectionDivider"/>
                         <div className="userControlFlex">
                             <div className="userControlTableContainer">
                                 <div className="deleteButtonContainer">
@@ -934,7 +938,7 @@ const Profile = () => {
                             </div>
 
                             <div className="accessRequestTableContainer" style={{ 'borderColor': requestAccessBorderColor }}>
-                                {notifications.length === 0 && (
+                                {notifications.length > 0 && (
                                     <ul className="accessRequestListWrapper">
                                         {notifications.map((notificationUsername, index) => (
                                         <li className="accessRequestList" key={index}>
