@@ -657,6 +657,7 @@
     width: 80%; 
     text-align: center; 
     margin-top: 1rem; 
+    text-shadow: 0 0 1px rgba(255, 255, 255, 0.8);
 }
 
 .teamControlError {
@@ -672,6 +673,7 @@
     font-weight: 600;
     color: white; 
     opacity: 0.8;
+    text-shadow: 0 0 1px rgba(255, 255, 255, 0.8);
 }
 
 .accessRequestFlexWrapper {
