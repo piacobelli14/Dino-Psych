@@ -51,6 +51,11 @@ pool.on('error', (err) => {
 
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
+
+    if (req.method !== 'POST') {
+        // If not, respond with "Method Not Allowed" error
+        return res.status(405).json({ message: 'Method Not Allowed: Use POST method for login.' });
+      }
     try {
   
       const passwordVerificationQuery = 'SELECT username, organizationid, salt, hashedpassword FROM dinolabsusers WHERE email = $1;';
