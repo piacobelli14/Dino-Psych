@@ -5,5 +5,10 @@
         "src": "dinopsych.js",
         "use": "@now/node"
       }
+    ], 
+    "routes": [
+        {
+         "src": "/(.*)"
+        }
     ]
   }
