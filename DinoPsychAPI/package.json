@@ -2,9 +2,9 @@
   "name": "dinopsychapi",
   "version": "1.0.0",
   "description": "",
-  "main": "dinopsych.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node dinopsych.js"
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",
