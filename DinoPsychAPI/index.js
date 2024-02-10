@@ -10,7 +10,6 @@ const { v4: uuidv4 } = require('uuid');
 const secretKey = process.env.JWT_SECRET_KEY || 'your-secret-key'
 
 const app = express(); 
-const port = 3001; 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 app.use(cors());
@@ -2177,11 +2176,5 @@ function generateText(selectedPatient, selectedMeasure, selectedScore) {
     }
     return calculatedDescription;
 }
-
-
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
-});
-
 
 module.exports = app;
