@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import Chart from "chart.js/auto"; 
-import jsPDF from 'jspdf';
+import jsPDF from 'jsPDF';
 import html2canvas from "html2canvas";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload } from '@fortawesome/free-solid-svg-icons';
