@@ -14,11 +14,8 @@ const smtpHost =  process.env.SMTP_HOST || 'host';
 const smtpPort = process.env.SMTP_PORT || 800; 
 const smtpUser = process.env.SMTP_USER || 'user'; 
 const smtpPassword = process.env.SMTP_PASSWORD || 'password'; 
-const dbUser =  process.env.DB_USER || 'user'; 
-const dbHost = process.env.DB_HOST || 'host'; 
-const dbName = process.env.DB_NAME || 'name';
-const dbPassword = process.env.DB_PASSWORD || 'password';
-const dbPort = process.env.DB_PORT || 1;
+
+
 
 const app = express(); 
 const port = 3001; 
@@ -44,18 +41,18 @@ function authenticateToken(req, res, next) {
 }
 
 const pool = new Pool({
-    user: dbUser, 
-    host: dbHost, 
-    database: dbName, 
-    password: dbPassword, 
-    port: dbPort.toString(), 
+    user: process.env.DB_USER, 
+    host: process.env.DB_HOST, 
+    database: process.env.DB_NAME, 
+    password: process.env.DB_PASSWORD, 
+    port: process.env.DB_PORT, 
     max: 6, 
     idleTimeoutMillis: 1000, 
 }); 
 
+module.exports = pool;
 pool.on('error', (err) => {
-    console.error('Unexpected error on idle client', err);
-    process.exit(-1);
+    process.exit(-1)
 });
 
 app.post('/login', async (req, res) => {
@@ -1969,7 +1966,7 @@ app.post('/distribute-survey', authenticateToken, async (req, res) => {
         });
   
         const mailOptions = {
-          from: smtpUser,
+          from: smtp,
           to: patientEmail,
           subject: 'Survey Link',
           text: `Hi!,\n\nIt's time to fill out another survey. Click the link below to get started.\n\n${surveyLink}\n\nThans for your time!\n\nSincerely,\nThe DinoLabs Team`,
