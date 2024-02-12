@@ -12,7 +12,7 @@ This prototype model is currently designed to distribute outcomes to patients on
 
 **Future Goals:**
 - Add program, timepoint, and measure customization so taht every hospital can mold the application to their program specific needs.
-- Add in more self-rpeort measures including the Epworth Sleepiness Scale, Difficulties in Emotion Regulation Scale, Disturbig Dreams and Nightmares Severity Index, PTSD Checklist for DSM-5, and several others.
+- Add in more self-rpeort measures including the Epworth Sleepiness Scale, Difficulties in Emotion Regulation Scale, Disturbing Dreams and Nightmares Severity Index, PTSD Checklist for DSM-5, and several others.
 
 
 
