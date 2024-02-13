@@ -11,7 +11,7 @@ This prototype model is currently designed to distribute outcomes to patients on
   - The application's backend is node/express.js API designed to run using a Vercel serverless distribution. financial constraints have delayed deployment for a few more weeks. 
 
 **Future Goals:**
-- Add program, timepoint, and measure customization so taht every hospital can mold the application to their program specific needs.
+- Add program, timepoint, and measure customization so that every hospital can mold the application to their program specific needs.
 - Add in more self-rpeort measures including the Epworth Sleepiness Scale, Difficulties in Emotion Regulation Scale, Disturbing Dreams and Nightmares Severity Index, PTSD Checklist for DSM-5, and several others.
 
 
